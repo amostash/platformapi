@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifenome Precision Health Platform — Competitive Intelligence Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --bg2: #ffffff;
+    --bg3: #f1f5f9;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --ln-teal: #009e8a;
+    --ln-blue: #2563eb;
+    --ln-purple: #7c3aed;
+    --ln-gold: #d97706;
+    --ln-red: #dc2626;
+    --ln-green: #059669;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --it-color: #ea580c;
+    --fn-color: #4f46e5;
+    --gpt-color: #0d9488;
+    --ln-glow: rgba(0,158,138,0.10);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Syne',sans-serif; overflow-x:hidden; min-height:100vh; }
+
+  /* ===== TOP NAV ===== */
+  .top-nav {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 40px; border-bottom:1px solid var(--border);
+    background:rgba(248,250,252,0.97); backdrop-filter:blur(12px); box-shadow:0 1px 0 var(--border);
+    position:sticky; top:0; z-index:100;
+  }
+  .logo { display:flex; align-items:center; gap:12px; }
+  .logo-mark {
+    width:36px; height:36px; background:linear-gradient(135deg,var(--ln-teal),var(--ln-blue));
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:14px; letter-spacing:-1px; color:#000;
+  }
+  .logo-text { font-size:16px; font-weight:700; letter-spacing:-0.5px; }
+  .logo-sub { font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; letter-spacing:1px; }
+  .nav-tabs { display:flex; gap:4px; }
+  .nav-tab {
+    padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;
+    border:none; background:transparent; color:var(--text2); transition:all 0.2s; letter-spacing:0.5px;
+  }
+  .nav-tab:hover { color:var(--text); background:var(--bg3); }
+  .nav-tab.active { background:var(--ln-teal); color:#fff; }
+  .nav-badge {
+    background:var(--ln-teal); color:#000; font-size:9px; padding:2px 6px;
+    border-radius:10px; font-family:'DM Mono',monospace; font-weight:700;
+  }
+
+  /* ===== PAGE SECTIONS ===== */
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    padding:60px 40px 40px; text-align:center; position:relative;
+    overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; top:-200px; left:50%; transform:translateX(-50%);
+    width:800px; height:500px;
+    background:radial-gradient(ellipse, rgba(0,158,138,0.06) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-eyebrow {
+    font-family:'DM Mono',monospace; font-size:11px; letter-spacing:3px;
+    color:var(--ln-teal); text-transform:uppercase; margin-bottom:16px;
+  }
+  .hero-title { font-family:'Libre Baskerville',serif; font-size:42px; line-height:1.15; margin-bottom:16px; }
+  .hero-title span { color:var(--ln-teal); font-style:italic; }
+  .hero-sub { color:var(--text2); font-size:15px; max-width:560px; margin:0 auto 32px; line-height:1.7; }
+
+  /* ===== PROFILE CARD ===== */
+  .profile-section { padding:0 40px 40px; max-width:1200px; margin:0 auto; }
+  .section-label {
+    font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px;
+    color:var(--text3); text-transform:uppercase; margin-bottom:20px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .profile-header {
+    background:var(--card); border:1px solid var(--border2); border-radius:16px;
+    padding:28px; display:flex; align-items:center; gap:24px; margin-bottom:32px;
+    position:relative; overflow:hidden;
+  }
+  .profile-header::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--ln-teal), var(--ln-blue), var(--ln-purple));
+  }
+  .profile-avatar {
+    width:72px; height:72px; border-radius:50%;
+    background:linear-gradient(135deg, #e8f4f2, #dbeafe);
+    border:2px solid var(--ln-teal); display:flex; align-items:center; justify-content:center;
+    font-size:28px; flex-shrink:0;
+  }
+  .profile-name { font-size:22px; font-weight:700; }
+  .profile-meta { color:var(--text2); font-size:13px; margin-top:4px; font-family:'DM Mono',monospace; }
+  .profile-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .profile-tag {
+    padding:4px 10px; border-radius:20px; font-size:11px; font-family:'DM Mono',monospace;
+    border:1px solid; letter-spacing:0.5px;
+  }
+  .tag-female { border-color:var(--ln-purple); color:var(--ln-purple); background:rgba(139,92,246,0.08); }
+  .tag-peri { border-color:var(--ln-gold); color:var(--ln-gold); background:rgba(245,158,11,0.08); }
+  .tag-risk { border-color:var(--ln-red); color:var(--ln-red); background:rgba(239,68,68,0.08); }
+
+  /* ===== DATA SOURCES GRID ===== */
+  .data-sources-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:16px; margin-bottom:40px;
+  }
+  .data-source-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:20px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden;
+  }
+  .data-source-card:hover { border-color:var(--border2); transform:translateY(-1px); }
+  .data-source-card.selected { border-color:var(--ln-teal); box-shadow:0 0 20px var(--ln-glow); }
+  .data-source-card.selected::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:var(--ln-teal);
+  }
+  .ds-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .ds-icon { font-size:22px; }
+  .ds-badge {
+    font-family:'DM Mono',monospace; font-size:9px; padding:3px 8px;
+    border-radius:10px; letter-spacing:1px;
+  }
+  .badge-dna { background:rgba(59,142,255,0.15); color:var(--ln-blue); }
+  .badge-blood { background:rgba(239,68,68,0.12); color:#f87171; }
+  .badge-meth { background:rgba(139,92,246,0.15); color:var(--ln-purple); }
+  .badge-micro { background:rgba(16,185,129,0.12); color:var(--ln-green); }
+  .badge-wear { background:rgba(245,158,11,0.12); color:var(--ln-gold); }
+  .badge-img { background:rgba(99,102,241,0.12); color:#818cf8; }
+  .ds-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .ds-desc { font-size:11px; color:var(--text2); line-height:1.5; font-family:'DM Mono',monospace; }
+  .ds-markers { display:flex; flex-wrap:wrap; gap:4px; margin-top:10px; }
+  .ds-marker {
+    font-size:9px; padding:2px 7px; background:var(--bg3); border:1px solid var(--border);
+    border-radius:4px; font-family:'DM Mono',monospace; color:var(--text3);
+  }
+  .ds-marker.highlight { border-color:var(--ln-teal); color:var(--ln-teal); background:rgba(0,212,184,0.06); }
+  .check-indicator {
+    position:absolute; top:12px; right:12px; width:20px; height:20px;
+    border-radius:50%; border:1.5px solid var(--text3); display:flex; align-items:center;
+    justify-content:center; font-size:10px; transition:all 0.2s;
+  }
+  .data-source-card.selected .check-indicator {
+    background:var(--ln-teal); border-color:var(--ln-teal); color:#000;
+  }
+
+  /* ===== ANALYSIS BUTTON ===== */
+  .action-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; }
+  .selected-count { font-family:'DM Mono',monospace; font-size:12px; color:var(--text2); }
+  .selected-count span { color:var(--ln-teal); font-weight:700; }
+  .analyze-btn {
+    padding:14px 32px; background:var(--ln-teal); color:#fff; border:none;
+    border-radius:8px; font-family:'Syne',sans-serif; font-weight:700; font-size:14px;
+    cursor:pointer; transition:all 0.2s; letter-spacing:0.5px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .analyze-btn:hover { background:#00ebb0; transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,212,184,0.25); }
+  .analyze-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+  /* ===== RESULTS PAGE ===== */
+  .results-nav {
+    padding:24px 40px 0; display:flex; gap:0; border-bottom:1px solid var(--border);
+    position:sticky; top:65px; background:var(--bg); z-index:50;
+    overflow-x:auto;
+  }
+  .results-tab {
+    padding:12px 20px; cursor:pointer; font-size:12px; font-weight:600;
+    border:none; background:transparent; color:var(--text2); transition:all 0.2s;
+    border-bottom:2px solid transparent; white-space:nowrap; letter-spacing:0.5px;
+  }
+  .results-tab:hover { color:var(--text); }
+  .results-tab.active { color:var(--ln-teal); border-bottom-color:var(--ln-teal); }
+  .platform-indicator {
+    display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px;
+  }
+  .pi-ln { background:var(--ln-teal); }
+  .pi-it { background:var(--it-color); }
+  .pi-fn { background:var(--fn-color); }
+  .pi-gpt { background:var(--gpt-color); }
+
+  .report-section { padding:40px; max-width:1200px; margin:0 auto; display:none; }
+  .report-section.active { display:block; }
+
+  /* ===== REPORT CARDS ===== */
+  .report-platform-header {
+    display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  .platform-logo-pill {
+    padding:8px 20px; border-radius:30px; font-size:13px; font-weight:700; letter-spacing:0.5px;
+  }
+  .pill-ln { background:linear-gradient(135deg,var(--ln-teal),var(--ln-blue)); color:#fff; }
+  .pill-it { background:rgba(249,115,22,0.15); color:var(--it-color); border:1px solid var(--it-color); }
+  .pill-fn { background:rgba(99,102,241,0.15); color:var(--fn-color); border:1px solid var(--fn-color); }
+  .pill-gpt { background:rgba(116,170,156,0.15); color:var(--gpt-color); border:1px solid var(--gpt-color); }
+  .platform-meta { font-size:12px; color:var(--text2); font-family:'DM Mono',monospace; }
+  .platform-data-used { font-size:11px; color:var(--text3); margin-top:4px; }
+
+  /* Index cards grid */
+  .index-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:28px; }
+  .index-card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:10px;
+    padding:16px; position:relative; overflow:hidden;
+  }
+  .index-card.premium {
+    border-color:rgba(0,212,184,0.25);
+    background:linear-gradient(135deg, var(--bg2), rgba(0,158,138,0.04));
+  }
+  .index-card.premium::before {
+    content:'LIFENOME EXCLUSIVE'; position:absolute; top:0; right:0;
+    background:var(--ln-teal); color:#000; font-size:7px; font-family:'DM Mono',monospace;
+    padding:3px 8px; border-bottom-left-radius:6px; font-weight:700; letter-spacing:1px;
+  }
+  .index-card-header { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+  .index-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+  .index-name { font-size:12px; font-weight:700; line-height:1.3; }
+  .index-vertical { font-size:9px; font-family:'DM Mono',monospace; color:var(--text3); margin-top:2px; letter-spacing:1px; }
+  .score-bar-wrap { margin:10px 0 6px; }
+  .score-label { display:flex; justify-content:space-between; font-size:10px; margin-bottom:4px; }
+  .score-label .val { font-family:'DM Mono',monospace; color:var(--ln-teal); font-weight:600; }
+  .score-label .opt { color:var(--text3); }
+  .score-bar { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .score-fill { height:100%; border-radius:2px; transition:width 1.2s cubic-bezier(.16,1,.3,1); }
+  .fill-green { background:linear-gradient(90deg,var(--ln-green),#34d399); }
+  .fill-yellow { background:linear-gradient(90deg,var(--ln-gold),#fbbf24); }
+  .fill-red { background:linear-gradient(90deg,var(--ln-red),#f87171); }
+  .fill-blue { background:linear-gradient(90deg,var(--ln-blue),#60a5fa); }
+  .fill-teal { background:linear-gradient(90deg,var(--ln-teal),#5eead4); }
+  .index-finding { font-size:10px; color:var(--text2); line-height:1.5; font-family:'DM Mono',monospace; margin-top:6px; }
+  .index-action {
+    margin-top:10px; padding:7px 10px; background:var(--bg3); border-radius:6px;
+    font-size:10px; color:var(--ln-teal); font-family:'DM Mono',monospace; line-height:1.4;
+    border-left:2px solid var(--ln-teal);
+  }
+  .not-available {
+    background:rgba(220,38,38,0.04); border:1px dashed rgba(220,38,38,0.2);
+    border-radius:10px; padding:20px; text-align:center;
+  }
+  .na-icon { font-size:28px; margin-bottom:8px; opacity:0.5; }
+  .na-title { font-size:13px; font-weight:600; color:var(--text2); }
+  .na-desc { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; margin-top:4px; line-height:1.4; }
+
+  /* Section headers */
+  .report-category {
+    font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    color:var(--text2); padding:0 0 10px; margin:24px 0 14px;
+    border-bottom:1px solid var(--border); font-family:'DM Mono',monospace;
+  }
+  .report-category.teal { color:var(--ln-teal); }
+
+  /* ===== COMPARISON PAGE ===== */
+  .comparison-page { padding:40px; max-width:1200px; margin:0 auto; }
+  .comp-hero { text-align:center; margin-bottom:48px; }
+  .comp-hero h2 { font-family:'Libre Baskerville',serif; font-size:32px; margin-bottom:10px; }
+  .comp-hero h2 span { color:var(--ln-teal); font-style:italic; }
+  .comp-hero p { color:var(--text2); font-size:13px; max-width:500px; margin:0 auto; }
+
+  /* Comparison table */
+  .comp-table-wrap { overflow-x:auto; margin-bottom:48px; }
+  .comp-table {
+    width:100%; border-collapse:collapse; font-size:12px;
+  }
+  .comp-table th {
+    padding:14px 16px; text-align:left; font-weight:700; font-size:10px;
+    letter-spacing:1px; text-transform:uppercase; font-family:'DM Mono',monospace;
+    border-bottom:2px solid var(--border2);
+  }
+  .comp-table th.ln-col { color:var(--ln-teal); border-bottom-color:var(--ln-teal); }
+  .comp-table th.it-col { color:var(--it-color); }
+  .comp-table th.fn-col { color:var(--fn-color); }
+  .comp-table th.gpt-col { color:var(--gpt-color); }
+  .comp-table td {
+    padding:12px 16px; border-bottom:1px solid var(--border);
+    vertical-align:top; line-height:1.5;
+  }
+  .comp-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .comp-table .row-label { font-weight:600; color:var(--text); font-size:11px; }
+  .comp-table .row-sub { font-size:10px; color:var(--text3); font-family:'DM Mono',monospace; margin-top:2px; }
+  .check-yes { color:var(--ln-green); font-size:14px; }
+  .check-partial { color:var(--ln-gold); font-size:14px; }
+  .check-no { color:var(--text3); font-size:14px; }
+  .comp-val { font-size:11px; }
+  .comp-val.best { color:var(--ln-teal); font-weight:700; }
+  .comp-val.good { color:var(--text); }
+  .comp-val.limited { color:var(--text2); }
+  .comp-val.none { color:var(--text3); }
+
+  /* Score circles */
+  .score-circle {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:36px; height:36px; border-radius:50%; font-size:12px; font-weight:800;
+    font-family:'DM Mono',monospace;
+  }
+  .sc-a { background:linear-gradient(135deg,var(--ln-teal),var(--ln-blue)); color:#fff; }
+  .sc-b { background:rgba(249,115,22,0.2); color:var(--it-color); border:1px solid var(--it-color); }
+  .sc-c { background:rgba(99,102,241,0.2); color:var(--fn-color); border:1px solid var(--fn-color); }
+  .sc-d { background:rgba(116,170,156,0.15); color:var(--gpt-color); border:1px solid var(--gpt-color); }
+
+  /* Advantage cards */
+  .advantage-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:40px; }
+  .advantage-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:22px; position:relative; overflow:hidden;
+  }
+  .advantage-card.featured {
+    border-color:rgba(0,212,184,0.3);
+    background:linear-gradient(135deg, var(--card), rgba(0,158,138,0.05));
+  }
+  .advantage-number {
+    position:absolute; top:16px; right:16px; font-size:42px; font-weight:800;
+    color:rgba(0,212,184,0.06); font-family:'Libre Baskerville',serif; line-height:1;
+  }
+  .advantage-icon { font-size:24px; margin-bottom:12px; }
+  .advantage-title { font-size:14px; font-weight:700; margin-bottom:6px; }
+  .advantage-desc { font-size:11px; color:var(--text2); line-height:1.6; font-family:'DM Mono',monospace; }
+
+  /* Stats row */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:48px; }
+  .stat-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:20px; text-align:center;
+  }
+  .stat-number { font-size:32px; font-weight:800; color:var(--ln-teal); font-family:'Libre Baskerville',serif; }
+  .stat-label { font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; margin-top:4px; letter-spacing:0.5px; }
+
+  /* ===== MISC ===== */
+  .divider { height:1px; background:var(--border); margin:32px 0; }
+  .tag-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .tag { 
+    padding:3px 9px; border-radius:4px; font-size:10px;
+    font-family:'DM Mono',monospace; letter-spacing:0.5px;
+  }
+  .tag-available { background:rgba(16,185,129,0.12); color:var(--ln-green); border:1px solid rgba(16,185,129,0.2); }
+  .tag-unavailable { background:rgba(100,116,139,0.08); color:var(--text3); border:1px solid var(--border); text-decoration:line-through; }
+  .insight-callout {
+    background:linear-gradient(135deg, rgba(0,158,138,0.06), rgba(37,99,235,0.04));
+    border:1px solid rgba(0,212,184,0.2); border-radius:12px; padding:20px;
+    margin:24px 0;
+  }
+  .insight-callout .ic-label {
+    font-size:9px; font-family:'DM Mono',monospace; letter-spacing:2px;
+    color:var(--ln-teal); text-transform:uppercase; margin-bottom:8px;
+  }
+  .insight-callout .ic-text { font-size:13px; line-height:1.7; }
+  .exclusive-label {
+    display:inline-block; padding:2px 8px; background:rgba(0,212,184,0.1);
+    border:1px solid rgba(0,212,184,0.3); border-radius:3px;
+    font-size:9px; font-family:'DM Mono',monospace; color:var(--ln-teal); letter-spacing:1px;
+    vertical-align:middle; margin-left:6px;
+  }
+  .risk-indicator { display:flex; align-items:center; gap:6px; margin-top:8px; }
+  .risk-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .risk-dot.high { background:var(--ln-red); box-shadow:0 0 6px rgba(239,68,68,0.5); }
+  .risk-dot.moderate { background:var(--ln-gold); box-shadow:0 0 6px rgba(245,158,11,0.5); }
+  .risk-dot.optimal { background:var(--ln-green); box-shadow:0 0 6px rgba(16,185,129,0.5); }
+  .risk-text { font-size:10px; font-family:'DM Mono',monospace; color:var(--text2); }
+  .intro-step {
+    display:flex; align-items:flex-start; gap:14px; padding:16px;
+    background:var(--card); border-radius:10px; border:1px solid var(--border);
+  }
+  .step-num {
+    width:28px; height:28px; border-radius:50%; background:var(--ln-teal); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;
+    flex-shrink:0;
+  }
+  .step-text { font-size:12px; color:var(--text2); line-height:1.6; font-family:'DM Mono',monospace; }
+  .step-text strong { color:var(--text); }
+  .steps-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+
+  /* LLM comparison note */
+  .llm-note {
+    background:rgba(13,148,136,0.04); border:1px solid rgba(13,148,136,0.18);
+    border-radius:10px; padding:20px; margin-bottom:20px;
+  }
+  .section-title-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .section-title { font-family:'Libre Baskerville',serif; font-size:22px; }
+  .data-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .data-pill {
+    padding:4px 10px; border-radius:20px; font-size:9px; font-family:'DM Mono',monospace;
+    font-weight:700; letter-spacing:1px;
+  }
+  .dp-blood { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.2); }
+  .dp-dna { background:rgba(59,142,255,0.12); color:var(--ln-blue); border:1px solid rgba(59,142,255,0.2); }
+  .dp-meth { background:rgba(139,92,246,0.12); color:var(--ln-purple); border:1px solid rgba(139,92,246,0.2); }
+  .dp-micro { background:rgba(16,185,129,0.12); color:var(--ln-green); border:1px solid rgba(16,185,129,0.2); }
+  .dp-wear { background:rgba(245,158,11,0.12); color:var(--ln-gold); border:1px solid rgba(245,158,11,0.2); }
+  .dp-img { background:rgba(99,102,241,0.12); color:#818cf8; border:1px solid rgba(99,102,241,0.2); }
+  .animate-in { animation: fadeUp 0.5s ease forwards; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav class="top-nav">
+  <div class="logo">
+    <img src="data:image/png;base64,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" alt="Lifenome" style="height:44px; width:auto; display:block;">
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('onboard')">① Profile Setup</button>
+    <button class="nav-tab" id="tab-reports" onclick="showPage('reports')" style="opacity:0.4;pointer-events:none">② AI Reports</button>
+    <button class="nav-tab" onclick="showPage('compare')">③ Platform Comparison</button>
+  </div>
+  <div>
+    <span class="nav-badge">v6.0 LIVE</span>
+  </div>
+</nav>
+
+<!-- ======================================================== -->
+<!-- PAGE 1: ONBOARDING -->
+<!-- ======================================================== -->
+<div class="page active" id="page-onboard">
+  <div class="hero">
+    <div class="hero-eyebrow">Competitive Intelligence Demo</div>
+    <h1 class="hero-title">What Can Your Data <span>Actually Tell You?</span></h1>
+    <p class="hero-sub">Select Joan's available health data sources below to see what actionable insights Lifenome generates — versus what InsideTracker, Function Health, and ChatGPT can produce with the same data.</p>
+  </div>
+
+  <div class="profile-section">
+    <div class="steps-row">
+      <div class="intro-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Select data sources</strong> below. Joan has blood, DNA, methylation, microbiome, wearable, and imaging data available.</div>
+      </div>
+      <div class="intro-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Run analysis</strong> to see the personalized health indices and clinical reports each platform generates from Joan's data.</div>
+      </div>
+      <div class="intro-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Compare outputs</strong> — Lifenome's 249+ health indices vs. the limited insights competitors can generate.</div>
+      </div>
+    </div>
+
+    <!-- PROFILE HEADER -->
+    <div class="section-label">Patient Profile</div>
+    <div class="profile-header">
+      <div class="profile-avatar" style="background:none; border:2px solid var(--ln-teal); overflow:hidden; padding:0;"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QCURXhpZgAASUkqAAgAAAADAA4BAgBKAAAAMgAAABoBBQABAAAAfAAAABsBBQABAAAAhAAAAAAAAABoaXNwYW5pYyBhZHVsdCB3b21hbiBwb3J0cmFpdCBvbiB5ZWxsb3cgYmFja2dyb3VuZCBpbiBNZXhpY28gTGF0aW4gQW1lcmljYSwBAAABAAAALAEAAAEAAAD/4QXbaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/Pgo8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIj4KCTxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CgkJPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczpJcHRjNHhtcENvcmU9Imh0dHA6Ly9pcHRjLm9yZy9zdGQvSXB0YzR4bXBDb3JlLzEuMC94bWxucy8iICAgeG1sbnM6R2V0dHlJbWFnZXNHSUZUPSJodHRwOi8veG1wLmdldHR5aW1hZ2VzLmNvbS9naWZ0LzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGx1cz0iaHR0cDovL25zLnVzZXBsdXMub3JnL2xkZi94bXAvMS4wLyIgIHhtbG5zOmlwdGNFeHQ9Imh0dHA6Ly9pcHRjLm9yZy9zdGQvSXB0YzR4bXBFeHQvMjAwOC0wMi0yOS8iIHhtbG5zOnhtcFJpZ2h0cz0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3JpZ2h0cy8iIHBob3Rvc2hvcDpDcmVkaXQ9IkdldHR5IEltYWdlcy9pU3RvY2twaG90byIgR2V0dHlJbWFnZXNHSUZUOkFzc2V0SUQ9IjEzOTY1OTQzOTAiIHhtcFJpZ2h0czpXZWJTdGF0ZW1lbnQ9Imh0dHBzOi8vd3d3LmlzdG9ja3Bob3RvLmNvbS9sZWdhbC9saWNlbnNlLWFncmVlbWVudD91dG1fbWVkaXVtPW9yZ2FuaWMmYW1wO3V0bV9zb3VyY2U9Z29vZ2xlJmFtcDt1dG1fY2FtcGFpZ249aXB0Y3VybCIgcGx1czpEYXRhTWluaW5nPSJodHRwOi8vbnMudXNlcGx1cy5vcmcvbGRmL3ZvY2FiL0RNSS1QUk9ISUJJVEVELUVYQ0VQVFNFQVJDSEVOR0lORUlOREVYSU5HIiA+CjxkYzpjcmVhdG9yPjxyZGY6U2VxPjxyZGY6bGk+TWFyY29zIEVsaWh1IENhc3RpbGxvIFJhbWlyZXo8L3JkZjpsaT48L3JkZjpTZXE+PC9kYzpjcmVhdG9yPjxkYzpkZXNjcmlwdGlvbj48cmRmOkFsdD48cmRmOmxpIHhtbDpsYW5nPSJ4LWRlZmF1bHQiPmhpc3BhbmljIGFkdWx0IHdvbWFuIHBvcnRyYWl0IG9uIHllbGxvdyBiYWNrZ3JvdW5kIGluIE1leGljbyBMYXRpbiBBbWVyaWNhPC9yZGY6bGk+PC9yZGY6QWx0PjwvZGM6ZGVzY3JpcHRpb24+CjxwbHVzOkxpY2Vuc29yPjxyZGY6U2VxPjxyZGY6bGkgcmRmOnBhcnNlVHlwZT0nUmVzb3VyY2UnPjxwbHVzOkxpY2Vuc29yVVJMPmh0dHBzOi8vd3d3LmlzdG9ja3Bob3RvLmNvbS9waG90by9saWNlbnNlLWdtMTM5NjU5NDM5MC0/dXRtX21lZGl1bT1vcmdhbmljJmFtcDt1dG1fc291cmNlPWdvb2dsZSZhbXA7dXRtX2NhbXBhaWduPWlwdGN1cmw8L3BsdXM6TGljZW5zb3JVUkw+PC9yZGY6bGk+PC9yZGY6U2VxPjwvcGx1czpMaWNlbnNvcj4KCQk8L3JkZjpEZXNjcmlwdGlvbj4KCTwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InciPz4K/+0AslBob3Rvc2hvcCAzLjAAOEJJTQQEAAAAAACWHAFaAAMbJUccAlAAHU1hcmNvcyBFbGlodSBDYXN0aWxsbyBSYW1pcmV6HAJ4AEpoaXNwYW5pYyBhZHVsdCB3b21hbiBwb3J0cmFpdCBvbiB5ZWxsb3cgYmFja2dyb3VuZCBp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" alt="Joan Mitchell" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div>
+      <div>
+        <div class="profile-name">Joan Mitchell</div>
+        <div class="profile-meta">52 yrs • Female • Perimenopausal • NJ, USA</div>
+        <div class="profile-tags">
+          <span class="profile-tag tag-female">F / 52</span>
+          <span class="profile-tag tag-peri">Perimenopause</span>
+          <span class="profile-tag tag-risk">T2DM Family Hx</span>
+          <span class="profile-tag tag-risk">CVD Risk Factor</span>
+        </div>
+      </div>
+      <div style="margin-left:auto; text-align:right;">
+        <div style="font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; margin-bottom:4px;">AVAILABLE DATA SOURCES</div>
+        <div id="source-count-display" style="font-size:28px; font-weight:800; color:var(--ln-teal);">6 / 6</div>
+        <div style="font-size:10px; color:var(--text2); font-family:'DM Mono',monospace;">All sources selected</div>
+      </div>
+    </div>
+
+    <!-- DATA SOURCE SELECTION -->
+    <div class="section-label">Joan's Available Health Data — Select to Include</div>
+    <div class="data-sources-grid" id="data-sources-grid">
+
+      <!-- Blood Panel -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'blood')" data-source="blood">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">🩸</span>
+          <span class="ds-badge badge-blood">BLOOD PANEL</span>
+        </div>
+        <div class="ds-title">Advanced Blood Biomarkers</div>
+        <div class="ds-desc">62-marker comprehensive metabolic, lipid, hormone & inflammatory panel from Quest Diagnostics</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">HbA1c 6.1%</span>
+          <span class="ds-marker highlight">ApoB 98 mg/dL</span>
+          <span class="ds-marker highlight">hsCRP 2.8 mg/L</span>
+          <span class="ds-marker highlight">INSULIN 18 µIU</span>
+          <span class="ds-marker">ALB 4.1</span>
+          <span class="ds-marker">CREAT 0.9</span>
+          <span class="ds-marker">CYS-C 0.87</span>
+          <span class="ds-marker">GLUC 104</span>
+          <span class="ds-marker">HDL 52</span>
+          <span class="ds-marker">TRIG 168</span>
+          <span class="ds-marker">eGFR 82</span>
+          <span class="ds-marker">ALT 32</span>
+          <span class="ds-marker">VIT-D 24</span>
+          <span class="ds-marker">FERR 14</span>
+          <span class="ds-marker">+48 more</span>
+        </div>
+      </div>
+
+      <!-- DNA -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'dna')" data-source="dna">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">🧬</span>
+          <span class="ds-badge badge-dna">WHOLE GENOME</span>
+        </div>
+        <div class="ds-title">DNA & Polygenic Risk Scores</div>
+        <div class="ds-desc">700K+ SNP array + exome sequencing. 213 disease PGS, 184 wellbeing traits, pharmacogenomics panel</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">APOE ε3/ε4</span>
+          <span class="ds-marker highlight">MTHFR C677T</span>
+          <span class="ds-marker highlight">CVD PGS 82nd %ile</span>
+          <span class="ds-marker highlight">T2DM PGS 76th %ile</span>
+          <span class="ds-marker">CYP2C19 IM</span>
+          <span class="ds-marker">SLCO1B1 *5/*1</span>
+          <span class="ds-marker">VDR Taq1</span>
+          <span class="ds-marker">213 disease PGS</span>
+          <span class="ds-marker">184 wellbeing PGS</span>
+          <span class="ds-marker">193 PGx traits</span>
+        </div>
+      </div>
+
+      <!-- Methylation -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'meth')" data-source="meth">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">⚗️</span>
+          <span class="ds-badge badge-meth">METHYLATION</span>
+        </div>
+        <div class="ds-title">Epigenetic Clock Array</div>
+        <div class="ds-desc">850K CpG site methylation panel. Horvath, GrimAge, PhenoAge & DunedinPACE biological age clocks</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">GrimAge 56.4 yr</span>
+          <span class="ds-marker highlight">DunedinPACE 1.14</span>
+          <span class="ds-marker highlight">PhenoAge 54.8 yr</span>
+          <span class="ds-marker">Horvath 53.1 yr</span>
+          <span class="ds-marker">DNAmTL 6.8 kb</span>
+          <span class="ds-marker">EpiSmokEr low</span>
+          <span class="ds-marker">DNAm CRP 2.1</span>
+          <span class="ds-marker">850K CpG sites</span>
+        </div>
+      </div>
+
+      <!-- Microbiome -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'micro')" data-source="micro">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">🦠</span>
+          <span class="ds-badge badge-micro">MICROBIOME</span>
+        </div>
+        <div class="ds-title">Gut Shotgun Metagenomics</div>
+        <div class="ds-desc">Deep shotgun sequencing. Shannon diversity, bacterial taxa, functional pathway analysis</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">Shannon H 2.4</span>
+          <span class="ds-marker highlight">Akkermansia 0.3%</span>
+          <span class="ds-marker highlight">F:B ratio 2.8</span>
+          <span class="ds-marker">850 taxa</span>
+          <span class="ds-marker">Butyrate genes ↓</span>
+          <span class="ds-marker">LPS bacteria ↑</span>
+          <span class="ds-marker">86 bacterial taxa</span>
+          <span class="ds-marker">Functional genes</span>
+        </div>
+      </div>
+
+      <!-- Wearable -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'wear')" data-source="wear">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">⌚</span>
+          <span class="ds-badge badge-wear">WEARABLE</span>
+        </div>
+        <div class="ds-title">Oura Ring + Apple Watch</div>
+        <div class="ds-desc">90-day continuous physiological monitoring. HRV, VO₂max, sleep staging, activity & SpO₂</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">HRV 28ms (low)</span>
+          <span class="ds-marker highlight">VO₂max 26 mL/kg</span>
+          <span class="ds-marker highlight">RHR 72 bpm</span>
+          <span class="ds-marker">Deep sleep 14%</span>
+          <span class="ds-marker">REM 18%</span>
+          <span class="ds-marker">SpO₂ 96.2%</span>
+          <span class="ds-marker">Steps 5,800/d</span>
+          <span class="ds-marker">BP 128/82</span>
+        </div>
+      </div>
+
+      <!-- Imaging -->
+      <div class="data-source-card selected" onclick="toggleSource(this,'img')" data-source="img">
+        <div class="check-indicator">✓</div>
+        <div class="ds-header">
+          <span class="ds-icon">📱</span>
+          <span class="ds-badge badge-img">IMAGING</span>
+        </div>
+        <div class="ds-title">Smartphone Camera Analysis</div>
+        <div class="ds-desc">Lifenome-patented face/body AI imaging. Biological facial age, body composition, grip proxy</div>
+        <div class="ds-markers">
+          <span class="ds-marker highlight">Facial Age 57 yr</span>
+          <span class="ds-marker highlight">Body Fat 34%</span>
+          <span class="ds-marker highlight">Waist-Hip 0.86</span>
+          <span class="ds-marker">Muscle mass ↓</span>
+          <span class="ds-marker">Visceral fat ↑</span>
+          <span class="ds-marker">Periorbital aging</span>
+          <span class="ds-marker">Skin texture score</span>
+          <span class="ds-marker">Grip proxy ↓</span>
+        </div>
+      </div>
+
+    </div><!-- end data-sources-grid -->
+
+    <div class="action-bar">
+      <div class="selected-count">
+        <span id="sel-count">6</span> of 6 data sources selected • Joan's complete profile will be analyzed
+      </div>
+      <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()">
+        <span>⚡</span> Generate AI Reports Across All Platforms
+      </button>
+    </div>
+
+  </div><!-- end profile-section -->
+</div><!-- end page-onboard -->
+
+
+<!-- ======================================================== -->
+<!-- PAGE 2: REPORTS -->
+<!-- ======================================================== -->
+<div class="page" id="page-reports">
+  <div class="results-nav">
+    <button class="results-tab active" onclick="showReport('ln')">
+      <span class="platform-indicator pi-ln"></span>Lifenome AI Platform
+    </button>
+    <button class="results-tab" onclick="showReport('it')">
+      <span class="platform-indicator pi-it"></span>InsideTracker
+    </button>
+    <button class="results-tab" onclick="showReport('fn')">
+      <span class="platform-indicator pi-fn"></span>Function Health
+    </button>
+    <button class="results-tab" onclick="showReport('gpt')">
+      <span class="platform-indicator pi-gpt"></span>ChatGPT / LLM
+    </button>
+  </div>
+
+  <!-- -------- LIFENOME REPORT -------- -->
+  <div class="report-section active" id="report-ln">
+    <div class="report-platform-header">
+      <span class="platform-logo-pill pill-ln">🧬 LIFENOME AI</span>
+      <div>
+        <div class="platform-meta">249 Health Indices • 9 Active Data Sources • Nonlinear Biomarker Interactions</div>
+        <div class="platform-data-used" id="ln-data-pills"></div>
+      </div>
+    </div>
+
+    <div class="insight-callout">
+      <div class="ic-label">⚡ AI Summary — Joan, 52F, Perimenopause</div>
+      <div class="ic-text">Joan's multi-omics data reveals a <strong>convergent metabolic-inflammatory aging pattern</strong>. Her biological age is <strong>accelerated by 4.4 years</strong> via epigenetic clocks (GrimAge 56.4 vs. chronological 52), compounded by <strong>insulin resistance</strong> (HOMA-IR ~3.2), <strong>subclinical gut dysbiosis</strong> (Shannon H 2.4, Akkermansia 0.3%), and <strong>suboptimal cardiometabolic lipid profile</strong> (ApoB 98 in CVD-high-risk context). Her <strong>APOE ε3/ε4 genotype</strong> elevates late-onset Alzheimer's risk 3–4×, while <strong>MTHFR C677T heterozygosity</strong> impairs methylation — directly modifying epigenetic age trajectory. Lifenome identifies <strong>47 personalized indices with actionable intervention targets</strong> across longevity, menopause, cardiometabolic, and cognitive domains.</div>
+    </div>
+
+    <!-- LONGEVITY INDICES -->
+    <div class="report-category teal">🕐 BIOLOGICAL AGE & LONGEVITY — 12 Indices</div>
+    <div class="index-grid">
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🧫</span>
+          <div><div class="index-name">Epigenetic Biological Age</div><div class="index-vertical">LONGEVITY • METHYLATION</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>GrimAge: 56.4 yr</span><span class="val">+4.4 yrs accelerated</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:75%"></div></div>
+        </div>
+        <div class="index-finding">DunedinPACE 1.14 = aging 14% faster than chronological rate. PhenoAge 54.8. Horvath 53.1. EpiSmokEr score low (non-smoker confirmation).</div>
+        <div class="index-action">🎯 Target: Reduce GrimAge acceleration via aerobic exercise (↑VO₂max), dietary methyl donors (folate, B12 — critical given MTHFR), and insulin optimization.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">HIGH PRIORITY — primary aging accelerator identified</div></div>
+      </div>
+
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">💉</span>
+          <div><div class="index-name">Blood-Based Biological Age</div><div class="index-vertical">LONGEVITY • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>InnerAge Equivalent</span><span class="val">55.8 yr (+3.8)</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:68%"></div></div>
+        </div>
+        <div class="index-finding">18-biomarker ML algorithm (trained on 42K+ samples). Elevated HbA1c, low HDL, elevated TG, low Vit D, and elevated ferritin (in female) are primary drivers.</div>
+        <div class="index-action">🎯 Each 1% HbA1c reduction = ~1.5 yr biological age improvement. Vit D supplementation to 50+ ng/mL is first-order intervention.</div>
+        <div class="risk-indicator"><div class="risk-dot moderate"></div><div class="risk-text">MODERATE-HIGH — multiple modifiable drivers</div></div>
+      </div>
+
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">📸</span>
+          <div><div class="index-name">Facial Biological Age</div><div class="index-vertical">LONGEVITY • IMAGING</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Camera-Derived</span><span class="val">57 yr (+5 over chrono)</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:72%"></div></div>
+        </div>
+        <div class="index-finding">Periorbital aging score elevated. Skin texture index: 38/100. Facial symmetry adequate. Correlates with methylation clock acceleration — consistent signal across modalities.</div>
+        <div class="index-action">🎯 Lifenome-patented imaging biomarker — not available on any competitor platform. Cross-validates epigenetic age signal.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">ACCELERATED — consistent with GrimAge signal</div></div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">❤️</span>
+          <div><div class="index-name">Physiological Age (HRV · VO₂Max)</div><div class="index-vertical">LONGEVITY • WEARABLE</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>HRV + VO₂Max composite</span><span class="val">59 yr (+7)</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:80%"></div></div>
+        </div>
+        <div class="index-finding">HRV RMSSD 28ms = below 20th %ile for age. VO₂max 26 mL/kg/min = 8th %ile (F/52 norm: ~30). Resting HR 72 bpm. BP 128/82 mmHg.</div>
+        <div class="index-action">🎯 VO₂max is the #1 modifiable longevity predictor. 12-week zone 2 protocol (3×/week, 45 min) targets VO₂max improvement to ≥30.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">HIGHEST PRIORITY longevity intervention target</div></div>
+      </div>
+
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🧪</span>
+          <div><div class="index-name">Polygenic Longevity Score</div><div class="index-vertical">LONGEVITY • DNA</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>184-trait wellbeing PGS</span><span class="val">44th percentile</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:44%"></div></div>
+        </div>
+        <div class="index-finding">APOE ε3/ε4: 3–4× elevated Alzheimer's risk, statin sensitivity risk (SLCO1B1). Below-median genetic longevity potential — makes modifiable factors MORE critical.</div>
+        <div class="index-action">🎯 APOE4 carriers benefit most from aggressive lifestyle: Mediterranean diet, aerobic exercise, sleep optimization, cognitive stimulation.</div>
+        <div class="risk-indicator"><div class="risk-dot moderate"></div><div class="risk-text">GENETIC VULNERABILITY — modifiable factors critical</div></div>
+      </div>
+
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🦠</span>
+          <div><div class="index-name">Microbiome Diversity Longevity Index</div><div class="index-vertical">LONGEVITY • MICROBIOME</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Shannon H diversity</span><span class="val">2.4 (Optimal: >3.0)</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:40%"></div></div>
+        </div>
+        <div class="index-finding">Firmicutes:Bacteroidetes ratio 2.8 (elevated). Akkermansia 0.3% (depleted — optimal >1%). Centenarians show H >3.5. Low diversity = accelerated inflammaging.</div>
+        <div class="index-action">🎯 Berberine + high-fiber prebiotics + targeted probiotic (Akkermansia muciniphila) to restore diversity. Expect 90-day timeline to remeasure.</div>
+        <div class="risk-indicator"><div class="risk-dot moderate"></div><div class="risk-text">DYSBIOSIS — contributing to inflammaging burden</div></div>
+      </div>
+    </div>
+
+    <!-- CARDIOMETABOLIC -->
+    <div class="report-category">💓 CARDIOMETABOLIC — 8 Indices</div>
+    <div class="index-grid">
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🩺</span>
+          <div><div class="index-name">ApoB / Lp(a) Cardiovascular Age</div><div class="index-vertical">LONGEVITY • BLOOD + DNA</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>ApoB 98 mg/dL</span><span class="val">Elevated — CVD genetic risk context</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:62%"></div></div>
+        </div>
+        <div class="index-finding">ApoB 98 mg/dL in a CVD PGS 82nd %ile patient = elevated atherogenic risk even with "normal" LDL. Nonlinear interaction: ApoB × inflammation × insulin resistance amplifies risk 2.4×.</div>
+        <div class="index-action">🎯 Target ApoB &lt;70 mg/dL for her genetic risk profile. MTHFR status affects statin metabolism — check CYP2C19. Consider rosuvastatin (SLCO1B1 *1/*5 intermediate risk).</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">HIGH — genetic × phenotypic convergence</div></div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🔥</span>
+          <div><div class="index-name">Inflammaging Index</div><div class="index-vertical">LONGEVITY • BLOOD + MICROBIOME</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>hsCRP 2.8 mg/L</span><span class="val">Elevated (optimal &lt;1.0)</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:70%"></div></div>
+        </div>
+        <div class="index-finding">hsCRP 2.8 (high-risk zone) + gut dysbiosis (LPS-producing bacteria ↑) + visceral fat elevation = systemic inflammaging pattern. Microbiome is a primary driver here.</div>
+        <div class="index-action">🎯 Anti-inflammatory protocol: omega-3s (2g EPA+DHA/day), curcumin (bioavailability optimized), gut restoration protocol. Target hsCRP &lt;1.0 mg/L.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">HIGH — gut-driven systemic inflammation</div></div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🍬</span>
+          <div><div class="index-name">Metabolic System Age</div><div class="index-vertical">LONGEVITY • BLOOD + WEAR</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>HOMA-IR ~3.2</span><span class="val">MetaboAge: 59 yr (+7)</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:78%"></div></div>
+        </div>
+        <div class="index-finding">HbA1c 6.1% (prediabetes range), fasting insulin 18 µIU/mL, glucose 104 mg/dL. T2DM PGS 76th %ile compounds risk. Wearable shows sedentary pattern (5,800 steps/d).</div>
+        <div class="index-action">🎯 Prediabetes reversal protocol: 150 min/week moderate cardio + resistance training. Target HbA1c &lt;5.7% within 6 months. Consider CGM monitoring.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">PREDIABETES PATTERN — genetic × lifestyle convergence</div></div>
+      </div>
+    </div>
+
+    <!-- MENOPAUSE -->
+    <div class="report-category">🌸 MENOPAUSE MANAGEMENT — 7 Indices</div>
+    <div class="index-grid">
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🌡️</span>
+          <div><div class="index-name">Cardiometabolic Transition Risk</div><div class="index-vertical">MENOPAUSE • BLOOD + DNA</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Composite score</span><span class="val">72/100 — Elevated</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:72%"></div></div>
+        </div>
+        <div class="index-finding">Perimenopause + rising ApoB + insulin resistance = ~2.5× increased 10-yr CVD risk vs. pre-menopausal baseline. Estrogen withdrawal removes cardioprotective effect.</div>
+        <div class="index-action">🎯 Discuss MHT timing with clinician (Window of Opportunity within 10 yrs of menopause). Prioritize cardiometabolic optimization immediately.</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">😴</span>
+          <div><div class="index-name">Sleep Architecture Disruption Index</div><div class="index-vertical">MENOPAUSE • WEARABLE</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Deep 14% / REM 18%</span><span class="val">Suboptimal</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:55%"></div></div>
+        </div>
+        <div class="index-finding">Perimenopause commonly reduces deep sleep 15–20%. Joan's deep sleep 14% (optimal >20%) + REM 18% (optimal >20%) impairs cellular repair and memory consolidation.</div>
+        <div class="index-action">🎯 Sleep optimization: avoid blue light 2hr pre-bed, CBT-i techniques, evening magnesium glycinate 200mg. MHT may restore sleep architecture.</div>
+      </div>
+    </div>
+
+    <!-- COGNITIVE / BRAIN -->
+    <div class="report-category">🧠 COGNITIVE & BRAIN HEALTH — 6 Indices</div>
+    <div class="index-grid">
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🧬</span>
+          <div><div class="index-name">APOE4 Alzheimer's Risk Profile</div><div class="index-vertical">PRECISION MEDICINE • DNA + BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>APOE ε3/ε4 heterozygous</span><span class="val">3–4× population risk</span></div>
+          <div class="score-bar"><div class="score-fill fill-red" style="width:85%"></div></div>
+        </div>
+        <div class="index-finding">APOE4 + perimenopause = critical window. Estrogen loss accelerates Aβ accumulation in APOE4 carriers. Low Vit D (24 ng/mL) further amplifies neuroinflammation risk.</div>
+        <div class="index-action">🎯 URGENT: Lifestyle dementia prevention protocol. Aerobic exercise (proven Aβ clearance), Vit D to 60 ng/mL, omega-3 DHA 2g/day, cognitive reserve activities. Consider p-tau217 test.</div>
+        <div class="risk-indicator"><div class="risk-dot high"></div><div class="risk-text">HIGH GENETIC RISK — actionable prevention window NOW</div></div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🧪</span>
+          <div><div class="index-name">MTHFR Methylation Impairment</div><div class="index-vertical">PRECISION MEDICINE • DNA + BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>C677T heterozygous</span><span class="val">~30% reduced MTHFR activity</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:55%"></div></div>
+        </div>
+        <div class="index-finding">Reduced 5-MTHF conversion → elevated homocysteine risk → accelerates epigenetic aging, CVD risk, and cognitive decline. Critical in APOE4 context.</div>
+        <div class="index-action">🎯 Methylfolate (5-MTHF) 400–800 µg/day (NOT folic acid). Methylcobalamin B12. Monitor homocysteine — target &lt;8 µmol/L.</div>
+        <div class="risk-indicator"><div class="risk-dot moderate"></div><div class="risk-text">PHARMACOGENOMIC — affects nutrient & drug metabolism</div></div>
+      </div>
+    </div>
+
+    <!-- PHARMACOGENOMICS -->
+    <div class="report-category">💊 PHARMACOGENOMICS — 5 Indices</div>
+    <div class="index-grid">
+      <div class="index-card premium animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">💊</span>
+          <div><div class="index-name">Statin Response & Safety Profile</div><div class="index-vertical">PHARMACOGENOMICS • DNA</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>SLCO1B1 *1/*5</span><span class="val">Intermediate myopathy risk</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:50%"></div></div>
+        </div>
+        <div class="index-finding">SLCO1B1 *5 allele → reduced hepatic statin uptake → elevated plasma exposure → increased myopathy risk. Rosuvastatin preferred over simvastatin. CYP2C19 IM status also affects some statins.</div>
+        <div class="index-action">🎯 If statin indicated for ApoB management: prescribe rosuvastatin 10–20mg (lowest SLCO1B1 interaction). Monitor CK, myalgias. Avoid simvastatin 80mg.</div>
+      </div>
+    </div>
+
+    <div class="insight-callout" style="border-color:rgba(59,142,255,0.3); background:rgba(59,142,255,0.05);">
+      <div class="ic-label" style="color:var(--ln-blue);">📊 Total Lifenome Output for Joan's Profile</div>
+      <div class="ic-text">Using all 6 data sources, Lifenome generates <strong>47 actionable health indices</strong> across 8 verticals, with <strong>nonlinear biomarker interactions</strong> (e.g., ApoB × insulin resistance × gut inflammation = 2.4× risk amplification), <strong>pharmacogenomic guidance</strong>, and a <strong>cross-validated multi-modal biological age panel</strong>. Competitor platforms below cannot access methylation data, microbiome data, or imaging biomarkers — limiting their analysis to blood and/or basic DNA.</div>
+    </div>
+  </div>
+
+  <!-- -------- INSIDETRACKER REPORT -------- -->
+  <div class="report-section" id="report-it">
+    <div class="report-platform-header">
+      <span class="platform-logo-pill pill-it">InsideTracker</span>
+      <div>
+        <div class="platform-meta">Up to 48 Blood Biomarkers • 261 SNP DNA add-on (38 wellness traits only) • Wearable Sync</div>
+        <div class="platform-data-used">Processes: Blood ✓ | DNA (limited) ✓ | Wearable ✓ | Methylation ✗ | Microbiome ✗ | Imaging ✗</div>
+      </div>
+    </div>
+
+    <div class="llm-note" style="background:rgba(249,115,22,0.05); border-color:rgba(249,115,22,0.2);">
+      <div style="font-size:11px; color:var(--it-color); font-family:'DM Mono',monospace; letter-spacing:1px; margin-bottom:6px;">⚠ INSIDETRACKER DATA SCOPE</div>
+      <div style="font-size:12px; color:var(--text2); line-height:1.6;">InsideTracker analyzes up to <strong>48 blood biomarkers</strong> across 10 healthspan categories. DNA add-on analyzes <strong>261 SNPs for 38 wellness traits</strong> only (no disease PGS, no PGx). Does <strong>not</strong> process methylation data, microbiome data, or imaging. No nonlinear biomarker interaction modeling. Wearable integration (Apple Health, Oura, Garmin) provides activity/sleep context but doesn't generate physiological age scores.</div>
+    </div>
+
+    <div class="report-category">INSIDETRACKER OUTPUTS FROM JOAN'S BLOOD + DNA + WEARABLE</div>
+    <div class="index-grid">
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🔢</span>
+          <div><div class="index-name">InnerAge 2.0</div><div class="index-vertical">BIOLOGICAL AGE • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Blood-based age</span><span class="val">~55.8 yr (est)</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:65%"></div></div>
+        </div>
+        <div class="index-finding">Calculated from subset of the 48 blood biomarkers. Similar to Lifenome's blood biological age, but no epigenetic validation, no imaging cross-check, and no methylation clock.</div>
+        <div class="index-action">Action plan: personalized food & supplement recommendations for suboptimal biomarkers. No genetic pharmacogenomics guidance.</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">❤️</span>
+          <div><div class="index-name">Heart Health Score</div><div class="index-vertical">CARDIOVASCULAR • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Lipid + CRP panel</span><span class="val">Suboptimal</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:55%"></div></div>
+        </div>
+        <div class="index-finding">Flags ApoB 98, hsCRP 2.8, TG 168 as suboptimal. Does NOT integrate CVD PGS (82nd %ile) or SLCO1B1 statin pharmacogenomics. No nonlinear risk amplification model.</div>
+        <div class="index-action">Recommends omega-3 foods, reduced saturated fat. No genetic risk stratification or medication guidance.</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🍬</span>
+          <div><div class="index-name">Metabolism Score</div><div class="index-vertical">METABOLIC • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Glucose + HbA1c + Insulin</span><span class="val">Suboptimal</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:60%"></div></div>
+        </div>
+        <div class="index-finding">HbA1c 6.1% flagged as pre-diabetes range. Insulin 18 noted. Does NOT know T2DM PGS 76th %ile — cannot contextualize genetic risk multiplier.</div>
+        <div class="index-action">Standard dietary recommendations. No GLP-1 candidacy assessment. No T2DM genetic risk stratification.</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🧬</span>
+          <div><div class="index-name">DNA Add-on: 38 Wellness Traits</div><div class="index-vertical">GENETICS • 261 SNPs</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Wellness traits only</span><span class="val">Limited scope</span></div>
+          <div class="score-bar"><div class="score-fill fill-blue" style="width:38%"></div></div>
+        </div>
+        <div class="index-finding">Reports on 38 wellness traits (e.g., cholesterol tendency, athletic type, caffeine metabolism). Does NOT include disease PGS, APOE, pharmacogenomics, MTHFR clinical significance, or longevity PGS panel.</div>
+        <div class="index-action">Basic genetic predisposition report. No APOE4 Alzheimer's risk flagging. No pharmacogenomic drug-gene interactions.</div>
+      </div>
+    </div>
+
+    <div class="not-available animate-in">
+      <div class="na-icon">🚫</div>
+      <div class="na-title">Data InsideTracker Cannot Process for Joan</div>
+      <div class="na-desc">
+        Methylation / Epigenetic Age Clocks (GrimAge, DunedinPACE) — <strong>Not Available</strong><br>
+        Microbiome Analysis — <strong>Not Available</strong><br>
+        Smartphone Imaging (Facial Age, Body Composition) — <strong>Not Available</strong><br>
+        Disease PGS (213 conditions) — <strong>Not Available</strong><br>
+        Pharmacogenomics (193 PGx traits) — <strong>Not Available</strong><br>
+        Nonlinear Biomarker Interaction Modeling — <strong>Not Available</strong><br>
+        <br>
+        <em>InsideTracker misses Joan's APOE4 status, GrimAge 4.4-year acceleration, gut dysbiosis contribution to inflammaging, SLCO1B1 statin risk, and MTHFR methylation impairment — all actionable findings Lifenome surfaces.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- -------- FUNCTION HEALTH REPORT -------- -->
+  <div class="report-section" id="report-fn">
+    <div class="report-platform-header">
+      <span class="platform-logo-pill pill-fn">Function Health</span>
+      <div>
+        <div class="platform-meta">160+ Blood Lab Tests • MRI/CT Scans (add-on) • Limited Wearable Integration • No DNA/Epigenetics/Microbiome</div>
+        <div class="platform-data-used">Processes: Blood ✓ (deepest panel) | MRI Add-on ✓ | Wearable Partial | DNA ✗ | Methylation ✗ | Microbiome ✗</div>
+      </div>
+    </div>
+
+    <div class="llm-note" style="background:rgba(99,102,241,0.05); border-color:rgba(99,102,241,0.25);">
+      <div style="font-size:11px; color:var(--fn-color); font-family:'DM Mono',monospace; letter-spacing:1px; margin-bottom:6px;">ℹ FUNCTION HEALTH DATA SCOPE</div>
+      <div style="font-size:12px; color:var(--text2); line-height:1.6;">Function Health offers the <strong>deepest blood panel</strong> (~160+ labs including heavy metals, autoimmunity, thyroid, hormones). They can add MRI/CT scans for organ imaging. However, they do <strong>not</strong> process DNA, pharmacogenomics, methylation epigenetics, microbiome, or smartphone imaging data. Analysis is primarily descriptive lab interpretation — limited AI-driven index generation or nonlinear biomarker interaction modeling.</div>
+    </div>
+
+    <div class="report-category">FUNCTION HEALTH OUTPUTS FROM JOAN'S BLOOD (+ CLINICIAN NOTES)</div>
+    <div class="index-grid">
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🩸</span>
+          <div><div class="index-name">Metabolic Health Panel</div><div class="index-vertical">METABOLISM • BLOOD (160+ LABS)</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Comprehensive metabolic</span><span class="val">Multiple suboptimal flags</span></div>
+          <div class="score-bar"><div class="score-fill fill-yellow" style="width:60%"></div></div>
+        </div>
+        <div class="index-finding">Function's 160+ panel is highly comprehensive. Flags HbA1c prediabetes, elevated TG, ApoB, hsCRP, low Vit D, low ferritin. Clinician notes provide interpretation. No genetic risk contextualization.</div>
+        <div class="index-action">Clinician-authored protocol recommendations. Nutrient supplementation, lifestyle changes. No pharmacogenomics guidance for statin prescribing.</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🏥</span>
+          <div><div class="index-name">Hormones & Thyroid (Perimenopause)</div><div class="index-vertical">HORMONES • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Estradiol, FSH, TSH, T3/T4</span><span class="val">Full panel — good</span></div>
+          <div class="score-bar"><div class="score-fill fill-blue" style="width:70%"></div></div>
+        </div>
+        <div class="index-finding">Function tests estradiol, progesterone, FSH, LH, TSH, free T3/T4 — excellent for perimenopausal workup. However, no genetic context for HRT metabolism (CYP450 status) or APOE4 HRT timing recommendations.</div>
+        <div class="index-action">Clinician notes on perimenopause status. No gene-hormone interaction analysis (e.g., MTHFR × progesterone metabolism).</div>
+      </div>
+
+      <div class="index-card animate-in">
+        <div class="index-card-header">
+          <span class="index-icon">🔬</span>
+          <div><div class="index-name">Heavy Metals Panel</div><div class="index-vertical">TOXICOLOGY • BLOOD</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Mercury, Lead, Arsenic</span><span class="val">Included standard</span></div>
+          <div class="score-bar"><div class="score-fill fill-blue" style="width:65%"></div></div>
+        </div>
+        <div class="index-finding">Function's Heavy Metal & Autoimmune panels are genuine advantages over InsideTracker. Mercury, lead included. Can add arsenic, aluminum. Lifenome's platform also includes this index when blood data is provided.</div>
+        <div class="index-action">Function strength: Autoimmune surveillance (ANA, TPO Ab, anti-CCP) also included — catches subclinical autoimmunity. Lifenome integrates this with genetic PGS for autoimmune conditions.</div>
+      </div>
+    </div>
+
+    <div class="not-available animate-in">
+      <div class="na-icon">🚫</div>
+      <div class="na-title">Data Function Health Cannot Process for Joan</div>
+      <div class="na-desc">
+        DNA Polygenic Risk Scores (disease, longevity, wellbeing) — <strong>Not Available</strong><br>
+        Pharmacogenomics (CYP450, SLCO1B1 statin risk) — <strong>Not Available</strong><br>
+        Epigenetic / Methylation Age Clocks — <strong>Not Available</strong><br>
+        Microbiome Metagenomics Analysis — <strong>Not Available</strong><br>
+        Smartphone Imaging (Facial Age, Body Comp) — <strong>Not Available</strong><br>
+        Nonlinear Multi-Omics Interaction Modeling — <strong>Not Available</strong><br>
+        <br>
+        <em>Function Health provides the deepest blood panel of the competitors but operates as a descriptive lab service with clinician notes, not a multi-omics AI analytics engine. Joan's APOE4 status, GrimAge acceleration, gut dysbiosis, and pharmacogenomic statin risk remain invisible.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- -------- GPT / LLM REPORT -------- -->
+  <div class="report-section" id="report-gpt">
+    <div class="report-platform-header">
+      <span class="platform-logo-pill pill-gpt">ChatGPT / General LLM</span>
+      <div>
+        <div class="platform-meta">No Personalization Engine • No Reference Ranges • No Longitudinal Tracking • General Knowledge Only</div>
+        <div class="platform-data-used">Processes: Manual text input ✓ | Uploaded PDFs ✓ | No clinical validation | No structured biomarker database</div>
+      </div>
+    </div>
+
+    <div class="llm-note">
+      <div style="font-size:11px; color:var(--gpt-color); font-family:'DM Mono',monospace; letter-spacing:1px; margin-bottom:6px;">⚠ LLM LIMITATIONS FOR HEALTH ANALYTICS</div>
+      <div style="font-size:12px; color:var(--text2); line-height:1.6;">ChatGPT, Claude, or similar LLMs can process text inputs and discuss health data at a general level. However: (1) no personalized <strong>optimal zones</strong> calibrated to Joan's age/sex/activity; (2) no <strong>clinical validation</strong> or regulatory compliance; (3) no <strong>longitudinal tracking</strong>; (4) cannot integrate structured multi-omics data streams; (5) outputs <strong>generic text</strong>, not actionable structured reports; (6) subject to hallucination on biomarker interpretations; (7) no nonlinear interaction modeling.</div>
+    </div>
+
+    <div class="report-category">SIMULATED LLM OUTPUT: "Analyze my blood results and DNA"</div>
+
+    <div class="index-card animate-in" style="margin-bottom:16px;">
+      <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text2); line-height:1.8; padding:4px; background:#f8fafc; border-radius:8px; padding:16px;">
+        <div style="color:var(--gpt-color); margin-bottom:8px; font-weight:700;">💬 ChatGPT Response (simulated):</div>
+        "Looking at your bloodwork, a few things stand out: Your HbA1c of 6.1% is in the pre-diabetes range (5.7–6.4%), so you'll want to speak with your doctor about this. Your hsCRP of 2.8 mg/L suggests some inflammation — reducing processed foods and exercising more can help. Your Vitamin D at 24 ng/mL is on the lower side; many doctors recommend supplementing to reach 40–60 ng/mL. Your ApoB is slightly elevated for optimal cardiovascular health.
+        <br><br>
+        Regarding your APOE ε3/ε4 status, you may have elevated Alzheimer's risk — lifestyle factors like exercise and a Mediterranean diet are often recommended. Your MTHFR C677T variant means you may benefit from methylfolate rather than folic acid.
+        <br><br>
+        <em>Note: This is general information and not medical advice. Please consult your healthcare provider for personalized recommendations.</em>"
+      </div>
+    </div>
+
+    <div class="not-available animate-in">
+      <div class="na-icon">🤖</div>
+      <div class="na-title">What LLMs Cannot Do — The Critical Gaps</div>
+      <div class="na-desc">
+        ✗ No <strong>personalized optimal zones</strong> (Joan's HbA1c "suboptimal" vs. absolute reference range is different)<br>
+        ✗ No <strong>biological age calculation</strong> — cannot compute InnerAge, GrimAge acceleration, or DunedinPACE from data<br>
+        ✗ No <strong>nonlinear interaction modeling</strong> — misses ApoB × insulin resistance × gut inflammation compounding<br>
+        ✗ No <strong>disease PGS interpretation</strong> — can discuss APOE but can't compute 213-condition polygenic risk<br>
+        ✗ No <strong>pharmacogenomic drug guidance</strong> — cannot output specific statin recommendations given SLCO1B1<br>
+        ✗ No <strong>longitudinal tracking</strong> — no baseline, no trend analysis, no intervention monitoring<br>
+        ✗ No <strong>clinical-grade reference databases</strong> — optimal ranges pulled from general training data, not calibrated to age/sex norms<br>
+        ✗ No <strong>microbiome or methylation integration</strong> — would need structured interpretation layer<br>
+        ✗ No <strong>regulatory compliance</strong> (HIPAA, SOC2) — not suitable for clinical deployment<br>
+        <br>
+        <em>LLMs are a communication layer, not an analytics engine. Lifenome's clinical AI + PGS infrastructure provides the structured, validated, nonlinear analysis that general LLMs fundamentally cannot.</em>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-reports -->
+
+
+<!-- ======================================================== -->
+<!-- PAGE 3: COMPARISON -->
+<!-- ======================================================== -->
+<div class="page" id="page-compare">
+  <div class="comparison-page">
+
+    <div class="comp-hero">
+      <h2>Lifenome vs. the <span>Competition</span></h2>
+      <p>A comprehensive capability comparison across data sources, analytical depth, and clinical intelligence</p>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number">5,168</div>
+        <div class="stat-label">Unique Biomarkers Processed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">249</div>
+        <div class="stat-label">Health Indices Generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">14</div>
+        <div class="stat-label">Health Verticals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">9</div>
+        <div class="stat-label">Data Source Types</div>
+      </div>
+    </div>
+
+    <!-- MAIN COMPARISON TABLE -->
+    <div class="section-label">Feature-by-Feature Comparison</div>
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width:220px;">Capability</th>
+            <th class="ln-col">🧬 Lifenome</th>
+            <th class="it-col">InsideTracker</th>
+            <th class="fn-col">Function Health</th>
+            <th class="gpt-col">ChatGPT / LLM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="row-label">Blood Biomarker Analysis</div><div class="row-sub">Depth & interpretation</div></td>
+            <td><span class="comp-val best">✓ 229 blood markers + nonlinear interactions</span></td>
+            <td><span class="comp-val good">✓ Up to 48 biomarkers</span></td>
+            <td><span class="comp-val best">✓ 160+ lab tests (deepest blood panel)</span></td>
+            <td><span class="comp-val limited">⚠ Text input only, no structured analysis</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">DNA / Polygenic Risk Scores</div><div class="row-sub">Disease & trait PGS</div></td>
+            <td><span class="comp-val best">✓ 213 disease PGS + 184 wellbeing + 193 PGx</span></td>
+            <td><span class="comp-val limited">⚠ 261 SNPs, 38 wellness traits only</span></td>
+            <td><span class="comp-val none">✗ No DNA/PGS processing</span></td>
+            <td><span class="comp-val limited">⚠ Can discuss general genetics, no PGS computation</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Epigenetic / Methylation Clocks</div><div class="row-sub">GrimAge, DunedinPACE, PhenoAge</div></td>
+            <td><span class="comp-val best">✓ 4 validated clocks + 850K CpG sites</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val none">✗ Cannot compute epigenetic age</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Microbiome Analysis</div><div class="row-sub">Shotgun metagenomics</div></td>
+            <td><span class="comp-val best">✓ 86 bacterial taxa, diversity, functional genes</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val none">✗ Cannot process microbiome data</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Smartphone Camera Imaging</div><div class="row-sub">Facial age, body comp, grip</div></td>
+            <td><span class="comp-val best">✓ Patented — facial age, body fat, visceral fat</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val limited">⚠ MRI/CT add-on ($499+) — clinical imaging only</span></td>
+            <td><span class="comp-val none">✗ Cannot perform imaging analysis</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Wearable Integration</div><div class="row-sub">HRV, VO₂max, sleep, activity</div></td>
+            <td><span class="comp-val best">✓ 32 wearable markers → physiological age indices</span></td>
+            <td><span class="comp-val good">✓ Apple Health, Oura, Garmin, Fitbit</span></td>
+            <td><span class="comp-val limited">⚠ Connected apps (limited analytics)</span></td>
+            <td><span class="comp-val none">✗ No integration</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Pharmacogenomics (PGx)</div><div class="row-sub">Drug-gene interactions, statin safety</div></td>
+            <td><span class="comp-val best">✓ 193 PGx traits — CYP2D6, CYP2C19, SLCO1B1</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val none">✗ Not available</span></td>
+            <td><span class="comp-val limited">⚠ General guidance only, no PGx computation</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Health Indices Generated</div><div class="row-sub">Composite actionable scores</div></td>
+            <td><span class="comp-val best">✓ 249 indices across 14 verticals</span></td>
+            <td><span class="comp-val good">✓ 10 healthspan category scores</span></td>
+            <td><span class="comp-val limited">⚠ Per-biomarker flags + clinician notes</span></td>
+            <td><span class="comp-val none">✗ No structured index generation</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Nonlinear Biomarker Interactions</div><div class="row-sub">Multi-omics interaction modeling</div></td>
+            <td><span class="comp-val best">✓ ML-driven cross-domain amplification scoring</span></td>
+            <td><span class="comp-val none">✗ Linear biomarker analysis only</span></td>
+            <td><span class="comp-val none">✗ Per-biomarker interpretation</span></td>
+            <td><span class="comp-val none">✗ No computational modeling</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Biological Age — Multi-Modal</div><div class="row-sub">Blood + epi + imaging + physiological</div></td>
+            <td><span class="comp-val best">✓ 5 biological age modalities cross-validated</span></td>
+            <td><span class="comp-val limited">⚠ InnerAge (blood only)</span></td>
+            <td><span class="comp-val none">✗ No biological age score</span></td>
+            <td><span class="comp-val none">✗ Cannot compute biological age</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">White-Label B2B Platform</div><div class="row-sub">API for enterprise/partner integration</div></td>
+            <td><span class="comp-val best">✓ Full white-label API + branded apps</span></td>
+            <td><span class="comp-val none">✗ Consumer-only, no white-label</span></td>
+            <td><span class="comp-val none">✗ Consumer-only, no white-label</span></td>
+            <td><span class="comp-val limited">⚠ API access, but no health analytics infrastructure</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Disease-Specific Verticals</div><div class="row-sub">Menopause, GLP-1, Skin, Fertility</div></td>
+            <td><span class="comp-val best">✓ 14 specialized verticals, 249 domain indices</span></td>
+            <td><span class="comp-val limited">⚠ General health + women's hormones add-on</span></td>
+            <td><span class="comp-val limited">⚠ General health — no specialized AI verticals</span></td>
+            <td><span class="comp-val none">✗ No domain specialization</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Pricing Model</div><div class="row-sub">Access and cost</div></td>
+            <td><span class="comp-val best">B2B API licensing — scales with partners</span></td>
+            <td><span class="comp-val limited">$189–$600+ per test (consumer)</span></td>
+            <td><span class="comp-val limited">$365/yr membership (consumer)</span></td>
+            <td><span class="comp-val good">$20/mo ChatGPT Plus</span></td>
+          </tr>
+          <tr>
+            <td><div class="row-label">Regulatory Compliance</div><div class="row-sub">HIPAA, SOC2, clinical standards</div></td>
+            <td><span class="comp-val best">✓ HIPAA compliant + SOC2</span></td>
+            <td><span class="comp-val best">✓ HIPAA + SOC2 Type II</span></td>
+            <td><span class="comp-val best">✓ Quest Diagnostics clinical standards</span></td>
+            <td><span class="comp-val none">✗ Not HIPAA compliant for PHI</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- OVERALL SCORES -->
+    <div class="section-label">Platform Intelligence Scorecard</div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:48px;">
+      <div class="stat-card" style="border-color:rgba(0,212,184,0.3);">
+        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+          <div class="score-circle sc-a">A+</div>
+        </div>
+        <div style="font-weight:700; font-size:14px; color:var(--ln-teal); margin-bottom:4px;">Lifenome</div>
+        <div style="font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; line-height:1.5;">Full multi-omics intelligence. 9 data sources. 249 indices. Nonlinear modeling. Only platform covering all dimensions.</div>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+          <div class="score-circle sc-b">B</div>
+        </div>
+        <div style="font-weight:700; font-size:14px; color:var(--it-color); margin-bottom:4px;">InsideTracker</div>
+        <div style="font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; line-height:1.5;">Good blood + basic DNA. Limited to 48 markers. No epigenetics, microbiome, or imaging. 10 category scores.</div>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+          <div class="score-circle sc-c">B-</div>
+        </div>
+        <div style="font-weight:700; font-size:14px; color:var(--fn-color); margin-bottom:4px;">Function Health</div>
+        <div style="font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; line-height:1.5;">Deepest blood panel, clinical credibility. No genomics, epigenetics, or microbiome. Descriptive rather than predictive AI.</div>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+          <div class="score-circle sc-d">C</div>
+        </div>
+        <div style="font-weight:700; font-size:14px; color:var(--gpt-color); margin-bottom:4px;">ChatGPT / LLM</div>
+        <div style="font-size:10px; color:var(--text2); font-family:'DM Mono',monospace; line-height:1.5;">Useful conversational layer. No PGS computation, no validated indices, no longitudinal tracking, no clinical compliance.</div>
+      </div>
+    </div>
+
+    <!-- LIFENOME EXCLUSIVE ADVANTAGES -->
+    <div class="section-label">Lifenome's Exclusive Platform Advantages</div>
+    <div class="advantage-grid">
+      <div class="advantage-card featured">
+        <div class="advantage-number">01</div>
+        <div class="advantage-icon">🧫</div>
+        <div class="advantage-title">Multi-Modal Biological Age</div>
+        <div class="advantage-desc">The only platform cross-validating biological age across 5 modalities simultaneously: blood, epigenetic clocks (GrimAge, DunedinPACE), smartphone imaging, physiological (HRV/VO₂max), and actuarial. Convergent signals = highest confidence interventions.</div>
+      </div>
+      <div class="advantage-card featured">
+        <div class="advantage-number">02</div>
+        <div class="advantage-icon">⚡</div>
+        <div class="advantage-title">Nonlinear Biomarker Interactions</div>
+        <div class="advantage-desc">Competitors analyze biomarkers independently. Lifenome's ML engine models how ApoB × insulin resistance × gut-derived LPS × genetic CVD PGS amplify risk nonlinearly — surface effects invisible to linear analysis. This is the clinical insight gap competitors can't close.</div>
+      </div>
+      <div class="advantage-card featured">
+        <div class="advantage-number">03</div>
+        <div class="advantage-icon">🧬</div>
+        <div class="advantage-title">Full-Stack Genomics Intelligence</div>
+        <div class="advantage-desc">700K+ SNPs → 213 disease PGS + 184 wellbeing traits + 193 pharmacogenomic traits. InsideTracker's DNA add-on covers 38 wellness traits. Function Health has no DNA. Lifenome provides APOE, MTHFR, statin risk, cancer PGS — the clinically actionable layer.</div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-number">04</div>
+        <div class="advantage-icon">📱</div>
+        <div class="advantage-title">Patented Smartphone Imaging</div>
+        <div class="advantage-desc">Lifenome-patented facial biological age, body composition, and grip strength proxy from smartphone camera. No lab required. Enables continuous biological age monitoring between blood draws. Zero competitor equivalent exists.</div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-number">05</div>
+        <div class="advantage-icon">🦠</div>
+        <div class="advantage-title">Microbiome Integration</div>
+        <div class="advantage-desc">86 bacterial taxa + Shannon diversity + functional pathway analysis (butyrate, SCFA, tryptophan metabolism) integrated into longevity, inflammaging, and weight loss indices. Neither InsideTracker nor Function Health processes microbiome data in their health intelligence engine.</div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-number">06</div>
+        <div class="advantage-icon">🏢</div>
+        <div class="advantage-title">White-Label B2B API Platform</div>
+        <div class="advantage-desc">Lifenome is the only platform built for B2B white-label deployment. MedSpas, health systems, genomics companies, and wellness platforms can embed Lifenome's intelligence engine under their own brand via API. InsideTracker and Function Health are consumer-only.</div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-number">07</div>
+        <div class="advantage-icon">💊</div>
+        <div class="advantage-title">Pharmacogenomics for Clinical Decisions</div>
+        <div class="advantage-desc">193-trait PGx panel covering CYP2D6/2C19/3A4 drug metabolism, SLCO1B1 statin myopathy risk, VDR vitamin D absorption, and supplement interaction risk. Enables clinicians to make precision prescribing decisions. No competitor in this comparison offers PGx.</div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-number">08</div>
+        <div class="advantage-icon">🌸</div>
+        <div class="advantage-title">14 Specialized Vertical AI Engines</div>
+        <div class="advantage-desc">Domain-specific AI for Menopause Management, GLP-1 Weight Loss, Elite Athlete Performance, Precision Dermatology, Hair Loss Solutions, Fertility, and 8 more. Each vertical integrates all data sources through a specialized clinical lens. No competitor offers this vertical depth.</div>
+      </div>
+    </div>
+
+    <div class="insight-callout" style="margin-top:40px;">
+      <div class="ic-label">🏆 Bottom Line for Acquisition & Partnership Positioning</div>
+      <div class="ic-text">Lifenome is not competing with InsideTracker or Function Health for the consumer bloodwork market. Lifenome is the <strong>intelligence infrastructure layer</strong> that enables those platforms — and any health, genomics, or wellness company — to build multi-omics AI analytics. With 5,168 unique biomarkers, 249 health indices, 9 data source types, and a white-label API, Lifenome operates at a fundamentally different abstraction level. The comparison isn't "better biomarker coverage" — it's <strong>platform intelligence vs. point solutions</strong>.</div>
+    </div>
+
+  </div>
+</div><!-- end page-compare -->
+
+
+<script>
+  const selectedSources = new Set(['blood','dna','meth','micro','wear','img']);
+
+  function toggleSource(card, source) {
+    if (selectedSources.has(source)) {
+      selectedSources.delete(source);
+      card.classList.remove('selected');
+    } else {
+      selectedSources.add(source);
+      card.classList.add('selected');
+    }
+    document.getElementById('sel-count').textContent = selectedSources.size;
+    document.getElementById('source-count-display').textContent = selectedSources.size + ' / 6';
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = selectedSources.size === 0;
+  }
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function showReport(platform) {
+    document.querySelectorAll('.report-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.results-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('report-' + platform).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function runAnalysis() {
+    // Update LN data pills based on selected sources
+    const pillMap = {
+      blood: '<span class="data-pill dp-blood">BLOOD</span>',
+      dna: '<span class="data-pill dp-dna">DNA</span>',
+      meth: '<span class="data-pill dp-meth">METHYLATION</span>',
+      micro: '<span class="data-pill dp-micro">MICROBIOME</span>',
+      wear: '<span class="data-pill dp-wear">WEARABLE</span>',
+      img: '<span class="data-pill dp-img">IMAGING</span>'
+    };
+    const pills = [...selectedSources].map(s => pillMap[s]).join(' ');
+    const el = document.getElementById('ln-data-pills');
+    if(el) el.innerHTML = 'Active data: ' + pills;
+
+    // Enable reports tab
+    const reportsTab = document.getElementById('tab-reports');
+    reportsTab.style.opacity = '1';
+    reportsTab.style.pointerEvents = 'auto';
+
+    // Switch to reports page
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-reports').classList.add('active');
+    reportsTab.classList.add('active');
+    window.scrollTo(0,0);
+
+    // Animate score bars
+    setTimeout(() => {
+      document.querySelectorAll('.score-fill').forEach((bar, i) => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = w; }, i * 60);
+      });
+    }, 100);
+  }
+
+  // Initialize score bars at 0 for animation
+  document.querySelectorAll('.score-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.dataset.target = w;
+  });
+</script>
+</body>
+</html>
