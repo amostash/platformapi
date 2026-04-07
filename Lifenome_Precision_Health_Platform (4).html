@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lifenome Precision Health Optimization Platform</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--teal:#00b4a0;--tl:#00d4bc;--cyan:#29b5d8;
+  --mag:#c62a8a;--bg:#ffffff;--w:#fff;--gr:#8596a8;--lg:#dde4ec;
+  --amber:#92400e;--amberL:#f59e0b;--emerald:#059669;--violet:#7c3aed;
+}
+body{font-family:"DM Sans",sans-serif;background:#fff;color:var(--navy);min-height:100vh;padding-bottom:80px}
+#nav{background:#fff;border-bottom:1px solid var(--lg);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(26,39,68,.06)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 1.2rem;display:flex;align-items:center;gap:.8rem}
+.logo-area{display:flex;align-items:center;padding:.4rem 0;flex-shrink:0}
+.logo-area img{height:96px;width:auto}
+.nav-tabs{display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-btn{padding:.42rem .72rem;border-radius:7px;border:none;cursor:pointer;white-space:nowrap;background:transparent;color:var(--gr);font-weight:600;font-size:.75rem;font-family:inherit;transition:all .15s}
+.nav-btn.active{background:var(--navy);color:#fff}
+.nav-btn:hover:not(.active){background:var(--lg)}
+#hamburger{width:34px;height:34px;border-radius:7px;border:1.5px solid var(--lg);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0}
+#hamburger:hover{background:var(--lg)}
+#hamburger span{display:block;width:15px;height:2px;background:var(--navy);border-radius:1px;transition:all .22s}
+#hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#hamburger.open span:nth-child(2){opacity:0}
+#hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+#navMenu{position:fixed;top:51px;right:0;width:255px;max-height:calc(100vh - 60px);overflow-y:auto;background:#fff;border:1px solid var(--lg);border-radius:0 0 0 14px;box-shadow:-3px 6px 24px rgba(26,39,68,.13);z-index:9999;display:none}
+#navMenu.open{display:block}
+.menu-item{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--lg);font-size:.8rem;font-weight:600;color:var(--navy)}
+.menu-item:hover{background:var(--lg)}
+.menu-item.mactive{background:rgba(0,180,160,.08);color:var(--teal)}
+.menu-num{width:20px;height:20px;border-radius:5px;background:var(--lg);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0}
+.menu-item.mactive .menu-num{background:var(--teal);color:#fff}
+.page{max-width:1200px;margin:0 auto;padding:1.8rem 1.2rem;display:none}
+.page.active{display:block}
+#bnav{background:#fff;border-top:1px solid var(--lg);padding:.85rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;bottom:0;z-index:50}
+.dots{display:flex;gap:.35rem}
+.dot{width:7px;height:7px;border-radius:3.5px;background:var(--lg);cursor:pointer;transition:all .2s}
+.dot.active{width:18px;background:var(--teal)}
+.btn{padding:.45rem 1.1rem;border-radius:7px;border:none;font-weight:600;font-size:.82rem;font-family:inherit;cursor:pointer;transition:all .15s}
+.btn-p{background:var(--navy);color:#fff}
+.btn-p:disabled{background:var(--lg);color:var(--gr);cursor:default}
+.btn-o{background:#fff;color:var(--navy);border:1px solid var(--lg)}
+.btn-o:disabled{color:var(--lg);cursor:default}
+.card{background:#fff;border-radius:14px;padding:1.3rem;box-shadow:0 3px 18px rgba(26,39,68,.07)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr}}
+h2{font-family:"Playfair Display",serif;font-size:1.6rem;font-weight:900;color:var(--navy);margin-bottom:.45rem}
+h3{font-family:"Playfair Display",serif;font-size:1.15rem;font-weight:900;color:var(--navy);margin-bottom:.65rem}
+.sub{color:var(--gr);margin-bottom:1.3rem;font-size:.9rem}
+.mb1{margin-bottom:.9rem}.mb2{margin-bottom:1.8rem}
+.tag{display:inline-block;border-radius:20px;padding:2px 9px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+.sv{font-family:"Playfair Display",serif;font-size:2.5rem;font-weight:900;line-height:1}
+.sl{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-top:5px}
+.ss{color:var(--gr);font-size:.74rem;margin-top:3px}
+.step-btn{padding:.5rem 1rem;border-radius:28px;border:none;cursor:pointer;white-space:nowrap;font-weight:700;font-size:.78rem;font-family:inherit;transition:all .2s;background:var(--lg);color:var(--navy)}
+.journey-month{flex:1;min-width:0;padding:.5rem .2rem;text-align:center;font-size:.6rem;font-weight:700;color:#fff;cursor:default}
+.os-tab-content{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.cover-hero{background:linear-gradient(135deg,#fff 0%,#f4f8fb 100%);border-radius:18px;padding:3rem 2.5rem;margin-bottom:1.8rem;position:relative;overflow:hidden;border:1px solid rgba(0,180,160,.12)}
+.cover-hero::before{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(0,180,160,.08) 0%,transparent 70%);pointer-events:none}
+.cover-hero::after{content:"";position:absolute;left:-60px;bottom:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(41,181,216,.06) 0%,transparent 70%);pointer-events:none}
+.cover-logo{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem}
+.cover-logo img{height:90px;width:auto}
+.cover-logo-divider{width:1px;height:60px;background:var(--lg)}
+.cover-logo-tagline{font-size:.9rem;color:var(--gr);font-weight:500;line-height:1.5}
+.cover-hero h1{font-family:"Playfair Display",serif;font-size:2.8rem;font-weight:900;line-height:1.1;color:var(--navy);margin-bottom:.9rem}
+.cover-hero h1 span{color:var(--teal)}
+.cover-hero .desc{color:#5a6a80;font-size:1rem;max-width:580px;line-height:1.7;margin-bottom:1.6rem}
+.cover-badges{display:flex;flex-wrap:wrap;gap:.6rem}
+.cb{background:#f0faf9;border:1px solid rgba(0,180,160,.25);border-radius:8px;padding:.38rem .85rem;color:var(--navy);font-size:.78rem;font-weight:600}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#243566 60%,#1e4a6e 100%);border-radius:18px;padding:2.2rem 2rem;margin-bottom:1.8rem;position:relative;overflow:hidden}
+.hero h1{font-family:"Playfair Display",serif;font-size:2.1rem;font-weight:900;line-height:1.1;color:#fff;margin:.7rem 0 .5rem}
+.hero h1 span{color:var(--tl)}
+.hero p{color:#a8c4d8;font-size:.92rem;max-width:500px;margin-bottom:1.1rem}
+.orb1{position:absolute;right:-50px;top:-50px;width:260px;height:260px;border-radius:50%;background:rgba(0,180,160,.12);pointer-events:none}
+.orb2{position:absolute;right:30px;bottom:-70px;width:180px;height:180px;border-radius:50%;background:rgba(41,181,216,.08);pointer-events:none}
+.hbadges{display:flex;flex-wrap:wrap;gap:.6rem}
+.hb{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:.35rem .8rem;color:#fff;font-size:.78rem;font-weight:600}
+canvas{max-width:100%!important}
+</style>
+</head>
+<body>
+<div id="nav">
+  <div class="nav-inner">
+    <div class="logo-area">
+      <img src="data:image/png;base64,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" alt="Lifenome"/>
+    </div>
+    <div class="nav-tabs" id="navTabs"></div>
+    <div id="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div id="navMenu"></div>
+<div class="page active" id="page-0">
+  <div class="cover-hero">
+    <div class="cover-logo">
+      <img src="data:image/png;base64,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" alt="Lifenome"/>
+      <div class="cover-logo-divider"></div>
+      <div class="cover-logo-tagline">Precision Health<br/>Optimization Platform</div>
+    </div>
+    <h1>The Intelligent<br/><span>Precision Health OS</span></h1>
+    <p class="desc">Lifenome&#39;s end-to-end precision health optimization platform transforms how health and wellness organizations deliver personalized, outcomes-driven health programs — from biomarker assessment to behavioral change at scale. Powered by AI trained on 600,000+ members, the platform enables any health-focused organization to offer clinical-grade, personalized health journeys to their members and customers.</p>
+    <div class="cover-badges">
+      <div class="cb">&#x1F9EC; Multi-Omics AI Engine</div>
+      <div class="cb">&#x1F4F1; Member App + Kiosk</div>
+      <div class="cb">&#x1F52C; 600K+ Member Training Dataset</div>
+      <div class="cb">&#x1F4CA; 16 Specialized Health Programs</div>
+      <div class="cb">&#x1F3E5; HIPAA-Compliant Architecture</div>
+      <div class="cb">&#x1F310; SaaS White-Label Licensing</div>
+      <div class="cb">&#x1F6CD; Precision Marketplace</div>
+      <div class="cb">&#x1F4C8; Outcomes-Tracked Longitudinally</div>
+    </div>
+  </div>
+  <h2 class="mb1">Platform at a Glance</h2>
+  <div class="g4 mb2" id="atGlanceStats"></div>
+  <div class="card mb2">
+    <h2 style="margin-bottom:.3rem">Precision Health Operating System</h2>
+    <p class="sub" style="margin-bottom:1.1rem">The industry's most comprehensive end-to-end health optimization platform &#8212; from biomarker collection to behavioral change at scale.</p>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem" id="osTabs"></div>
+    <div id="osTabContent" class="os-tab-content"></div>
+  </div>
+  <div class="card mb2">
+    <h2 class="mb1">Core Value Propositions</h2>
+    <div class="g2" id="valueProps"></div>
+  </div>
+  <div class="card">
+    <h2 class="mb1">Market Opportunity</h2>
+    <div class="g4" style="gap:1rem" id="marketStats"></div>
+  </div>
+</div>
+<div class="page" id="page-1">
+  <div class="hero">
+    <div class="orb1"></div><div class="orb2"></div>
+    <span class="tag" style="background:rgba(41,181,216,.2);color:var(--tl);border:1px solid rgba(41,181,216,.3)">Member Experience</span>
+    <h1>The 18-Month<br/><span>Member Health Journey</span></h1>
+    <p>From first assessment through goal achievement &#8212; a comprehensive, personalized health transformation across three distinct phases.</p>
+    <div class="hbadges">
+      <div class="hb">&#x1F680; Phase 1: On-Boarding (M1&#8211;2)</div>
+      <div class="hb">&#x1F504; Phase 2: Continuous Engagement (M3&#8211;15)</div>
+      <div class="hb">&#x1F3C6; Phase 3: Goal Achievement (M16&#8211;18)</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.3rem" id="phaseTabRow"></div>
+  <div class="card mb2" id="phaseContent"></div>
+  <div class="card">
+    <h3>Full 18-Month Timeline</h3>
+    <div style="overflow-x:auto;padding-bottom:.5rem">
+      <div style="display:flex;min-width:700px;gap:2px;margin-bottom:.6rem;border-radius:8px;overflow:hidden" id="journeyTimeline"></div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.78rem;margin-top:.7rem">
+      <span style="display:flex;align-items:center;gap:.3rem"><div style="width:12px;height:12px;border-radius:3px;background:#29b5d8"></div>Phase 1: On-Boarding (M1&#8211;2)</span>
+      <span style="display:flex;align-items:center;gap:.3rem"><div style="width:12px;height:12px;border-radius:3px;background:#00b4a0"></div>Phase 2: Continuous Engagement (M3&#8211;15)</span>
+      <span style="display:flex;align-items:center;gap:.3rem"><div style="width:12px;height:12px;border-radius:3px;background:#1a2744"></div>Phase 3: Goal Achievement (M16&#8211;18)</span>
+      <span style="display:flex;align-items:center;gap:.3rem"><div style="width:12px;height:12px;border-radius:3px;background:#c62a8a"></div>Post-Goal: Maintenance or New Goals</span>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-2">
+  <div class="hero" style="background:linear-gradient(135deg,#0f2027 0%,#203a43 50%,#1a3a4a 100%)">
+    <div class="orb1" style="background:rgba(0,180,160,.15)"></div><div class="orb2" style="background:rgba(41,181,216,.1)"></div>
+    <span class="tag" style="background:rgba(0,180,160,.2);color:var(--tl);border:1px solid rgba(0,180,160,.3)">Full Platform Suite</span>
+    <h1>Lifenome Platform<br/><span>Detailed Offering</span></h1>
+    <p style="color:#a8c4d8">Everything available to members and partner organizations &#8212; assessments, subscriptions, programs, marketplace, data services, and B2B offerings.</p>
+  </div>
+  <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.3rem" id="offeringTabs">
+    <button class="step-btn" id="offTab0" onclick="showOfferingTab(0)">&#x1F52C; Assessments</button>
+    <button class="step-btn" id="offTab1" onclick="showOfferingTab(1)">&#x1F4E6; Subscription Tiers</button>
+    <button class="step-btn" id="offTab2" onclick="showOfferingTab(2)">&#x1F3CB; Health Programs</button>
+    <button class="step-btn" id="offTab3" onclick="showOfferingTab(3)">&#x1F6CD; Marketplace</button>
+    <button class="step-btn" id="offTab4" onclick="showOfferingTab(4)">&#x1F9EC; Data &amp; Testing</button>
+    <button class="step-btn" id="offTab5" onclick="showOfferingTab(5)">&#x1F3E2; Partner Services</button>
+  </div>
+  <div id="offeringContent"></div>
+</div>
+<div class="page" id="page-3">
+  <div class="hero" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)">
+    <div class="orb1" style="background:rgba(198,42,138,.12)"></div><div class="orb2" style="background:rgba(79,70,229,.1)"></div>
+    <span class="tag" style="background:rgba(198,42,138,.2);color:#f472b6;border:1px solid rgba(198,42,138,.3)">Technical Architecture</span>
+    <h1>Platform<br/><span style="color:#f472b6">Architecture</span></h1>
+    <p style="color:#a8c4d8">A modular, cloud-native, HIPAA-compliant precision health OS &#8212; five interconnected layers from member-facing interfaces to secure data infrastructure.</p>
+    <div class="hbadges">
+      <div class="hb" style="background:rgba(198,42,138,.2)">Cloud-Native</div>
+      <div class="hb" style="background:rgba(198,42,138,.2)">HIPAA-Compliant</div>
+      <div class="hb" style="background:rgba(198,42,138,.2)">White-Label Ready</div>
+      <div class="hb" style="background:rgba(198,42,138,.2)">20M+ Member Scale</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.3rem" id="archTabs">
+    <button class="step-btn" id="archTab0" onclick="showArchTab(0)">&#x1F3D7; System Overview</button>
+    <button class="step-btn" id="archTab1" onclick="showArchTab(1)">&#x1F4F1; Member Layer</button>
+    <button class="step-btn" id="archTab2" onclick="showArchTab(2)">&#x1F9E0; AI &amp; Analytics Engine</button>
+    <button class="step-btn" id="archTab3" onclick="showArchTab(3)">&#x1F517; Integration Layer</button>
+    <button class="step-btn" id="archTab4" onclick="showArchTab(4)">&#x1F512; Data &amp; Security</button>
+  </div>
+  <div id="archContent"></div>
+</div>
+<div id="bnav">
+  <button class="btn btn-o" id="prevBtn" onclick="navigate(-1)" disabled>&#8592; Back</button>
+  <div class="dots" id="dotRow"></div>
+  <button class="btn btn-p" id="nextBtn" onclick="navigate(1)">Next &#8594;</button>
+</div>
+<script>
+var C = {
+  navy:"#1a2744", teal:"#00b4a0", tl:"#00d4bc", cyan:"#29b5d8",
+  mag:"#c62a8a", gr:"#8596a8", lg:"#dde4ec",
+  amber:"#92400e", emerald:"#059669", violet:"#7c3aed", indigo:"#4f46e5"
+};
+var PAGES = ["Home: Overview", "Member Journey", "Detailed Offering", "Platform Architecture"];
+var cur = 0;
+
+function toggleNav() {
+  document.getElementById("hamburger").classList.toggle("open");
+  document.getElementById("navMenu").classList.toggle("open");
+}
+
+function navigate(dir) {
+  var n = cur + dir;
+  if (n < 0 || n >= PAGES.length) return;
+  showPage(n);
+}
+
+function showPage(i) {
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("active"); });
+  document.getElementById("page-" + i).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(function(b, j) { b.classList.toggle("active", j === i); });
+  document.querySelectorAll(".menu-item").forEach(function(b, j) { b.classList.toggle("mactive", j === i); });
+  document.querySelectorAll(".dot").forEach(function(d, j) { d.classList.toggle("active", j === i); });
+  document.getElementById("prevBtn").disabled = (i === 0);
+  document.getElementById("nextBtn").disabled = (i === PAGES.length - 1);
+  cur = i;
+  document.getElementById("navMenu").classList.remove("open");
+  document.getElementById("hamburger").classList.remove("open");
+  if (i === 0) initOverview();
+  if (i === 1) initJourney();
+  if (i === 2) initDetailedOffering();
+  if (i === 3) initPlatformArch();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+(function() {
+  var tabs = document.getElementById("navTabs");
+  var menu = document.getElementById("navMenu");
+  var dots = document.getElementById("dotRow");
+  PAGES.forEach(function(p, i) {
+    var b = document.createElement("button");
+    b.className = "nav-btn" + (i === 0 ? " active" : "");
+    b.textContent = p;
+    b.onclick = (function(idx) { return function() { showPage(idx); }; })(i);
+    tabs.appendChild(b);
+    var m = document.createElement("div");
+    m.className = "menu-item" + (i === 0 ? " mactive" : "");
+    var mn = document.createElement("div"); mn.className = "menu-num"; mn.textContent = i + 1;
+    var mt = document.createTextNode(" " + p);
+    m.appendChild(mn); m.appendChild(mt);
+    m.onclick = (function(idx) { return function() { showPage(idx); }; })(i);
+    menu.appendChild(m);
+    var d = document.createElement("div");
+    d.className = "dot" + (i === 0 ? " active" : "");
+    d.onclick = (function(idx) { return function() { showPage(idx); }; })(i);
+    dots.appendChild(d);
+  });
+  initOverview();
+})();
+
+var p0done = false;
+function initOverview() {
+  if (p0done) return; p0done = true;
+
+  // At a Glance stats
+  var stats = [
+    {v:"600K+", l:"Members Trained On", s:"Proprietary AI training dataset", c:C.teal},
+    {v:"16", l:"Health Programs", s:"Goal-specific AI programs", c:C.cyan},
+    {v:"5,000+", l:"Biomarkers Tracked", s:"Multi-omics data architecture", c:C.mag},
+    {v:"18mo", l:"Member Journey", s:"Longitudinal health transformation", c:C.violet}
+  ];
+  var ag = document.getElementById("atGlanceStats");
+  ag.innerHTML = stats.map(function(s) {
+    return '<div class="card" style="text-align:center;border:1px solid ' + s.c + '20">' +
+      '<div class="sv" style="color:' + s.c + '">' + s.v + '</div>' +
+      '<div class="sl">' + s.l + '</div>' +
+      '<div class="ss">' + s.s + '</div></div>';
+  }).join("");
+
+  // OS Tabs
+  var osData = [
+    {ic:"&#x1F52C;", label:"Testing & Data", col:C.teal,
+     title:"Multi-Omics Assessment Stack",
+     desc:"Physio scan, blood panels, DNA, microbiome, epigenetics &#8212; a complete biological picture powering all personalization.",
+     items:["VitalAge&#x2122; physiological age scan (PPG, body composition, BP, SpO&#x2082;)",
+            "Quarterly clinical blood panels &#8212; 40+ metabolic, hormonal &amp; cardiovascular markers",
+            "DNA nutrition &amp; fitness genomics &#8212; lifetime report",
+            "Microbiome analysis linked to nutrition protocols",
+            "Epigenetic age clock &#8212; methylation-based biological age",
+            "Continuous wearable monitoring: Apple Watch, Oura, Garmin, WHOOP"]},
+    {ic:"&#x1F4CA;", label:"Goal Dashboards", col:C.cyan,
+     title:"16-Profile Personalized Dashboards",
+     desc:"Each of 16 health goal profiles gets a custom dashboard showing biomarker progress, program adherence, and VitalAge&#x2122; trajectory.",
+     items:["Real-time VitalAge&#x2122; score with 18-month target trajectory",
+            "Goal-specific biomarker tiles (HbA1c for metabolic, HRV for performance)",
+            "Weekly program plan with completion tracking",
+            "Wearable data integration &#8212; sleep, recovery, activity rings",
+            "Marketplace recommendations tied to specific biomarker gaps",
+            "Outcome forecasting &#8212; projected 6- and 18-month improvements"]},
+    {ic:"&#x1F3CB;", label:"Health Programs", col:C.navy,
+     title:"AI-Generated Personalized Programs",
+     desc:"16 specialized programs adapted in real-time to member biomarkers, activity, and progress &#8212; covering every major health domain.",
+     items:["GLP-1 &amp; Weight Management &#8212; muscle preservation, adherence coaching",
+            "Elite Athletic Performance &#8212; periodized training, VO&#x2082; max, HRV-guided",
+            "Healthy Aging 50+ &#8212; sarcopenia prevention, bone density, cognition",
+            "Mental Performance &amp; Stress &#8212; HRV biofeedback, breathwork, sleep",
+            "Longevity &amp; Healthspan &#8212; senolytics, NAD+ protocols, methylation tracking",
+            "Chronic Disease Prevention &#8212; diabetes, cardiovascular, metabolic syndrome"]},
+    {ic:"&#x1F6CD;", label:"Marketplace", col:C.mag,
+     title:"Precision-Matched Marketplace",
+     desc:"Products and services are recommended only when biomarker evidence supports likely benefit &#8212; creating trust and high conversion.",
+     items:["Personalized supplement stacks matched to blood panel deficiencies",
+            "Peptides &amp; longevity therapeutics via licensed medical partners",
+            "Wearables and fitness tech matched to program needs",
+            "Health coaching, RD, and therapy placement fees",
+            "Meal delivery matched to active nutrition protocol",
+            "Skincare &amp; recovery tools linked to skin health assessment"]},
+    {ic:"&#x1F4C8;", label:"Wellbeing Data", col:C.emerald,
+     title:"Three-Tier Data Architecture",
+     desc:"The most valuable real-world wellness dataset &#8212; behavioral, clinical, and multi-omics data linked longitudinally over 18+ months.",
+     items:["Tier 1: Behavioral &amp; wearables &#8212; app engagement, activity, adherence",
+            "Tier 2: Biomarker + behavioral &#8212; blood panels + physio + outcomes",
+            "Tier 3: Multi-omics full profile &#8212; T1+T2+DNA+microbiome+epigenetics",
+            "De-identified research access for academic and NIH partners (free)",
+            "Commercial licensing to pharma, insurers, and employers",
+            "Real-world evidence reports for institutional clients"]},
+    {ic:"&#x1F465;", label:"Member Engagement", col:C.violet,
+     title:"Behavioral Engagement Engine",
+     desc:"Community challenges, AI-timed nudges, milestone celebrations, and social accountability keep members on track.",
+     items:["Monthly community challenges &#8212; step goals, biological age reduction, nutrition streaks",
+            "AI-timed behavioral nudges based on engagement patterns and biomarker alerts",
+            "Progress milestone celebrations and shareable achievement badges",
+            "Group competitions across partner network locations",
+            "Program adherence reminders tied to wearable data patterns",
+            "Post-goal transition to advanced goal tiers or maintenance programs"]}
+  ];
+
+  var otEl = document.getElementById("osTabs");
+  osData.forEach(function(t, i) {
+    var b = document.createElement("button");
+    b.className = "step-btn";
+    b.innerHTML = t.ic + " " + t.label;
+    b.onclick = (function(idx) { return function() { showOsTab(idx); }; })(i);
+    otEl.appendChild(b);
+  });
+  showOsTab(0);
+
+  // Value Props
+  var vps = [
+    {col:C.teal, icon:"&#x1F3AF;", title:"For Health &amp; Wellness Operators",
+     pts:["Transform generic offerings into precision health programs",
+          "New revenue: subscriptions, marketplace, data licensing",
+          "Population health insights that improve program efficacy",
+          "Competitive differentiation in crowded wellness markets"]},
+    {col:C.cyan, icon:"&#x1F9EC;", title:"For Members",
+     pts:["Personalized health programs anchored in real biomarker data",
+          "Clear 18-month goal journey with measurable outcomes",
+          "One platform for assessment, program, community, and products",
+          "Continuous AI guidance that adapts as their health evolves"]},
+    {col:C.mag, icon:"&#x1F3E5;", title:"For Health Systems &amp; Insurers",
+     pts:["Prevention layer that reduces downstream medical costs",
+          "Population health data for risk stratification and intervention",
+          "PMPM contract opportunity tied to demonstrated outcomes",
+          "FHIR-compliant integration with EHR systems"]},
+    {col:C.violet, icon:"&#x1F52C;", title:"For Research &amp; Pharma",
+     pts:["Most comprehensive real-world wellness dataset available",
+          "Three-tier data access: behavioral, clinical, multi-omics",
+          "Longitudinal cohort tracking over 18+ months",
+          "RWE report generation for drug development and trial recruitment"]}
+  ];
+  document.getElementById("valueProps").innerHTML = vps.map(function(v) {
+    return '<div style="border-radius:14px;padding:1.3rem;border:2px solid ' + v.col + '20;background:' + v.col + '04">' +
+      '<div style="font-size:1.6rem;margin-bottom:.5rem">' + v.icon + '</div>' +
+      '<h3 style="color:' + v.col + ';margin-bottom:.7rem">' + v.title + '</h3>' +
+      v.pts.map(function(p) {
+        return '<div style="display:flex;gap:.5rem;font-size:.82rem;margin-bottom:.35rem;color:var(--navy)">' +
+          '<span style="color:' + v.col + ';flex-shrink:0">&#x2713;</span>' + p + '</div>';
+      }).join("") + '</div>';
+  }).join("");
+
+  // Market Stats
+  var mkt = [
+    {v:"$92B", l:"U.S. Preventive Health", s:"Market size by 2030", c:C.teal},
+    {v:"$82B", l:"Global Wellness Tech", s:"Rapid CAGR growth", c:C.cyan},
+    {v:"73%", l:"Consumer Demand", s:"Want personalized health tools", c:C.mag},
+    {v:"75%+", l:"Platform Gross Margin", s:"SaaS + data + marketplace", c:C.violet}
+  ];
+  document.getElementById("marketStats").innerHTML = mkt.map(function(s) {
+    return '<div style="background:linear-gradient(135deg,' + s.c + '0d,' + s.c + '06);border:1px solid ' + s.c + '33;border-radius:12px;padding:1.2rem;text-align:center">' +
+      '<div style="font-family:Playfair Display,serif;font-size:2.6rem;font-weight:900;color:' + s.c + '">' + s.v + '</div>' +
+      '<div style="font-weight:700;font-size:.85rem;margin-top:4px">' + s.l + '</div>' +
+      '<div style="color:var(--gr);font-size:.75rem;margin-top:3px">' + s.s + '</div></div>';
+  }).join("");
+}
+
+var curOsTab = 0;
+var osDataGlobal;
+
+function showOsTab(i) {
+  curOsTab = i;
+  var cols = [C.teal, C.cyan, C.navy, C.mag, C.emerald, C.violet];
+  document.getElementById("osTabs").querySelectorAll(".step-btn").forEach(function(b, j) {
+    b.style.background = j === i ? cols[j] : "";
+    b.style.color = j === i ? "#fff" : "";
+    b.style.boxShadow = j === i ? "0 3px 10px " + cols[j] + "40" : "";
+  });
+  var items = [
+    ["VitalAge&#x2122; physiological age scan (PPG, body composition, BP, SpO&#x2082;)",
+     "Quarterly clinical blood panels &#8212; 40+ metabolic, hormonal &amp; cardiovascular markers",
+     "DNA nutrition &amp; fitness genomics &#8212; lifetime report",
+     "Microbiome analysis linked to nutrition protocols",
+     "Epigenetic age clock &#8212; methylation-based biological age",
+     "Continuous wearable monitoring: Apple Watch, Oura, Garmin, WHOOP"],
+    ["Real-time VitalAge&#x2122; score with 18-month target trajectory",
+     "Goal-specific biomarker tiles (HbA1c for metabolic, HRV for performance)",
+     "Weekly program plan with completion tracking",
+     "Wearable data integration &#8212; sleep, recovery, activity rings",
+     "Marketplace recommendations tied to specific biomarker gaps",
+     "Outcome forecasting &#8212; projected 6- and 18-month improvements"],
+    ["GLP-1 &amp; Weight Management &#8212; muscle preservation, adherence coaching",
+     "Elite Athletic Performance &#8212; periodized training, VO&#x2082; max, HRV-guided",
+     "Healthy Aging 50+ &#8212; sarcopenia prevention, bone density, cognition",
+     "Mental Performance &amp; Stress &#8212; HRV biofeedback, breathwork, sleep",
+     "Longevity &amp; Healthspan &#8212; senolytics, NAD+ protocols, methylation tracking",
+     "Chronic Disease Prevention &#8212; diabetes, cardiovascular, metabolic syndrome"],
+    ["Personalized supplement stacks matched to blood panel deficiencies",
+     "Peptides &amp; longevity therapeutics via licensed medical partners",
+     "Wearables and fitness tech matched to program needs",
+     "Health coaching, RD, and therapy placement fees",
+     "Meal delivery matched to active nutrition protocol",
+     "Skincare &amp; recovery tools linked to skin health assessment"],
+    ["Tier 1: Behavioral &amp; wearables &#8212; app engagement, activity, adherence",
+     "Tier 2: Biomarker + behavioral &#8212; blood panels + physio + outcomes",
+     "Tier 3: Multi-omics full profile &#8212; T1+T2+DNA+microbiome+epigenetics",
+     "De-identified research access for academic and NIH partners (free)",
+     "Commercial licensing to pharma, insurers, and employers",
+     "Real-world evidence reports for institutional clients"],
+    ["Monthly community challenges &#8212; step goals, biological age reduction, nutrition streaks",
+     "AI-timed behavioral nudges based on engagement patterns and biomarker alerts",
+     "Progress milestone celebrations and shareable achievement badges",
+     "Group competitions across partner network locations",
+     "Program adherence reminders tied to wearable data patterns",
+     "Post-goal transition to advanced goal tiers or maintenance programs"]
+  ];
+  var titles = ["Multi-Omics Assessment Stack","16-Profile Personalized Dashboards","AI-Generated Personalized Programs","Precision-Matched Marketplace","Three-Tier Data Architecture","Behavioral Engagement Engine"];
+  var descs = [
+    "Physio scan, blood panels, DNA, microbiome, epigenetics &#8212; a complete biological picture powering all personalization.",
+    "Each of 16 health goal profiles gets a custom dashboard showing biomarker progress, program adherence, and VitalAge&#x2122; trajectory.",
+    "16 specialized programs adapted in real-time to member biomarkers, activity, and progress.",
+    "Products and services recommended only when biomarker evidence supports likely benefit &#8212; creating trust and high conversion.",
+    "The most valuable real-world wellness dataset &#8212; behavioral, clinical, and multi-omics data linked longitudinally over 18+ months.",
+    "Community challenges, AI-timed nudges, milestone celebrations, and social accountability keep members on track."
+  ];
+  var col = cols[i];
+  document.getElementById("osTabContent").innerHTML =
+    '<div style="display:flex;gap:1.3rem;flex-wrap:wrap">' +
+    '<div style="flex:1;min-width:260px">' +
+    '<h3 style="color:' + col + ';margin-bottom:.4rem">' + titles[i] + '</h3>' +
+    '<p style="font-size:.86rem;color:var(--gr);margin-bottom:1rem;line-height:1.6">' + descs[i] + '</p>' +
+    items[i].map(function(it) {
+      return '<div style="display:flex;gap:.5rem;font-size:.82rem;margin-bottom:.4rem;align-items:flex-start">' +
+        '<span style="color:' + col + ';flex-shrink:0;margin-top:2px">&#x2726;</span>' +
+        '<span style="color:var(--navy)">' + it + '</span></div>';
+    }).join("") + '</div></div>';
+}
+
+var p1done = false, curPhase = 0;
+
+var PHASES = [
+  {label:"&#x1F680; Phase 1: On-Boarding", color:"#29b5d8", months:"Month 1&#8211;2",
+   steps:[
+    {img:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop",
+     title:"First Contact",
+     desc:"Member discovers the platform through in-facility kiosk signage, staff recommendation, or digital campaign. Three on-boarding pathways: Self-Serve Kiosk (iPad + hi-res camera + wireless scale + BP monitor), Staff-Assisted Session, or Smartphone via QR Code scan.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=80&h=80&fit=crop",
+     title:"VitalAge&#x2122; Assessment",
+     desc:"Member completes the initial physiological age assessment via kiosk, staff, or app &#8212; capturing PPG heart scan, body composition, blood pressure, SpO&#x2082;, BMI, muscle mass, bone density, and 12+ baseline markers. Takes 4&#8211;6 minutes. Results are instant.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=80&h=80&fit=crop",
+     title:"Goal Selection &amp; Health Profile",
+     desc:"Member selects their primary health goal from 16 profiles: General Fitness &#xB7; Weight Loss &#xB7; GLP-1 Companion &#xB7; Muscle Gain &#xB7; Longevity &#xB7; Heart Health &#xB7; Metabolic Health &#xB7; Mental Strength &#xB7; Elite Performance &#xB7; Healthy Aging 50+ &#xB7; Sleep Optimization &#xB7; Women&#39;s Health &#xB7; Men's Health &#xB7; Immune Strength &#xB7; Microbiome &amp; Gut Health &#xB7; Beauty &amp; Anti-Aging.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=80&h=80&fit=crop",
+     title:"Personalized Program Delivery",
+     desc:"AI generates a customized program plan matched to VitalAge results and stated goals &#8212; including facility class recommendations, nutrition guidance, sleep protocols, and product suggestions from vetted marketplace partners.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&h=80&fit=crop",
+     title:"Package Selection &amp; Subscription",
+     desc:"Member chooses their subscription tier: Basic ($19/mo) or Premium ($39/mo). Free Scan entry is available to all members at no cost &#8212; the top of the conversion funnel.",
+     monetize:true, monetizeNote:"Primary subscription conversion &#8212; Basic $19/mo or Premium $39/mo"}
+  ]},
+  {label:"&#x1F504; Phase 2: Continuous Engagement", color:"#00b4a0", months:"Month 3&#8211;15",
+   steps:[
+    {img:"https://images.unsplash.com/photo-1510017803434-a899398421b3?w=80&h=80&fit=crop",
+     title:"Daily Digital Biomarker Monitoring",
+     desc:"Members track daily biomarkers through the platform app &#8212; wearable sync (Apple Watch, Garmin, Oura, WHOOP), manual inputs, and periodic app-based PPG scans. Dashboard shows real-time progress toward VitalAge&#x2122; goal.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=80&h=80&fit=crop",
+     title:"Active Facility Engagement",
+     desc:"The platform surfaces relevant classes, personal training sessions, and group programs matched to the member&#39;s current health profile and weekly goals. Attendance data flows back through facility management integrations.",
+     monetize:true, monetizeNote:"Staff-assisted sessions, personal training upsells, premium class enrollments"},
+    {img:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=80&h=80&fit=crop",
+     title:"Personalized Online Programs",
+     desc:"Members access AI-generated nutrition plans, home workout programs, sleep optimization modules, stress management tools, and mental health resources &#8212; updated monthly based on progress data.",
+     monetize:true, monetizeNote:"Premium program tier upgrade triggered by engagement depth"},
+    {img:"https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=80&h=80&fit=crop",
+     title:"Testing Package Upgrades",
+     desc:"Members receive targeted upgrade prompts when their data suggests the next level of insight would meaningfully advance their goals &#8212; e.g., upgrading to blood panel testing when metabolic markers plateau.",
+     monetize:true, monetizeNote:"High-value upsell: Basic &#8594; Premium with blood panel &amp; DNA add-ons"},
+    {img:"https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=80&h=80&fit=crop",
+     title:"Product &amp; Service Recommendations",
+     desc:"Precision-matched marketplace recommendations appear as members progress &#8212; supplements, peptides, recovery tools, coaching, therapy &#8212; each tied to a specific biomarker finding or program need.",
+     monetize:true, monetizeNote:"Marketplace GMV &#8212; 20% platform fee on each transaction, avg. basket $150+"},
+    {img:"https://images.unsplash.com/photo-1519311965067-36d3e5f33d39?w=80&h=80&fit=crop",
+     title:"Challenges &amp; Community",
+     desc:"Monthly community challenges (step goals, biological age reduction, nutrition streaks), group competitions, and rewards programs keep engagement high and create social accountability.",
+     monetize:true, monetizeNote:"Challenge sponsorships by wellness brands; premium challenge tiers"}
+  ]},
+  {label:"&#x1F3C6; Phase 3: Goal Achievement", color:"#1a2744", months:"Month 16&#8211;18",
+   steps:[
+    {img:"https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=80&h=80&fit=crop",
+     title:"Progress Review &amp; Milestone Celebration",
+     desc:"At month 16, a comprehensive progress review compares current physiological age, biomarker panel, and goal metrics against baseline. Measurable improvements are highlighted &#8212; biological age reduction, weight loss, cardiovascular improvement.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
+     title:"Advanced Assessment Opportunity",
+     desc:"Members who have not yet accessed genetic, microbiome, or methylation testing are presented with a data-driven case for the value of deeper testing at this stage of their journey.",
+     monetize:true, monetizeNote:"High-value add-on: DNA test, microbiome panel, methylation age clock &#8212; $200&#8211;$800 one-time"},
+    {img:"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=80&h=80&fit=crop",
+     title:"Goal Achievement Verification",
+     desc:"18-month goal targets are evaluated against measurable biomarker and functional outcomes. Members who achieve their primary goal receive celebration, a shareable achievement badge, and a personalized next-chapter recommendation.",
+     monetize:false},
+    {img:"https://images.unsplash.com/photo-1594882645126-14ac19a3b233?w=80&h=80&fit=crop",
+     title:"Post-Goal: Advanced Goals Path",
+     desc:"Members who reach their initial goal are transitioned to a more ambitious goal tier &#8212; e.g., from weight loss to athletic performance optimization or from heart health to longevity extension.",
+     monetize:true, monetizeNote:"Retention at higher subscription tier + new goal-specific marketplace recommendations"},
+    {img:"https://images.unsplash.com/photo-1447452001526-32a30fb3c43f?w=80&h=80&fit=crop",
+     title:"Post-Goal: Health Maintenance Program",
+     desc:"Members who prefer stability enter a Health Maintenance Program &#8212; a reduced-intensity subscription focused on sustaining achieved results, preventing regression, and monitoring key biomarkers on a quarterly schedule.",
+     monetize:true, monetizeNote:"Ongoing subscription retention + quarterly testing upsell + supplement continuity program"}
+  ]}
+];
+
+function initJourney() {
+  if (!p1done) {
+    p1done = true;
+    var row = document.getElementById("phaseTabRow");
+    PHASES.forEach(function(ph, i) {
+      var b = document.createElement("button");
+      b.className = "step-btn";
+      b.innerHTML = ph.label;
+      b.onclick = (function(idx) { return function() { curPhase = idx; renderPhase(); }; })(i);
+      row.appendChild(b);
+    });
+    var months = ["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12","M13","M14","M15","M16","M17","M18","Post"];
+    var colors = ["#29b5d8","#29b5d8","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#00b4a0","#1a2744","#1a2744","#1a2744","#c62a8a"];
+    document.getElementById("journeyTimeline").innerHTML = months.map(function(m, i) {
+      return '<div class="journey-month" style="background:' + colors[i] + '">' + m + '</div>';
+    }).join("");
+  }
+  renderPhase();
+}
+
+function renderPhase() {
+  var ph = PHASES[curPhase];
+  document.querySelectorAll("#phaseTabRow .step-btn").forEach(function(b, i) {
+    b.style.background = i === curPhase ? PHASES[i].color : "";
+    b.style.color = i === curPhase ? "#fff" : "";
+    b.style.boxShadow = i === curPhase ? "0 3px 10px " + PHASES[i].color + "40" : "";
+  });
+  var html = '<div style="display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem">' +
+    '<div style="background:' + ph.color + ';border-radius:10px;padding:.5rem .9rem;color:#fff;font-weight:800;font-size:.88rem">' + ph.months + '</div>' +
+    '<h3 style="margin:0;color:' + ph.color + '">' + ph.label.replace(/^[^ ]+ /,"") + '</h3></div>' +
+    '<div style="display:flex;flex-direction:column;gap:.7rem">';
+  ph.steps.forEach(function(s, idx) {
+    html += '<div style="display:flex;gap:.9rem;align-items:flex-start;padding:.85rem;background:' + ph.color + '0a;border:1px solid ' + (s.monetize ? "#f59e0b" : ph.color + "25") + ';border-radius:12px">' +
+      '<img src="' + s.img + '" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;border:2px solid ' + ph.color + '40"/>' +
+      '<div style="flex:1">' +
+      '<div style="font-weight:700;font-size:.9rem;margin-bottom:.3rem">' + (idx+1) + ". " + s.title + '</div>' +
+      '<div style="font-size:.82rem;color:var(--gr);line-height:1.6">' + s.desc + '</div>';
+    if (s.monetize) {
+      html += '<div style="margin-top:.55rem;display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#fef3c7,#fffbeb);border:1.5px solid #f59e0b;border-radius:8px;padding:.3rem .7rem">' +
+        '<span style="font-size:.75rem">&#x1F4B0;</span>' +
+        '<span style="font-size:.72rem;font-weight:800;color:#92400e">Revenue Opportunity</span>' +
+        '<span style="font-size:.7rem;color:#b45309;border-left:1px solid #f59e0b40;padding-left:.4rem;margin-left:.1rem">' + s.monetizeNote + '</span></div>';
+    }
+    html += '</div></div>';
+  });
+  html += '</div>';
+  document.getElementById("phaseContent").innerHTML = html;
+}
+
+var p2done = false, curOffTab = 0;
+function initDetailedOffering() {
+  if (!p2done) { p2done = true; showOfferingTab(0); }
+}
+
+function showOfferingTab(i) {
+  curOffTab = i;
+  var cols = [C.teal, C.cyan, C.navy, C.mag, "#7c3aed", "#e67e22"];
+  document.getElementById("offeringTabs").querySelectorAll(".step-btn").forEach(function(b, j) {
+    b.style.background = j === i ? cols[j] : "";
+    b.style.color = j === i ? "#fff" : "";
+    b.style.boxShadow = j === i ? "0 3px 10px " + cols[j] + "40" : "";
+  });
+  var col = cols[i];
+  var sections = [
+    {title:"Physiological &amp; Biological Assessments", sub:"The VitalAge&#x2122; suite &#8212; entry point for every member journey",
+     items:[
+      {img:"https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=130&fit=crop",name:"VitalAge&#x2122; Free Scan",tag:"Free &#xB7; All Members",desc:"4&#8211;6 minute physiological age assessment via kiosk, staff, or smartphone. Captures PPG heart scan, body composition, blood pressure, SpO&#x2082;, BMI, muscle/bone mass, and 12+ baseline markers. Results instant. Entry point to the platform funnel.",badge:"Entry"},
+      {img:"https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=200&h=130&fit=crop",name:"Quarterly Blood Panel",tag:"Premium &#xB7; $39/mo",desc:"Comprehensive metabolic, hormonal, inflammatory, and cardiovascular biomarker panel via lab partners. Includes testosterone, cortisol, HbA1c, lipid panel, thyroid, vitamin D, CRP, and 40+ markers. Results in 48&#8211;72 hours with AI interpretation.",badge:"Premium"},
+      {img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=130&fit=crop",name:"DNA Nutrition &amp; Fitness",tag:"Premium &#xB7; One-Time",desc:"Genomic analysis covering nutrigenomics, fitness response, injury risk, supplement metabolism, and longevity SNPs. Lifetime report with ongoing integration into personalized programs.",badge:"Premium"},
+      {img:"https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=200&h=130&fit=crop",name:"Microbiome Analysis",tag:"Add-On &#xB7; $199",desc:"Gut microbiome diversity panel, metabolite production analysis, inflammation markers, and dysbiosis risk. Linked directly to personalized nutrition protocols and probiotic recommendations.",badge:"Add-On"},
+      {img:"https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=130&fit=crop",name:"Epigenetic Age Clock",tag:"Add-On &#xB7; $399",desc:"DNA methylation biological age test &#8212; the gold standard of aging measurement. Reveals biological vs chronological age gap, immune age, pace of aging, and organ-specific aging clocks.",badge:"Add-On"},
+      {img:"https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=200&h=130&fit=crop",name:"Continuous Wearable Monitoring",tag:"Included &#xB7; All Tiers",desc:"Integration with Apple Health, Apple Watch, Garmin, Oura Ring, WHOOP, Fitbit, and Polar. Continuous HRV, sleep staging, activity, SpO&#x2082;, and recovery score streaming.",badge:"Included"}
+    ]},
+    {title:"Subscription Tiers", sub:"Two membership levels &#8212; full digital and clinical access",
+     items:[
+      {img:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=130&fit=crop",name:"Basic &#8212; $19/mo",tag:"Full Digital Health OS",desc:"Complete AI-powered health platform: VitalAge&#x2122; biomarker tracking, all 16 specialized health programs, wearable sync, goal dashboards, AI nutrition &amp; fitness plans, community challenges, and personalized marketplace recommendations. Everything digital &#8212; no lab tests required.",badge:"$19/mo"},
+      {img:"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=130&fit=crop",name:"Premium &#8212; $39/mo",tag:"Full Clinical Suite",desc:"Everything in Basic plus the full clinical layer: quarterly blood panel (4x/yr covering metabolic, hormonal, inflammatory, and cardiovascular markers) and one DNA nutrition &amp; fitness test. The most comprehensive tier &#8212; clinical biomarkers + genomics + all digital programs.",badge:"$39/mo"}
+    ]},
+    {title:"Specialized Health Programs", sub:"AI-personalized programs across every major health domain",
+     items:[
+      {img:"https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=200&h=130&fit=crop",name:"GLP-1 &amp; Weight Management",tag:"Most Requested",desc:"Medically-supervised GLP-1 companion program: nutrient support protocols, muscle preservation programming, body composition monitoring, and behavioral adherence coaching designed to maximize GLP-1 effectiveness.",badge:"Popular"},
+      {img:"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=200&h=130&fit=crop",name:"Elite Athlete Performance",tag:"High-Value Members",desc:"Periodized training plans, recovery optimization, HRV-guided programming, VO2 max tracking, and competition preparation. Includes sport-specific nutrition protocols and advanced biomarker monitoring.",badge:"Performance"},
+      {img:"https://images.unsplash.com/photo-1447452001526-32a30fb3c43f?w=200&h=130&fit=crop",name:"Healthy Aging 50+",tag:"Largest Cohort",desc:"Longevity-focused program addressing muscle preservation, bone density, cardiovascular health, cognitive function, and hormonal balance. Evidence-based protocols for reversing biological age.",badge:"Longevity"},
+      {img:"https://images.unsplash.com/photo-1594882645126-14ac19a3b233?w=200&h=130&fit=crop",name:"Women&#39;s Hormonal Health",tag:"High-Demand",desc:"Comprehensive hormonal support: symptom tracking, HRT optimization guidance, sleep improvement, weight management, bone density monitoring, and mental health support integrated with women's health lab markers.",badge:"Women&#39;s"},
+      {img:"https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=200&h=130&fit=crop",name:"Mental Performance &amp; Stress",tag:"Universal Need",desc:"Cognitive enhancement, stress reduction, and anxiety management using HRV biofeedback, breathwork protocols, sleep optimization, and evidence-based behavioral interventions.",badge:"Mental"},
+      {img:"https://images.unsplash.com/photo-1581009137042-c552e485697a?w=200&h=130&fit=crop",name:"Chronic Disease Prevention",tag:"Clinical Value",desc:"Structured programs for diabetes prevention, cardiovascular risk reduction, and metabolic syndrome reversal integrated with AI biomarker monitoring and evidence-based intervention protocols.",badge:"Clinical"}
+    ]},
+    {title:"Precision Marketplace", sub:"Products and services matched to each member&#39;s unique biomarker profile",
+     items:[
+      {img:"https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=130&fit=crop",name:"Personalized Supplements",tag:"20% Platform Fee",desc:"Monthly personalized supplement stacks &#8212; vitamins, minerals, adaptogens, peptides, and functional nutrients &#8212; matched to blood panel deficiencies, DNA analysis, and stated health goals.",badge:"Revenue"},
+      {img:"https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=130&fit=crop",name:"Peptides &amp; Longevity",tag:"High Margin",desc:"Advanced longevity and performance compounds &#8212; BPC-157, NAD+ precursors, thymosin alpha, senolytics &#8212; via licensed medical and telehealth partners.",badge:"Revenue"},
+      {img:"https://images.unsplash.com/photo-1510017803434-a899398421b3?w=200&h=130&fit=crop",name:"Wearables &amp; Fitness Tech",tag:"Affiliate",desc:"Hardware recommendations matched to member programs &#8212; Oura Ring for sleep, WHOOP for recovery, Garmin for endurance athletes. Affiliate revenue on first-time purchases.",badge:"Affiliate"},
+      {img:"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=130&fit=crop",name:"Coaching &amp; Therapy",tag:"Service Fee",desc:"Personalized matching to vetted health coaches, registered dietitians, therapists, and functional medicine practitioners &#8212; based on biomarker profile and program needs.",badge:"Service"},
+      {img:"https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&h=130&fit=crop",name:"Skincare &amp; Recovery",tag:"20% Platform Fee",desc:"Topical therapeutics, skincare products, and recovery tools matched to skin health assessment, genetic predispositions, and body composition goals.",badge:"Revenue"},
+      {img:"https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=200&h=130&fit=crop",name:"Meal Delivery &amp; Nutrition",tag:"Affiliate",desc:"Personalized meal delivery partnerships (macro-matched to active program), grocery delivery integration, and medical nutrition therapy.",badge:"Affiliate"}
+    ]},
+    {title:"Data &amp; Testing Services", sub:"Three-tier data architecture creating exceptional partner value",
+     items:[
+      {img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=130&fit=crop",name:"Tier 1: Behavioral &amp; Wearables",tag:"All Members &#xB7; $5/user/yr",desc:"App engagement, facility attendance, wearable biometrics, challenge participation, and program adherence &#8212; linked to demographic and goal data. Foundational population health signal.",badge:"T1"},
+      {img:"https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=130&fit=crop",name:"Tier 2: Biomarker + Behavioral",tag:"Pro Members &#xB7; $70/user/yr",desc:"Combines T1 behavioral data with clinical biomarker panels, physiological age scores, and specialized program outcomes. Valuable for pharma trial recruitment and insurance risk modeling.",badge:"T2"},
+      {img:"https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=200&h=130&fit=crop",name:"Tier 3: Multi-Omics Full Profile",tag:"Premium &#xB7; $400/user/yr",desc:"The complete picture: T1 + T2 + genomics (DNA), microbiome, epigenetic age clock data. Linked longitudinally over 18+ months. Uniquely valuable for drug discovery and precision medicine research.",badge:"T3"},
+      {img:"https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=200&h=130&fit=crop",name:"Academic &amp; Research Access",tag:"Free &#xB7; Non-Profit",desc:"Free de-identified dataset access for accredited universities, NIH-funded research, and public health agencies. Enables peer-reviewed validation studies.",badge:"Free"},
+      {img:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=200&h=130&fit=crop",name:"HIPAA-Compliant Architecture",tag:"Governance",desc:"Full HIPAA compliance with BAA frameworks, granular member consent controls, de-identification per Safe Harbor standards, and audit logging. Members own and control their data.",badge:"Compliance"},
+      {img:"https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=200&h=130&fit=crop",name:"Real-World Evidence Reports",tag:"Enterprise &#xB7; Custom Pricing",desc:"Custom cohort analysis reports for pharmaceutical, insurance, and employer clients &#8212; showing treatment adherence, health outcome improvements, and intervention effectiveness.",badge:"Enterprise"}
+    ]},
+    {title:"B2B &amp; Partner Services", sub:"Enterprise revenue streams for operators, employers, and health systems",
+     items:[
+      {img:"https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=130&fit=crop",name:"PMPM &#8212; Insurance &amp; Medicare",tag:"Year 2+ &#xB7; $10&#8211;$30/member/mo",desc:"Per-member-per-month fees paid by health insurers, Medicare Advantage plans, and self-insured employers for members enrolled in prevention programs. Triggered by demonstrated engagement in biomarker monitoring.",badge:"PMPM"},
+      {img:"https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=200&h=130&fit=crop",name:"SaaS Platform License",tag:"$1,000/location/mo",desc:"Monthly SaaS license fee paid by each partner location for the full platform &#8212; kiosk software, member app, AI engine, dashboard, and integrations. Recurring, predictable revenue.",badge:"$12K/yr"},
+      {img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=200&h=130&fit=crop",name:"Employer Wellness Programs",tag:"B2B &#xB7; $25&#8211;$100/employee/yr",desc:"White-labeled Lifenome platform deployed for self-insured employers and corporate wellness programs. Employees access via employer-subsidized membership.",badge:"Enterprise"},
+      {img:"https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=130&fit=crop",name:"Health System Partnerships",tag:"Clinical Integration",desc:"Integration with hospital systems and ACOs &#8212; platform members become a prevention layer feeding into clinical care. EHR bi-directional data sharing.",badge:"Partner"},
+      {img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&h=130&fit=crop",name:"Insurance Carrier Integration",tag:"Risk Data &#xB7; $500K&#8211;$5M/yr",desc:"Health insurers access aggregate risk stratification data, preventive intervention outcomes, and HEDIS measure support. Platform becomes a measurable risk reduction tool.",badge:"Premium"},
+      {img:"https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&h=130&fit=crop",name:"White-Label Platform Licensing",tag:"Enterprise ACV $1M&#8211;$10M",desc:"Lifenome licenses its precision health OS to large external operators &#8212; national fitness chains, employer wellness programs, health systems, and insurers. Near-zero COGS (pure digital).",badge:"White-Label"}
+    ]}
+  ];
+  var s = sections[i];
+  var badgeColors = {
+    "Entry":C.amber,"Premium":C.navy,"Add-On":C.mag,"Included":C.emerald,
+    "$19/mo":C.cyan,"$39/mo":C.teal,"Popular":"#e67e22","Performance":C.teal,
+    "Longevity":C.navy,"Women&#39;s":C.mag,"Mental":C.cyan,"Clinical":C.emerald,
+    "Revenue":C.emerald,"Affiliate":C.cyan,"Service":C.teal,
+    "T1":C.emerald,"T2":C.indigo,"T3":C.mag,"Free":C.emerald,
+    "Compliance":C.navy,"Enterprise":"#7c3aed","$12K/yr":C.teal,
+    "Partner":C.cyan,"PMPM":C.emerald,"White-Label":"#4f46e5"
+  };
+  var html = '<div style="margin-bottom:1rem">' +
+    '<div style="font-family:Playfair Display,serif;font-size:1.3rem;font-weight:900;color:' + col + ';margin-bottom:.3rem">' + s.title + '</div>' +
+    '<div style="color:var(--gr);font-size:.88rem">' + s.sub + '</div></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1rem">';
+  s.items.forEach(function(it) {
+    var bc = badgeColors[it.badge] || col;
+    html += '<div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 14px rgba(26,39,68,.07);border:1px solid ' + col + '18">' +
+      '<div style="position:relative;height:120px;overflow:hidden">' +
+      '<img src="' + it.img + '" style="width:100%;height:100%;object-fit:cover"/>' +
+      '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(26,39,68,.8),transparent)"></div>' +
+      '<div style="position:absolute;bottom:.55rem;left:.7rem;right:.7rem;display:flex;justify-content:space-between;align-items:flex-end">' +
+      '<div style="font-weight:800;font-size:.85rem;color:#fff;line-height:1.2">' + it.name + '</div>' +
+      '<span style="background:' + bc + ';color:#fff;border-radius:12px;padding:2px 8px;font-size:.65rem;font-weight:800;white-space:nowrap;margin-left:.4rem;flex-shrink:0">' + it.badge + '</span></div></div>' +
+      '<div style="padding:.8rem">' +
+      '<div style="font-size:.72rem;color:' + col + ';font-weight:700;margin-bottom:.4rem">' + it.tag + '</div>' +
+      '<div style="font-size:.78rem;color:var(--gr);line-height:1.55">' + it.desc + '</div></div></div>';
+  });
+  html += '</div>';
+  document.getElementById("offeringContent").innerHTML = html;
+}
+
+var p3arch = false, curArchTab = 0;
+function initPlatformArch() {
+  if (!p3arch) { p3arch = true; showArchTab(0); }
+}
+
+function showArchTab(i) {
+  curArchTab = i;
+  var ac = [C.navy, C.teal, C.mag, C.cyan, C.emerald];
+  document.getElementById("archTabs").querySelectorAll(".step-btn").forEach(function(b, j) {
+    b.style.background = j === i ? ac[j] : "";
+    b.style.color = j === i ? "#fff" : "";
+    b.style.boxShadow = j === i ? "0 3px 10px " + ac[j] + "40" : "";
+  });
+  var el = document.getElementById("archContent");
+  var col = ac[i];
+
+  function mkComp(ic, t, d, borderCol) {
+    return '<div style="background:#fff;border-radius:9px;padding:.65rem .8rem;flex:1;min-width:130px;border:1px solid ' + borderCol + '30">' +
+      '<div style="font-size:1.2rem;margin-bottom:.3rem">' + ic + '</div>' +
+      '<div style="font-weight:700;font-size:.75rem;color:' + borderCol + '">' + t + '</div>' +
+      '<div style="font-size:.69rem;color:var(--gr);margin-top:2px;line-height:1.4">' + d + '</div></div>';
+  }
+
+  if (i === 0) {
+    var layers = [
+      {col:C.cyan, label:"Layer 1 &#8212; Member Touchpoints",
+       comps:[["&#x1F4F1;","Mobile App (iOS/Android)","VitalAge&#x2122;, dashboard, programs, marketplace, wearable sync"],
+              ["&#x1F5A5;","Self-Serve Kiosk","iPad + camera + scale + BP monitor &#8212; 24/7 facility access"],
+              ["&#x1F310;","Web Portal","Member dashboard, program tracking, marketplace, lab results"],
+              ["&#x1F464;","Staff Console","Staff view: member progress, scan assist, enrollment"],
+              ["&#x231A;","Wearable APIs","Apple Health, Garmin, Oura, WHOOP, Fitbit integrations"]]},
+      {col:C.mag, label:"Layer 2 &#8212; AI &amp; Personalization Engine (Lifenome Core)",
+       comps:[["&#x1F9E0;","VitalAge&#x2122; AI","Physiological age scoring from multi-modal biomarker inputs"],
+              ["&#x1F3AF;","Goal Engine","16-profile health goal matching &amp; program generation"],
+              ["&#x1F4CA;","Recommendation AI","Biomarker-matched program, product &amp; service recommendations"],
+              ["&#x1F504;","Progress Tracking","Longitudinal outcome tracking &amp; adaptive program updates"],
+              ["&#x1F9EC;","Genomics Engine","DNA + microbiome + epigenetic data interpretation &amp; integration"]]},
+      {col:C.teal, label:"Layer 3 &#8212; Integration Hub",
+       comps:[["&#x1F3E2;","Partner Mgmt Systems","Member management API &#8212; member sync, enrollment, check-in events"],
+              ["&#x1FA7A;","Lab Partners","Quest, LabCorp, SomaLogic &#8212; blood panel ordering &amp; results"],
+              ["&#x1F4B3;","Billing &amp; Payments","Stripe &#8212; subscription management, marketplace payments"],
+              ["&#x1F4CB;","EHR / EMR","Epic, Athena &#8212; bi-directional clinical data sharing (FHIR R4)"],
+              ["&#x1F6CD;","Marketplace Partners","Supplement brands, services, coaching platform APIs"],
+              ["&#x1F9EC;","Genomics Partners","Integrated genomics providers &#8212; DNA &amp; microbiome ingestion"]]},
+      {col:C.emerald, label:"Layer 4 &#8212; Data Platform &amp; Warehouse",
+       comps:[["&#x1F5C4;","Data Warehouse","Snowflake / BigQuery &#8212; longitudinal member health data lake"],
+              ["&#x1F510;","Consent Engine","Granular member consent management, data access controls"],
+              ["&#x1F4CA;","Analytics Platform","Population health analytics, outcome reporting, cohort analysis"],
+              ["&#x1F504;","Data Pipeline","Real-time ETL &#8212; wearables, lab results, engagement events"],
+              ["&#x1F9EA;","Research API","De-identified dataset access for academic &amp; commercial licensees"]]},
+      {col:C.navy, label:"Layer 5 &#8212; Security &amp; Compliance Foundation",
+       comps:[["&#x1F512;","HIPAA Compliance","Full HIPAA BAA with all data processors, audit logging, PHI controls"],
+              ["&#x1F6E1;","Zero Trust Architecture","Identity-verified access at every service boundary"],
+              ["&#x1F511;","Encryption","AES-256 at rest, TLS 1.3 in transit, key rotation"],
+              ["&#x1F4CB;","SOC 2 Type II","Annual third-party security audit and certification"],
+              ["&#x1F6A8;","Monitoring &amp; SIEM","24/7 anomaly detection, incident response, penetration testing"]]}
+    ];
+    var html = '<div class="card mb2" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + ';margin-bottom:.8rem">Lifenome Platform &#8212; System Architecture Overview</h3>' +
+      '<p style="font-size:.84rem;color:var(--gr);margin-bottom:1.2rem">A modular, cloud-native, HIPAA-compliant precision health OS &#8212; five interconnected layers from member-facing interfaces to secure data infrastructure.</p>' +
+      '<div style="overflow-x:auto"><div style="min-width:700px;padding:.5rem">';
+    layers.forEach(function(layer, li) {
+      html += '<div style="background:' + layer.col + '0d;border:1.5px solid ' + layer.col + '40;border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem">' +
+        '<div style="font-weight:800;font-size:.78rem;color:' + layer.col + ';text-transform:uppercase;letter-spacing:.07em;margin-bottom:.55rem">' + layer.label + '</div>' +
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap">';
+      layer.comps.forEach(function(c) { html += mkComp(c[0], c[1], c[2], layer.col); });
+      html += '</div></div>';
+      if (li < layers.length - 1) {
+        var arrows = ["&#x25BC; API Gateway (REST + GraphQL + WebSocket) &#x25BC;",
+                      "&#x25BC; Microservices Architecture (Auth &#xB7; Billing &#xB7; Notifications) &#x25BC;",
+                      "&#x25BC; Encrypted Data Bus (Kafka / Event Streaming) &#x25BC;",
+                      "&#x25BC; Cloud Infrastructure (AWS / GCP Multi-Region &#xB7; HIPAA BAA) &#x25BC;"];
+        html += '<div style="text-align:center;color:var(--gr);font-size:.75rem;margin:.3rem 0">' + arrows[li] + '</div>';
+      }
+    });
+    html += '</div></div></div>';
+    var scards = [
+      {col:C.cyan, title:"Scalability", pts:["Kubernetes auto-scaling to 20M+ members","Multi-region active-active deployment","99.9%+ SLA uptime across all services","Horizontal scaling for AI inference workloads"]},
+      {col:C.mag, title:"Developer Platform", pts:["RESTful + GraphQL APIs for partner integrations","Webhook system for real-time event notifications","Partner SDK for marketplace and data access","Sandbox environment for partner tech teams"]},
+      {col:C.emerald, title:"Observability", pts:["Real-time dashboards: active users, conversions, outcomes","Per-location analytics for operators and staff","Cohort analysis tools for research licensees","Executive-level business intelligence reporting"]}
+    ];
+    html += '<div class="g3">';
+    scards.forEach(function(sc) {
+      html += '<div class="card" style="border:1px solid ' + sc.col + '20">' +
+        '<div style="font-weight:800;color:' + sc.col + ';margin-bottom:.7rem">' + sc.title + '</div>';
+      sc.pts.forEach(function(p) {
+        html += '<div style="display:flex;gap:.4rem;font-size:.79rem;margin-bottom:.35rem;color:var(--navy)">' +
+          '<span style="color:' + sc.col + ';flex-shrink:0">&#x2713;</span>' + p + '</div>';
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+
+  } else if (i === 1) {
+    var appModules = [
+      {title:"Onboarding Flow",desc:"QR scan &#8594; VitalAge&#x2122; assessment &#8594; goal selection &#8594; package recommendation &#8594; subscription checkout. Under 8 minutes end-to-end.",color:C.teal},
+      {title:"Dashboard Engine",desc:"Real-time biomarker tiles, VitalAge&#x2122; score, goal progress rings, wearable data stream, and daily action cards &#8212; personalized per member profile.",color:C.cyan},
+      {title:"Program Delivery",desc:"AI-generated weekly plans with class bookings, nutrition targets, sleep goals, and supplement reminders &#8212; updated dynamically as biomarkers change.",color:C.navy},
+      {title:"Marketplace Module",desc:"Personalized product feed with biomarker rationale for each recommendation. Cart, checkout, and subscription management via Stripe.",color:C.mag},
+      {title:"Wearable Sync Engine",desc:"Background sync with Apple Health, Google Fit, Garmin Connect, Oura, WHOOP &#8212; every 15 minutes. HRV, sleep, steps, active calories.",color:C.emerald},
+      {title:"Notifications &amp; Nudges",desc:"AI-timed behavioral nudges based on engagement patterns, biomarker alerts, program milestones, and marketplace recommendations.",color:C.violet}
+    ];
+    var kioskItems = [
+      ["&#x1F4F1;","iPad Pro 12.9&quot;","Primary interface &#8212; full platform app in kiosk mode"],
+      ["&#x1F4F8;","Hi-Res Camera Module","AI body composition scan &#8212; visceral fat, muscle mass, posture"],
+      ["&#x2696;","Wireless Smart Scale","Bluetooth-connected &#8212; body weight, composition via impedance"],
+      ["&#x1FA8A;","Blood Pressure Monitor","Automated cuff &#8212; resting BP, heart rate baseline"],
+      ["&#x1F534;","PPG Scanner","Finger/wrist pulse wave &#8212; HRV, SpO&#x2082;"],
+      ["&#x1F4E1;","4G/WiFi Module","Redundant connectivity &#8212; cellular failover ensures 99.9% uptime"]
+    ];
+    var html2 = '<div class="g2 mb2" style="gap:1.3rem">' +
+      '<div class="card" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Mobile App Architecture</h3>' +
+      '<p style="font-size:.83rem;color:var(--gr);margin-bottom:1rem">React Native cross-platform app (iOS + Android) &#8212; single codebase, native performance. Offline-capable for facility floor use.</p>';
+    appModules.forEach(function(m) {
+      html2 += '<div style="display:flex;gap:.7rem;align-items:flex-start;padding:.65rem;background:' + m.color + '08;border:1px solid ' + m.color + '20;border-radius:9px;margin-bottom:.5rem">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:' + m.color + ';flex-shrink:0;margin-top:5px"></div>' +
+        '<div><div style="font-weight:700;font-size:.82rem;color:' + m.color + '">' + m.title + '</div>' +
+        '<div style="font-size:.76rem;color:var(--gr);margin-top:2px;line-height:1.45">' + m.desc + '</div></div></div>';
+    });
+    html2 += '</div><div>' +
+      '<div class="card mb1" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Kiosk Hardware Stack</h3>' +
+      '<p style="font-size:.83rem;color:var(--gr);margin-bottom:1rem">Purpose-built hardware assembly &#8212; available 24/7 at facility floor, no staff required.</p>';
+    kioskItems.forEach(function(k) {
+      html2 += '<div style="display:flex;gap:.6rem;align-items:center;padding:.5rem .7rem;border-bottom:1px solid var(--lg);font-size:.79rem">' +
+        '<span style="font-size:1.1rem;flex-shrink:0">' + k[0] + '</span>' +
+        '<div><b style="color:' + col + '">' + k[1] + '</b><span style="color:var(--gr);margin-left:.4rem">' + k[2] + '</span></div></div>';
+    });
+    html2 += '</div>' +
+      '<div class="card" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Staff Console</h3>' +
+      '<p style="font-size:.83rem;color:var(--gr)">Web-based dashboard for wellness staff &#8212; member progress visibility, scan assist mode, enrollment support, and program check-ins.</p>' +
+      '</div></div></div>';
+    el.innerHTML = html2;
+
+  } else if (i === 2) {
+    var aiModels = [
+      {title:"VitalAge&#x2122; Scoring Model",desc:"Multi-modal neural network combining PPG scan, body composition imaging, biometric inputs, and wearable streams into a single physiological age score. Updated continuously as new biomarkers arrive.",color:C.mag},
+      {title:"Goal-Program Matching Engine",desc:"Gradient-boosted classifier mapping 200+ member attributes to optimal program selection across 16 health goal profiles. Accounts for goal priority, readiness-to-change score, and program budget.",color:C.teal},
+      {title:"Biomarker Interpretation Engine",desc:"Clinical-grade rules engine + ML hybrid &#8212; interprets blood panels, DNA results, and microbiome data in the context of member goals. Generates plain-language recommendations validated against clinical guidelines.",color:C.cyan},
+      {title:"Marketplace Recommendation System",desc:"Collaborative filtering + content-based hybrid recommender. Products shown only when biomarker evidence supports likely benefit. Recency-weighted to surface increasingly relevant recommendations as member data grows.",color:"#e67e22"},
+      {title:"Adaptive Program Engine",desc:"Reinforcement learning system that adjusts weekly program plans based on adherence rates, biomarker responses, and outcome signals. Learns what works for similar member profiles across the network.",color:C.emerald},
+      {title:"Outcome Prediction Models",desc:"Forecasts 6-month and 18-month health outcomes (biological age reduction, weight loss, cardiovascular improvement) based on program adherence and baseline biomarker profile.",color:C.violet}
+    ];
+    var govItems = [
+      {title:"Training Data",desc:"600K+ Lifenome member baseline + partner pilot data + validated clinical datasets. Continuous online learning from new member interactions."},
+      {title:"Bias &amp; Fairness Audits",desc:"Quarterly bias audits across demographic groups. Model performance tracked separately by age, sex, ethnicity to ensure equitable recommendations."},
+      {title:"Clinical Validation",desc:"All clinical interpretation models reviewed by licensed clinicians. No diagnosis or treatment &#8212; program and product guidance only."},
+      {title:"Model Registry",desc:"MLflow-based registry with full versioning, rollback capability, A/B testing, and champion/challenger deployment pattern."}
+    ];
+    var html3 = '<div class="g2 mb2" style="gap:1.3rem">' +
+      '<div class="card" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">AI &amp; ML Model Architecture</h3>' +
+      '<p style="font-size:.83rem;color:var(--gr);margin-bottom:1rem">Lifenome&#39;s proprietary AI stack &#8212; trained on 600K+ member dataset, continuously learning from new data.</p>';
+    aiModels.forEach(function(m) {
+      html3 += '<div style="padding:.7rem;background:' + m.color + '08;border:1px solid ' + m.color + '20;border-radius:9px;margin-bottom:.5rem">' +
+        '<div style="font-weight:700;font-size:.82rem;color:' + m.color + ';margin-bottom:.3rem">' + m.title + '</div>' +
+        '<div style="font-size:.76rem;color:var(--gr);line-height:1.45">' + m.desc + '</div></div>';
+    });
+    html3 += '</div><div>' +
+      '<div class="card mb1" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Model Training &amp; Governance</h3>';
+    govItems.forEach(function(g) {
+      html3 += '<div style="padding:.65rem;border-bottom:1px solid var(--lg)">' +
+        '<div style="font-weight:700;font-size:.81rem;color:' + col + '">' + g.title + '</div>' +
+        '<div style="font-size:.75rem;color:var(--gr);margin-top:2px;line-height:1.45">' + g.desc + '</div></div>';
+    });
+    html3 += '</div>' +
+      '<div class="card" style="background:linear-gradient(135deg,' + col + '0a,#fff);border:1px solid ' + col + '20;margin-top:1rem">' +
+      '<h3 style="color:' + col + '">Inference Infrastructure</h3>' +
+      '<div style="font-size:.8rem;color:var(--gr);line-height:1.7">Real-time inference for VitalAge&#x2122; scoring: <b style="color:' + col + '">&lt;2 seconds</b> end-to-end. Batch processing for nightly program updates across all active members. GPU cluster auto-scaling via AWS SageMaker or GCP Vertex AI.</div>' +
+      '</div></div></div>';
+    el.innerHTML = html3;
+
+  } else if (i === 3) {
+    var intGroups = [
+      {cat:"Member Management Systems", col:C.teal,
+       items:[["Partner MMS APIs","REST API integration &#8212; member sync, enrollment, check-in events"],
+              ["CRM Integration","Salesforce-native and standard CRM systems &#8212; unified member view"],
+              ["Legacy System Bridge","Read-only member data for existing platforms"]]},
+      {cat:"Lab &amp; Diagnostics", col:C.mag,
+       items:[["Quest Diagnostics","Blood panel ordering, result delivery, HL7 FHIR integration"],
+              ["LabCorp","Alternative lab network &#8212; same-day results in most markets"],
+              ["SomaLogic","Proteomics / SomaScan &#8212; advanced biomarker panels for Premium+ tiers"],
+              ["Viome","Microbiome testing partnership &#8212; gut health analysis integration"]]},
+      {cat:"Genomics Partners", col:C.violet,
+       items:[["Lifenome Genomics","Native DNA analysis &#8212; nutrigenomics, fitness, longevity SNPs"],
+              ["Consumer Genomics Import","Import existing consumer genomic data via API (user-authorized)"],
+              ["Clinical Sequencing","Clinical-grade sequencing pipeline for institutional deployments"]]},
+      {cat:"Wearables &amp; Health Platforms", col:C.cyan,
+       items:[["Apple Health / HealthKit","Primary iOS health data hub &#8212; all Apple Watch metrics"],
+              ["Google Fit","Android ecosystem &#8212; steps, heart rate, sleep, activity"],
+              ["Garmin Connect","Endurance athlete metrics &#8212; VO2 max, training load, recovery"],
+              ["Oura Ring API","Sleep staging, HRV, readiness score &#8212; precision recovery data"],
+              ["WHOOP API","Strain, recovery, sleep &#8212; athlete-grade performance monitoring"]]},
+      {cat:"Commerce &amp; Payments", col:C.emerald,
+       items:[["Stripe","Subscription billing, marketplace payments, splits, payouts"],
+              ["Fulfillment Partners","Supplement fulfillment and logistics"],
+              ["Affiliate Tracking","Commission tracking and attribution for marketplace partners"]]},
+      {cat:"Clinical &amp; Compliance", col:C.navy,
+       items:[["Epic FHIR","Bi-directional EHR integration &#8212; SMART on FHIR standard"],
+              ["Athenahealth","Clinical data sharing with physician practices"],
+              ["HIPAA Audit Logging","AWS CloudTrail + custom PHI access logging, 7-year retention"],
+              ["Consent Management","Granular member consent platform with real-time propagation"]]}
+    ];
+    var html4 = '<h3 style="color:' + col + ';margin-bottom:1rem">Integration Layer &#8212; External Connections</h3>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:.85rem">';
+    intGroups.forEach(function(g) {
+      html4 += '<div style="background:#fff;border-radius:12px;padding:.9rem;border:1.5px solid ' + g.col + '20;box-shadow:0 2px 10px rgba(26,39,68,.05)">' +
+        '<div style="font-weight:800;font-size:.8rem;color:' + g.col + ';text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem;border-bottom:1px solid ' + g.col + '20;padding-bottom:.4rem">' + g.cat + '</div>';
+      g.items.forEach(function(it) {
+        html4 += '<div style="margin-bottom:.45rem">' +
+          '<div style="font-weight:700;font-size:.78rem;color:var(--navy)">' + it[0] + '</div>' +
+          '<div style="font-size:.71rem;color:var(--gr);line-height:1.4">' + it[1] + '</div></div>';
+      });
+      html4 += '</div>';
+    });
+    html4 += '</div>';
+    el.innerHTML = html4;
+
+  } else if (i === 4) {
+    var privItems = [
+      {title:"Data Classification",desc:"Four tiers: PII (name, contact), PHI (health records), De-identified (research/licensing), and Aggregated (anonymous analytics). Each tier has distinct access controls, retention policies, and audit requirements.",color:C.emerald},
+      {title:"Consent Management Platform",desc:"Granular opt-in consent for each data use category &#8212; wearable data, biomarker data, genomics, research sharing, commercial licensing. Members can modify consent at any time with real-time propagation.",color:C.teal},
+      {title:"De-identification Pipeline",desc:"Automated HIPAA Safe Harbor de-identification applied to all data before entering the research and licensing tier. Expert Determination method for advanced datasets. Full audit trail.",color:C.cyan},
+      {title:"Data Residency &amp; Sovereignty",desc:"All member PHI stored in US-East and US-West AWS regions with HIPAA BAAs. Data residency controls for institutional clients who require regional isolation.",color:C.navy},
+      {title:"Member Data Portability",desc:"FHIR-compliant data export for all members on request. Complete health record package (biomarkers, programs, outcomes) downloadable in standard formats.",color:C.mag},
+      {title:"Data Retention &amp; Deletion",desc:"Active member data retained indefinitely (with consent). De-identified research data retained 25 years. Right-to-deletion processed within 30 days with audit certificate.",color:C.violet}
+    ];
+    var secItems = [
+      ["&#x1F512;","Encryption at Rest","AES-256 for all stored PHI and PII. Key management via AWS KMS with automatic annual rotation."],
+      ["&#x1F510;","Encryption in Transit","TLS 1.3 minimum for all API and web traffic. Certificate pinning on mobile apps."],
+      ["&#x1F6E1;","Zero Trust Access","No implicit trust within the network. Every service-to-service call requires identity verification."],
+      ["&#x1F464;","Role-Based Access","Granular RBAC for staff (view-only), clinicians (PHI access), admins, and API clients."],
+      ["&#x1F4CB;","SOC 2 Type II","Annual third-party audit. Available to enterprise licensees and partners on request."],
+      ["&#x1F50D;","Penetration Testing","Quarterly automated scanning + annual manual pen test by certified security firm."],
+      ["&#x1F6A8;","Incident Response","24/7 security operations center. 72-hour HIPAA breach notification. Runbooks for all incident categories."]
+    ];
+    var certs = ["HIPAA Covered Entity","SOC 2 Type II","GDPR Ready","CCPA Compliant","FHIR R4 Certified","HL7 Interface","21 CFR Part 11","ISO 27001 (target)"];
+    var html5 = '<div class="g2 mb2" style="gap:1.3rem">' +
+      '<div class="card" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Data Architecture &amp; Privacy</h3>' +
+      '<p style="font-size:.83rem;color:var(--gr);margin-bottom:1rem">A privacy-first architecture where member control and data value are treated as complementary objectives.</p>';
+    privItems.forEach(function(p) {
+      html5 += '<div style="padding:.7rem;background:' + p.color + '08;border:1px solid ' + p.color + '20;border-radius:9px;margin-bottom:.5rem">' +
+        '<div style="font-weight:700;font-size:.82rem;color:' + p.color + ';margin-bottom:.3rem">' + p.title + '</div>' +
+        '<div style="font-size:.76rem;color:var(--gr);line-height:1.45">' + p.desc + '</div></div>';
+    });
+    html5 += '</div><div>' +
+      '<div class="card mb1" style="border:1px solid ' + col + '20">' +
+      '<h3 style="color:' + col + '">Security Controls</h3>';
+    secItems.forEach(function(s) {
+      html5 += '<div style="display:flex;gap:.6rem;align-items:flex-start;padding:.55rem .5rem;border-bottom:1px solid var(--lg)">' +
+        '<span style="font-size:1rem;flex-shrink:0">' + s[0] + '</span>' +
+        '<div><div style="font-weight:700;font-size:.79rem;color:' + col + '">' + s[1] + '</div>' +
+        '<div style="font-size:.72rem;color:var(--gr);margin-top:1px;line-height:1.4">' + s[2] + '</div></div></div>';
+    });
+    html5 += '</div>' +
+      '<div class="card" style="background:linear-gradient(135deg,' + C.emerald + '0a,#fff);border:1px solid ' + C.emerald + '30;margin-top:1rem">' +
+      '<h3 style="color:' + C.emerald + '">Compliance Certifications</h3>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:.4rem">';
+    certs.forEach(function(c) {
+      html5 += '<span style="background:rgba(5,150,105,.1);color:' + C.emerald + ';border:1px solid rgba(5,150,105,.2);border-radius:18px;padding:3px 10px;font-size:.72rem;font-weight:700">' + c + '</span>';
+    });
+    html5 += '</div></div></div></div>';
+    el.innerHTML = html5;
+  }
+}
+</script>
+</body>
+</html>
