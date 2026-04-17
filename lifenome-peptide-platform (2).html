@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifenome Peptide Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a2332;
+    --ink-light: #3d5166;
+    --ink-muted: #6b7f94;
+    --teal: #2a6b72;
+    --teal-light: #3a8a93;
+    --teal-pale: #e8f4f5;
+    --teal-mid: #c2dfe2;
+    --gold: #b8975a;
+    --gold-light: #d4b47a;
+    --cream: #f8f5f0;
+    --white: #ffffff;
+    --border: #dde3e8;
+    --success: #2a7a4b;
+    --success-bg: #eaf5ee;
+    --warn: #8a5a1a;
+    --warn-bg: #fdf3e3;
+    --danger: #8a2a2a;
+    --danger-bg: #fdf0f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo img { height: 28px; }
+  .nav-tabs { display: flex; gap: 0; }
+  .nav-tab {
+    padding: 0 18px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--teal); }
+  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .nav-badge {
+    background: var(--teal);
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--teal) 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 em { font-style: italic; color: #a8d4d8; }
+  .hero p { font-size: 14px; color: rgba(255,255,255,0.75); max-width: 600px; }
+  .hero-stats { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .hero-stat { }
+  .hero-stat-n { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 500; color: #a8d4d8; }
+  .hero-stat-l { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+  /* JOURNEY STEPS */
+  .journey { display: flex; gap: 0; margin-bottom: 2rem; }
+  .journey-step {
+    flex: 1;
+    padding: 1.25rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-right: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .journey-step:first-child { border-radius: 10px 0 0 10px; }
+  .journey-step:last-child { border-right: 1px solid var(--border); border-radius: 0 10px 10px 0; }
+  .journey-step:hover { background: var(--teal-pale); }
+  .journey-step.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .journey-step.active .step-num { background: rgba(255,255,255,0.2); color: white; }
+  .journey-step.active .step-label { color: rgba(255,255,255,0.8); }
+  .step-num {
+    width: 28px; height: 28px;
+    background: var(--teal-pale);
+    color: var(--teal);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .step-title { font-size: 12px; font-weight: 500; }
+  .step-label { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .journey-content { animation: fadeIn 0.25s ease; }
+
+  /* PEPTIDE SELECTOR */
+  .peptide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .peptide-btn {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .peptide-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+  .peptide-btn.active { border-color: var(--teal); background: var(--teal); color: white; }
+  .peptide-btn.active .pb-score { background: rgba(255,255,255,0.2); color: white; }
+  .pb-name { font-size: 12px; font-weight: 500; }
+  .pb-alias { font-size: 10px; color: var(--ink-muted); margin-top: 1px; }
+  .peptide-btn.active .pb-alias { color: rgba(255,255,255,0.7); }
+  .pb-score {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-top: 4px;
+    background: var(--teal-pale);
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  /* REPORT STYLES */
+  .report-header {
+    background: var(--ink);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .report-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; }
+  .report-header .rh-meta { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .report-body { background: white; border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; padding: 1.5rem; }
+
+  .candidacy-score {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .cs-suitable { background: var(--success-bg); border: 1px solid #b8ddc7; }
+  .cs-conditional { background: var(--warn-bg); border: 1px solid #e8ccaa; }
+  .cs-contra { background: var(--danger-bg); border: 1px solid #e8aaaa; }
+  .cs-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; }
+  .cs-suitable .cs-num { color: var(--success); }
+  .cs-conditional .cs-num { color: var(--warn); }
+  .cs-label { font-size: 13px; font-weight: 500; }
+  .cs-desc { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+
+  .biomarker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .biomarker-row:last-child { border-bottom: none; }
+  .bm-name { font-weight: 500; width: 35%; }
+  .bm-value { width: 20%; color: var(--ink-light); }
+  .bm-range { width: 25%; color: var(--ink-muted); font-size: 11px; }
+  .bm-status { width: 20%; text-align: right; }
+  .status-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .status-ok { background: var(--success-bg); color: var(--success); }
+  .status-warn { background: var(--warn-bg); color: var(--warn); }
+  .status-flag { background: var(--danger-bg); color: var(--danger); }
+
+  .geno-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    gap: 8px;
+  }
+  .geno-row:last-child { border-bottom: none; }
+  .geno-gene { font-weight: 500; font-family: monospace; font-size: 11px; width: 18%; color: var(--teal); }
+  .geno-variant { width: 20%; color: var(--ink-muted); font-size: 11px; }
+  .geno-genotype { width: 14%; font-weight: 500; font-family: monospace; }
+  .geno-interp { flex: 1; color: var(--ink-light); }
+  .geno-impact { width: 16%; text-align: right; }
+
+  .impact-high { background: #fff3e8; color: #8a4a1a; }
+  .impact-mod { background: #fffce8; color: #7a6a1a; }
+  .impact-low { background: #eaf5ee; color: var(--success); }
+  .impact-gate { background: var(--danger-bg); color: var(--danger); }
+
+  /* DASHBOARD STYLES */
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .metric-label { font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .metric-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 500; color: var(--teal); margin: 4px 0; }
+  .metric-delta { font-size: 11px; }
+  .delta-up { color: var(--success); }
+  .delta-down { color: var(--danger); }
+
+  .chart-bar-wrap { margin-top: 8px; }
+  .chart-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; }
+  .chart-bar-label { width: 60px; color: var(--ink-muted); text-align: right; }
+  .chart-bar-track { flex: 1; height: 14px; background: var(--teal-pale); border-radius: 3px; overflow: hidden; }
+  .chart-bar-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.6s ease; }
+  .chart-bar-val { width: 40px; color: var(--ink-light); font-weight: 500; }
+
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 5px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 1rem; }
+  .timeline-dot { position: absolute; left: -1.25rem; top: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+  .timeline-dot.future { background: var(--border); }
+  .timeline-date { font-size: 10px; color: var(--ink-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .timeline-text { font-size: 12px; color: var(--ink-light); }
+
+  /* OFFERING OVERVIEW */
+  .offering-block {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .offering-block:last-child { border-bottom: none; }
+  .ob-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--teal-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .ob-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .ob-desc { font-size: 12px; color: var(--ink-muted); }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+  .section-sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 1.5rem; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    background: var(--cream);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .data-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+  }
+  .data-table tr:hover td { background: var(--cream); }
+
+  /* ACCORDION */
+  .accordion { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1rem; }
+  .acc-header {
+    padding: 12px 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .acc-header:hover { background: var(--cream); }
+  .acc-arrow { font-size: 10px; transition: transform 0.2s; }
+  .acc-header.open .acc-arrow { transform: rotate(90deg); }
+  .acc-body { display: none; padding: 1rem; border-top: 1px solid var(--border); background: var(--cream); }
+  .acc-body.open { display: block; animation: fadeIn 0.2s ease; }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin: 2px;
+    background: var(--teal-pale);
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .tag-dna { background: #f0eeff; color: #4a3ab5; }
+  .tag-blood { background: var(--teal-pale); color: var(--teal); }
+  .tag-wgs { background: var(--warn-bg); color: var(--warn); }
+
+  /* WEARABLE */
+  .wearable-stream {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .ws-card {
+    background: var(--ink);
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .ws-label { font-size: 10px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.05em; }
+  .ws-value { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: #a8d4d8; margin: 4px 0 2px; }
+  .ws-sub { font-size: 10px; color: rgba(255,255,255,0.4); }
+
+  .progress-track { background: var(--border); border-radius: 4px; height: 6px; margin-top: 4px; }
+  .progress-fill { height: 6px; border-radius: 4px; background: var(--teal); transition: width 0.5s ease; }
+
+  /* PRINT / DOWNLOAD BAR */
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+  }
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .btn-outline { border-color: var(--border); background: white; color: var(--ink-light); }
+  .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-primary { background: var(--teal); color: white; border-color: var(--teal); }
+  .btn-primary:hover { background: var(--teal-light); }
+
+  /* FOOTER NOTE */
+  .footnote { font-size: 11px; color: var(--ink-muted); font-style: italic; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .peptide-grid { grid-template-columns: 1fr 1fr; }
+    .wearable-stream { grid-template-columns: 1fr 1fr; }
+    .journey { flex-direction: column; }
+    .journey-step:first-child { border-radius: 10px 10px 0 0; }
+    .journey-step:last-child { border-radius: 0 0 10px 10px; border-right: 1px solid var(--border); border-top: none; }
+    .journey-step { border-right: 1px solid var(--border); border-bottom: none; }
+    nav { padding: 0 1rem; }
+    .nav-tabs { gap: 0; overflow-x: auto; }
+    .nav-tab { padding: 0 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACtASMDASIAAhEBAxEB/8QAGwABAAMAAwEAAAAAAAAAAAAAAAYHCAIDBAX/xABMEAABAwIEBAAICAoGCwAAAAABAAIDBAUGBxEhCBITMRQiMkFRYXGBFTc4YnR1srMWFyM2QoKRksPRJDNVVpTSJkNGUmNyhJWhseH/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAgMBBP/EACgRAQEAAgECBAYDAQAAAAAAAAABAhEDEiEEEzEyIjNBUXGBFCNDQv/aAAwDAQACEQMRAD8A2WiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiD/2Q==" alt="Lifenome" style="height:28px; opacity:0.15;">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACtASMDASIAAhEBAxEB/8QAGwABAAMAAwEAAAAAAAAAAAAAAAYHCAIDBAX/xABMEAABAwIEBAAICAoGCwAAAAABAAIDBAUGBxEhCBITMRQiMkFRYXGBFTc4YnR1srMWFyM2QoKRksPRJDNVVpTSJkNGUmNyhJWhseH/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAgMBBP/EACgRAQEAAgECBAYDAQAAAAAAAAABAhEDEiEEEzEyIjNBUXGBFCNDQv/aAAwDAQACEQMRAD8A2WiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiACIiACIiACIiACIiACIiACIiACIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiD/2Q==" alt="" style="height:28px; position:absolute; left:2rem; top:50%; transform:translateY(-50%); display:none;">
+    <!-- Inline text logo as fallback styled to match -->
+    <span style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:500; color:#2a6b72; letter-spacing:-0.01em;">LifeNome<sup style="font-size:0.55rem; vertical-align:super; color:#6b7f94;">®</sup></span>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showSection('overview')">Platform overview</div>
+    <div class="nav-tab" onclick="showSection('journey')">Patient journey</div>
+    <div class="nav-tab" onclick="showSection('reports')">Sample reports <span class="nav-badge">6</span></div>
+    <div class="nav-tab" onclick="showSection('dashboard')">Digital monitoring</div>
+    <div class="nav-tab" onclick="showSection('testing')">Testing panels</div>
+    <div class="nav-tab" onclick="showSection('partner')">For partners</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ OVERVIEW -->
+<div id="section-overview" class="section active">
+  <div class="hero">
+    <h1>Precision peptide intelligence<br><em>from biomarkers to personalized outcome</em></h1>
+    <p>Lifenome delivers end-to-end genomic and biomarker infrastructure for peptide prescribers — from pre-treatment candidacy screening to longitudinal digital monitoring and personalized effectiveness assessment.</p>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.25rem;">
+    <div class="card">
+      <div class="card-title">What we offer</div>
+      <div class="offering-block">
+        <div class="ob-icon">🧬</div>
+        <div><div class="ob-title">Genomic candidacy screening</div><div class="ob-desc">SNP array + targeted sequencing panels identify optimal candidates and hard contraindications before prescription. One-time DNA collection, lifetime utility.</div></div>
+      </div>
+      <div class="offering-block">
+        <div class="ob-icon">🩸</div>
+        <div><div class="ob-title">Blood biomarker panels</div><div class="ob-desc">Peptide-specific baseline and follow-up panels aligned to each compound's mechanism, safety profile, and efficacy endpoints.</div></div>
+      </div>
+      <div class="offering-block">
+        <div class="ob-icon">📋</div>
+        <div><div class="ob-title">Physician candidacy reports</div><div class="ob-desc">Structured PDF/portal reports with composite scores, traffic-light flags, safety gates, and monitoring protocols — designed for clinical decision-making.</div></div>
+      </div>
+      <div class="offering-block">
+        <div class="ob-icon">📱</div>
+        <div><div class="ob-title">Digital health companion app</div><div class="ob-desc">Patient-facing app integrating wearable data, biomarker trends, and peptide-specific health dashboards for longitudinal tracking.</div></div>
+      </div>
+      <div class="offering-block">
+        <div class="ob-icon">📊</div>
+        <div><div class="ob-title">Effectiveness assessment</div><div class="ob-desc">Structured outcome tracking aligned to peptide health goals, with genotype-adjusted response benchmarks and population-level insight aggregation.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Peptide programs available</div>
+      <table class="data-table">
+        <thead><tr><th>Peptide</th><th>Primary indication</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td><strong>GLP-1</strong></td><td>Metabolic / weight</td><td>⬤⬤⬤⬤⬤</td></tr>
+          <tr><td><strong>BPC-157</strong></td><td>Tissue repair</td><td>⬤⬤⬤⬤○</td></tr>
+          <tr><td><strong>MK-677</strong></td><td>GH axis / lean mass</td><td>⬤⬤⬤⬤○</td></tr>
+          <tr><td><strong>Melanotan II</strong></td><td>Sexual function / skin</td><td>⬤⬤⬤○○</td></tr>
+          <tr><td><strong>GHK-Cu</strong></td><td>Skin / wound healing</td><td>⬤⬤⬤○○</td></tr>
+          <tr><td><strong>Semax</strong></td><td>Cognition / neuroprotection</td><td>⬤⬤⬤○○</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:1rem;">
+        <div class="card-title" style="font-size:0.95rem;">Lifenome's differentiation</div>
+        <div style="font-size:12px; color:var(--ink-muted); line-height:1.7;">
+          Raw genetic variants and blood values are converted into <strong>composite clinical scores</strong> — Metabolic Readiness Index, Tissue Repair Suitability, Cognitive Readiness Index — rather than lists of markers. Physicians receive a phenotype classification and a recommendation, not a data dump.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ JOURNEY -->
+<div id="section-journey" class="section">
+  <div class="section-title">Patient journey</div>
+  <div class="section-sub">End-to-end flow from physician referral through longitudinal monitoring</div>
+
+  <div class="journey">
+    <div class="journey-step active" onclick="setJourneyStep(0, this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Physician referral</div>
+      <div class="step-label">Intake &amp; consent</div>
+    </div>
+    <div class="journey-step" onclick="setJourneyStep(1, this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Sample collection</div>
+      <div class="step-label">Blood + DNA kit</div>
+    </div>
+    <div class="journey-step" onclick="setJourneyStep(2, this)">
+      <div class="step-num">3</div>
+      <div class="step-title">Lab processing</div>
+      <div class="step-label">Analysis &amp; scoring</div>
+    </div>
+    <div class="journey-step" onclick="setJourneyStep(3, this)">
+      <div class="step-num">4</div>
+      <div class="step-title">Candidacy report</div>
+      <div class="step-label">Physician delivery</div>
+    </div>
+    <div class="journey-step" onclick="setJourneyStep(4, this)">
+      <div class="step-num">5</div>
+      <div class="step-title">Treatment start</div>
+      <div class="step-label">App activation</div>
+    </div>
+    <div class="journey-step" onclick="setJourneyStep(5, this)">
+      <div class="step-num">6</div>
+      <div class="step-title">Monitoring</div>
+      <div class="step-label">Ongoing tracking</div>
+    </div>
+  </div>
+
+  <div class="journey-content">
+    <div id="journey-panel-0" class="card">
+      <div class="card-title">Step 1 — Physician referral &amp; intake</div>
+      <div class="grid-2">
+        <div>
+          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">The prescribing physician selects the target peptide(s) and initiates a Lifenome testing order through the physician portal or API integration.</p>
+          <div class="offering-block"><div class="ob-icon" style="font-size:13px;">📝</div><div><div class="ob-title">Physician portal order</div><div class="ob-desc">Select peptide program, enter patient demographics, specify indication. System auto-generates the appropriate panel bundle.</div></div></div>
+          <div class="offering-block"><div class="ob-icon" style="font-size:13px;">✅</div><div><div class="ob-title">Digital consent</div><div class="ob-desc">HIPAA-compliant e-consent for genetic testing, data processing, and app monitoring (optional).</div></div></div>
+          <div class="offering-block"><div class="ob-icon" style="font-size:13px;">🏥</div><div><div class="ob-title">Clinical history screen</div><div class="ob-desc">Brief structured questionnaire capturing prior cancer history, current medications, and contraindication flags — cross-checked against DNA safety gates before kit dispatch.</div></div></div>
+        </div>
+        <div>
+          <div style="background:var(--cream); border-radius:8px; padding:1rem;">
+            <div style="font-size:11px; font-weight:500; text-transform:uppercase; color:var(--ink-muted); letter-spacing:0.05em; margin-bottom:8px;">What gets ordered automatically by peptide</div>
+            <div class="biomarker-row"><div class="bm-name">GLP-1</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Full metabolic + RET sequencing</div></div>
+            <div class="biomarker-row"><div class="bm-name">BPC-157</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Inflammation + BRCA panel + IBD genes</div></div>
+            <div class="biomarker-row"><div class="bm-name">MK-677</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">GH axis + oncology gate + body comp</div></div>
+            <div class="biomarker-row"><div class="bm-name">Melanotan II</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Pigmentation + CDKN2A + hormones</div></div>
+            <div class="biomarker-row"><div class="bm-name">GHK-Cu</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Copper panel + ATP7B + collagen genes</div></div>
+            <div class="biomarker-row" style="border:none;"><div class="bm-name">Semax</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Neuro panel + BDNF + dopamine genes</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="journey-panel-1" class="card" style="display:none;">
+      <div class="card-title">Step 2 — Sample collection</div>
+      <div class="grid-2">
+        <div>
+          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">Two parallel collection streams — blood draw and DNA saliva/buccal kit — with flexible location options to match the patient and partner setting.</p>
+          <div class="offering-block"><div class="ob-icon">🩸</div><div><div class="ob-title">Blood draw — three location options</div><div class="ob-desc"><strong>At MedSpa</strong> — draw performed on-site at the prescribing partner location. <strong>Scheduled lab visit</strong> — patient directed to a CLIA-certified partner lab near them. <strong>At home</strong> — mobile phlebotomy dispatch for eligible panels. Fasting requirements communicated to patient automatically.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">🧬</div><div><div class="ob-title">DNA saliva kit (home)</div><div class="ob-desc">OGR-575 saliva collection for DNA sequencing. Prepaid return envelope. Collection takes 5 minutes. One-time only.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">📦</div><div><div class="ob-title">One-time DNA, lifetime utility</div><div class="ob-desc">DNA panel is collected once. All future peptide candidacy decisions for that patient draw on the same genomic data — no re-collection ever required.</div></div></div>
+        </div>
+        <div style="background:var(--cream); border-radius:8px; padding:1rem;">
+          <div style="font-size:11px; font-weight:500; text-transform:uppercase; color:var(--ink-muted); letter-spacing:0.05em; margin-bottom:8px;">Turnaround times</div>
+          <div class="biomarker-row"><div class="bm-name">Blood panel</div><div style="flex:1; font-size:12px; color:var(--ink-muted);">2–4 business days</div></div>
+          <div class="biomarker-row"><div class="bm-name">DNA sequencing</div><div style="flex:1; font-size:12px; color:var(--ink-muted);">1–3 weeks (depending on volume)</div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">Full report delivery</div><div style="flex:1; font-size:12px; color:var(--success); font-weight:500;">~3 weeks end-to-end</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="journey-panel-2" class="card" style="display:none;">
+      <div class="card-title">Step 3 — Lab processing &amp; scoring</div>
+      <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">Lifenome's proprietary scoring engine converts raw blood values and genotype data into composite clinical indices.</p>
+      <div class="grid-3">
+        <div style="background:var(--teal-pale); border-radius:8px; padding:1rem;">
+          <div style="font-size:11px; font-weight:500; color:var(--teal); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">Blood processing</div>
+          <div style="font-size:12px; color:var(--ink-muted);">CLIA-certified partner lab runs peptide-specific panels. Results transmitted via HL7/FHIR to Lifenome API within 2–4 days.</div>
+        </div>
+        <div style="background:#f0eeff; border-radius:8px; padding:1rem;">
+          <div style="font-size:11px; font-weight:500; color:#4a3ab5; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">Genomic analysis</div>
+          <div style="font-size:12px; color:var(--ink-muted);">DNA sequencing QC → variant calling → PRS computation → variant classification (ACMG criteria). Covers both common and rare variants relevant to each peptide's safety and efficacy profile.</div>
+        </div>
+        <div style="background:var(--cream); border-radius:8px; padding:1rem;">
+          <div style="font-size:11px; font-weight:500; color:var(--ink); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">Composite scoring</div>
+          <div style="font-size:12px; color:var(--ink-muted);">Peptide-specific algorithms combine blood + genotype into Candidacy Index, Safety Gate status, Response Predictor tier, and Monitoring Protocol assignment.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="journey-panel-3" class="card" style="display:none;">
+      <div class="card-title">Step 4 — Physician candidacy report</div>
+      <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">A structured clinical report delivered to the physician portal within 24 hours of data completion. View sample reports in the <strong>Sample Reports</strong> tab.</p>
+      <div class="grid-2">
+        <div>
+          <div class="offering-block"><div class="ob-icon">🚦</div><div><div class="ob-title">Candidacy tier</div><div class="ob-desc">Suitable / Conditional / Contraindicated — with specific rationale for each flag.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">🔬</div><div><div class="ob-title">Biomarker baseline</div><div class="ob-desc">Annotated blood panel with reference ranges and peptide-specific interpretation.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">🧬</div><div><div class="ob-title">Genotype summary</div><div class="ob-desc">Key variants with clinical interpretation, response prediction, and safety flags.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">📅</div><div><div class="ob-title">Monitoring protocol</div><div class="ob-desc">Peptide-specific follow-up schedule: which labs to repeat, at what intervals, and what response benchmarks to track.</div></div></div>
+        </div>
+        <div style="background:var(--cream); border-radius:8px; padding:1rem;">
+          <div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-muted); margin-bottom:8px;">Delivery formats</div>
+          <div class="biomarker-row"><div class="bm-name">PDF report</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Branded, print-ready clinical document</div></div>
+          <div class="biomarker-row"><div class="bm-name">Portal dashboard</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Interactive physician portal with drill-down</div></div>
+          <div class="biomarker-row"><div class="bm-name">EHR integration</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">HL7 FHIR / API for Epic, Athena, etc.</div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">Patient summary</div><div style="flex:1; font-size:11px; color:var(--ink-muted);">Plain-language version for app</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="journey-panel-4" class="card" style="display:none;">
+      <div class="card-title">Step 5 — Treatment start &amp; app activation</div>
+      <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">Upon treatment initiation, the patient activates their Lifenome Health Companion app — pre-loaded with their genomic profile, baseline biomarkers, and peptide-specific health goals.</p>
+      <div class="grid-3">
+        <div style="background:var(--teal-pale); border-radius:8px; padding:1rem;">
+          <div style="font-size:12px; font-weight:500; color:var(--teal); margin-bottom:6px;">Personalized health dashboard</div>
+          <div style="font-size:12px; color:var(--ink-muted);">Pre-populated with baseline values. Goal tiles aligned to the prescribed peptide's intended health outcomes.</div>
+        </div>
+        <div style="background:#f0eeff; border-radius:8px; padding:1rem;">
+          <div style="font-size:12px; font-weight:500; color:#4a3ab5; margin-bottom:6px;">Wearable integration</div>
+          <div style="font-size:12px; color:var(--ink-muted);">Apple Health, Garmin, Oura, Fitbit, WHOOP. Activity, sleep, HRV, and resting HR tracked alongside biomarker data.</div>
+        </div>
+        <div style="background:var(--warn-bg); border-radius:8px; padding:1rem;">
+          <div style="font-size:12px; font-weight:500; color:var(--warn); margin-bottom:6px;">Symptom &amp; adherence logging</div>
+          <div style="font-size:12px; color:var(--ink-muted);">Structured check-ins for side effect monitoring, dosing adherence, and subjective wellbeing scores.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="journey-panel-5" class="card" style="display:none;">
+      <div class="card-title">Step 6 — Longitudinal monitoring &amp; effectiveness assessment</div>
+      <div class="grid-2">
+        <div>
+          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:1rem;">Continuous data integration from wearables + scheduled biomarker re-testing creates a complete picture of treatment response over time.</p>
+          <div class="offering-block"><div class="ob-icon">📈</div><div><div class="ob-title">Biomarker trend tracking</div><div class="ob-desc">Repeat blood panels at protocol-defined intervals plotted against baseline and genotype-adjusted benchmarks.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">⌚</div><div><div class="ob-title">Wearable data fusion</div><div class="ob-desc">Sleep quality, activity levels, HRV trends, and body composition changes correlated with treatment timeline.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">🎯</div><div><div class="ob-title">Response benchmarking</div><div class="ob-desc">Individual response compared to genotype-matched population cohort — identifies non-responders early for protocol adjustment.</div></div></div>
+          <div class="offering-block"><div class="ob-icon">📊</div><div><div class="ob-title">Physician effectiveness reports</div><div class="ob-desc">Quarterly physician-facing outcomes reports with population-level insights across their peptide-treated patient cohort.</div></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px;">Follow-up cadence by peptide</div>
+          <table class="data-table">
+            <thead><tr><th>Peptide</th><th>3 mo</th><th>6 mo</th><th>12 mo</th></tr></thead>
+            <tbody>
+              <tr><td>GLP-1</td><td>HbA1c, lipids</td><td>Full panel</td><td>Full panel</td></tr>
+              <tr><td>BPC-157</td><td>Inflammation</td><td>VEGF, LFTs</td><td>Full panel</td></tr>
+              <tr><td>MK-677</td><td>IGF-1, glucose</td><td>DEXA, IGF-1</td><td>Full panel</td></tr>
+              <tr><td>Melanotan II</td><td>BP, hormones</td><td>Dermatoscopy</td><td>Full panel</td></tr>
+              <tr><td>GHK-Cu</td><td>Cu, collagen Mx</td><td>Skin assess.</td><td>Full panel</td></tr>
+              <tr><td>Semax</td><td>BDNF, cortisol</td><td>Cognitive Mx</td><td>Full panel</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ REPORTS -->
+<div id="section-reports" class="section">
+  <div class="section-title">Sample candidacy reports</div>
+  <div class="section-sub">Select a peptide to view a sample physician candidacy report</div>
+
+  <div class="peptide-grid" style="margin-bottom:1.5rem;">
+    <div class="peptide-btn active" onclick="showReport('glp1', this)"><div class="pb-name">GLP-1</div><div class="pb-alias">Semaglutide class</div><span class="pb-score">★★★★★ 5/5</span></div>
+    <div class="peptide-btn" onclick="showReport('bpc157', this)"><div class="pb-name">BPC-157</div><div class="pb-alias">Body Protection Compound</div><span class="pb-score">★★★★○ 4/5</span></div>
+    <div class="peptide-btn" onclick="showReport('mk677', this)"><div class="pb-name">Ibutamoren MK-677</div><div class="pb-alias">Ghrelin mimetic</div><span class="pb-score">★★★★○ 4/5</span></div>
+    <div class="peptide-btn" onclick="showReport('mt2', this)"><div class="pb-name">Melanotan II</div><div class="pb-alias">MC1R agonist</div><span class="pb-score">★★★○○ 3/5</span></div>
+    <div class="peptide-btn" onclick="showReport('ghkcu', this)"><div class="pb-name">GHK-Cu</div><div class="pb-alias">Copper tripeptide-1</div><span class="pb-score">★★★○○ 3/5</span></div>
+    <div class="peptide-btn" onclick="showReport('semax', this)"><div class="pb-name">Semax</div><div class="pb-alias">ACTH(4-10) analogue</div><span class="pb-score">★★★○○ 3/5</span></div>
+  </div>
+
+  <!-- GLP-1 Report -->
+  <div id="report-glp1">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>GLP-1 Agonist — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient A &nbsp;|&nbsp; DOB: 1978-03-14 &nbsp;|&nbsp; Report date: 2025-04-15 &nbsp;|&nbsp; Ordering physician: Dr. J. Hernandez MD</div>
+      </div>
+      <div style="text-align:right; font-size:11px; color:rgba(255,255,255,0.5);">Report ID: LN-GLP1-20250415-00142</div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-suitable">
+        <div class="cs-num">87</div>
+        <div><div class="cs-label" style="color:var(--success);">Suitable candidate</div><div class="cs-desc">Strong metabolic indication. No safety gate flags. Proceed with standard initiation protocol.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood biomarker panel</div>
+          <div class="biomarker-row"><div class="bm-name">HbA1c</div><div class="bm-value">7.4%</div><div class="bm-range">Normal &lt;5.7%</div><div class="bm-status"><span class="status-pill status-flag">Elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Fasting glucose</div><div class="bm-value">138 mg/dL</div><div class="bm-range">70–99 mg/dL</div><div class="bm-status"><span class="status-pill status-flag">High</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">HOMA-IR</div><div class="bm-value">3.8</div><div class="bm-range">&lt;2.0 optimal</div><div class="bm-status"><span class="status-pill status-warn">Elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">LDL-C (ApoB)</div><div class="bm-value">142 / 118</div><div class="bm-range">ApoB &lt;90 mg/dL</div><div class="bm-status"><span class="status-pill status-warn">Borderline</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">hs-CRP</div><div class="bm-value">3.2 mg/L</div><div class="bm-range">&lt;1.0 optimal</div><div class="bm-status"><span class="status-pill status-warn">Elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">ALT / AST</div><div class="bm-value">38 / 29 U/L</div><div class="bm-range">ALT &lt;56 U/L</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">eGFR</div><div class="bm-value">74 mL/min</div><div class="bm-range">&gt;60 adequate</div><div class="bm-status"><span class="status-pill status-ok">Adequate</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Calcitonin</div><div class="bm-value">&lt;2.0 pg/mL</div><div class="bm-range">&lt;10 pg/mL</div><div class="bm-status"><span class="status-pill status-ok">Clear</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">TSH</div><div class="bm-value">2.1 mIU/L</div><div class="bm-range">0.4–4.0</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">TCF7L2</div><div class="geno-variant">rs7903146</div><div class="geno-genotype">CT</div><div class="geno-interp">Heterozygous risk allele. Moderate T2D susceptibility — strong GLP-1 treatment indication.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row"><div class="geno-gene">GLP1R</div><div class="geno-variant">rs6923761</div><div class="geno-genotype">AG</div><div class="geno-interp">Heterozygous. Intermediate receptor sensitivity. Expected weight response: moderate-high tier.</div><div class="geno-impact"><span class="status-pill impact-low">Favorable</span></div></div>
+          <div class="geno-row"><div class="geno-gene">FTO</div><div class="geno-variant">rs9939609</div><div class="geno-genotype">AA</div><div class="geno-interp">Homozygous risk. High obesity genetic load — supports strong pharmacological intervention.</div><div class="geno-impact"><span class="status-pill impact-high">High risk</span></div></div>
+          <div class="geno-row"><div class="geno-gene">PPARG</div><div class="geno-variant">rs1801282</div><div class="geno-genotype">CC</div><div class="geno-interp">Wild-type. Standard insulin sensitivity genetic background.</div><div class="geno-impact"><span class="status-pill impact-low">Neutral</span></div></div>
+          <div class="geno-row"><div class="geno-gene">APOE</div><div class="geno-variant">ε3/ε3</div><div class="geno-genotype">ε3/ε3</div><div class="geno-interp">Common genotype. Standard cardiovascular risk profile.</div><div class="geno-impact"><span class="status-pill impact-low">Neutral</span></div></div>
+          <div class="geno-row"><div class="geno-gene">RET</div><div class="geno-variant">Sequencing</div><div class="geno-genotype">WT</div><div class="geno-interp">No pathogenic variants identified. MEN2/MTC contraindication cleared.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">Obesity PRS</div><div class="geno-variant">Multi-SNP</div><div class="geno-genotype">83rd %ile</div><div class="geno-interp">High polygenic obesity burden — strongly supports pharmacological weight management.</div><div class="geno-impact"><span class="status-pill impact-high">High load</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--teal-pale); border-radius:8px; border-left:3px solid var(--teal);">
+        <div style="font-size:12px; font-weight:500; color:var(--teal); margin-bottom:4px;">Clinical recommendation</div>
+        <div style="font-size:12px; color:var(--ink-light);">Patient presents with confirmed T2D (HbA1c 7.4%), high polygenic obesity burden (83rd percentile PRS), and favorable GLP-1R genotype. RET sequencing clear. <strong>Proceed with GLP-1 agonist initiation at standard titration protocol.</strong> Repeat HbA1c + lipids at 3 months. Full panel at 6 months.</div>
+      </div>
+      <div class="footnote">This report is intended to support clinical decision-making and does not constitute a prescription or independent medical advice. All treatment decisions remain with the prescribing physician. Lifenome ID: LN-GLP1-20250415-00142.</div>
+    </div>
+  </div>
+
+  <!-- BPC-157 -->
+  <div id="report-bpc157" style="display:none;">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>BPC-157 — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient B &nbsp;|&nbsp; DOB: 1985-09-22 &nbsp;|&nbsp; Report date: 2025-04-15 &nbsp;|&nbsp; Ordering physician: Dr. S. Park MD</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-suitable">
+        <div class="cs-num">79</div>
+        <div><div class="cs-label" style="color:var(--success);">Suitable — musculoskeletal indication</div><div class="cs-desc">Elevated inflammatory markers confirm GI/tendon indication. VEGF within acceptable range. No oncology flag.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood panel</div>
+          <div class="biomarker-row"><div class="bm-name">hs-CRP</div><div class="bm-value">6.4 mg/L</div><div class="bm-range">&lt;1.0 optimal</div><div class="bm-status"><span class="status-pill status-flag">High</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">IL-6</div><div class="bm-value">8.2 pg/mL</div><div class="bm-range">&lt;7 pg/mL</div><div class="bm-status"><span class="status-pill status-warn">Elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">ESR</div><div class="bm-value">34 mm/hr</div><div class="bm-range">&lt;20 mm/hr</div><div class="bm-status"><span class="status-pill status-warn">Elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">VEGF (serum)</div><div class="bm-value">142 pg/mL</div><div class="bm-range">&lt;500 pg/mL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Calprotectin</div><div class="bm-value">188 µg/g</div><div class="bm-range">&lt;50 µg/g</div><div class="bm-status"><span class="status-pill status-flag">Elevated</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">ALT / Bilirubin</div><div class="bm-value">28 / 0.8</div><div class="bm-range">Normal ranges</div><div class="bm-status"><span class="status-pill status-ok">Clear</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">IL6</div><div class="geno-variant">rs1800795</div><div class="geno-genotype">GC</div><div class="geno-interp">Heterozygous. Intermediate IL-6 promoter activity. Consistent with elevated serum IL-6.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row"><div class="geno-gene">MMP3</div><div class="geno-variant">rs679620</div><div class="geno-genotype">AA</div><div class="geno-interp">Homozygous. Reduced matrix remodeling capacity — supports tissue repair indication.</div><div class="geno-impact"><span class="status-pill impact-high">High load</span></div></div>
+          <div class="geno-row"><div class="geno-gene">COL1A1</div><div class="geno-variant">rs1800012</div><div class="geno-genotype">GT</div><div class="geno-interp">Heterozygous Sp1 site. Moderate tendon collagen integrity reduction. Injury risk context.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row"><div class="geno-gene">VEGF-A</div><div class="geno-variant">rs2010963</div><div class="geno-genotype">GG</div><div class="geno-interp">Wild-type. Low angiogenic propensity — oncology gate clear at genomic level.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">BRCA1/2</div><div class="geno-variant">Sequencing</div><div class="geno-genotype">WT</div><div class="geno-interp">No pathogenic variants. Oncology gate cleared.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--teal-pale); border-radius:8px; border-left:3px solid var(--teal);">
+        <div style="font-size:12px; font-weight:500; color:var(--teal); margin-bottom:4px;">Clinical recommendation</div>
+        <div style="font-size:12px; color:var(--ink-light);">Significant systemic inflammation (CRP 6.4, calprotectin 188) with MMP3 and COL1A1 genotype supporting musculoskeletal and GI mucosal repair indication. VEGF and BRCA oncology gates cleared. <strong>Proceed with BPC-157 protocol.</strong> Monitor VEGF and LFTs at 6 months. Repeat inflammation panel at 3 months.</div>
+      </div>
+      <div class="footnote">Lifenome ID: LN-BPC157-20250415-00087. For physician use only.</div>
+    </div>
+  </div>
+
+  <!-- MK-677 -->
+  <div id="report-mk677" style="display:none;">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>Ibutamoren MK-677 — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient C &nbsp;|&nbsp; DOB: 1969-11-05 &nbsp;|&nbsp; Ordering physician: Dr. R. Chen MD</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-conditional">
+        <div class="cs-num" style="color:var(--warn);">62</div>
+        <div><div class="cs-label" style="color:var(--warn);">Conditional — metabolic monitoring required</div><div class="cs-desc">GH deficiency confirmed. Elevated fasting glucose warrants careful dose titration and quarterly metabolic monitoring.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood panel</div>
+          <div class="biomarker-row"><div class="bm-name">IGF-1</div><div class="bm-value">98 ng/mL</div><div class="bm-range">Age-ref: 115–307</div><div class="bm-status"><span class="status-pill status-flag">Low</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Basal GH</div><div class="bm-value">0.4 ng/mL</div><div class="bm-range">0.4–10 ng/mL</div><div class="bm-status"><span class="status-pill status-warn">Low-normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Fasting glucose</div><div class="bm-value">108 mg/dL</div><div class="bm-range">70–99 mg/dL</div><div class="bm-status"><span class="status-pill status-warn">Pre-diabetic</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">HbA1c</div><div class="bm-value">5.9%</div><div class="bm-range">Normal &lt;5.7%</div><div class="bm-status"><span class="status-pill status-warn">Pre-diabetic</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">BNP</div><div class="bm-value">18 pg/mL</div><div class="bm-range">&lt;100 pg/mL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">AM Cortisol</div><div class="bm-value">14.2 µg/dL</div><div class="bm-range">6–23 µg/dL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">GHRL</div><div class="geno-variant">rs696217</div><div class="geno-genotype">TT</div><div class="geno-interp">Leu72Met wild-type. Standard ghrelin activity — good receptor target for MK-677.</div><div class="geno-impact"><span class="status-pill impact-low">Favorable</span></div></div>
+          <div class="geno-row"><div class="geno-gene">IRS1</div><div class="geno-variant">rs1801278</div><div class="geno-genotype">GA</div><div class="geno-interp">Heterozygous. Reduced insulin signaling. Combined with pre-diabetic labs — dose caution warranted.</div><div class="geno-impact"><span class="status-pill impact-high">Flag</span></div></div>
+          <div class="geno-row"><div class="geno-gene">ACTN3</div><div class="geno-variant">rs1815739</div><div class="geno-genotype">CT</div><div class="geno-interp">Heterozygous R577X. Mixed fiber type — moderate lean mass response expected.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row"><div class="geno-gene">BRCA1/2</div><div class="geno-variant">Sequencing</div><div class="geno-genotype">WT</div><div class="geno-interp">No pathogenic variants identified. Cancer oncology gate cleared.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">Cancer PRS</div><div class="geno-variant">Multi-SNP</div><div class="geno-genotype">34th %ile</div><div class="geno-interp">Low-moderate polygenic cancer risk. Acceptable for IGF-1 elevation protocol.</div><div class="geno-impact"><span class="status-pill impact-low">Acceptable</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--warn-bg); border-radius:8px; border-left:3px solid #e8a050;">
+        <div style="font-size:12px; font-weight:500; color:var(--warn); margin-bottom:4px;">Conditional recommendation — metabolic monitoring protocol</div>
+        <div style="font-size:12px; color:var(--ink-light);">GH deficiency confirmed (IGF-1 98 ng/mL). IRS1 heterozygous + pre-diabetic glucose warrants <strong>conservative titration and quarterly fasting glucose + HbA1c monitoring.</strong> Initiate at lowest effective dose. Discontinue if HbA1c exceeds 6.5%. BRCA/cancer gates cleared. Body composition DEXA at baseline and 6 months.</div>
+      </div>
+      <div class="footnote">Lifenome ID: LN-MK677-20250415-00203. For physician use only.</div>
+    </div>
+  </div>
+
+  <!-- MT-II -->
+  <div id="report-mt2" style="display:none;">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>Melanotan II — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient D &nbsp;|&nbsp; DOB: 1990-06-18 &nbsp;|&nbsp; Ordering physician: Dr. A. Patel MD</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-conditional">
+        <div class="cs-num" style="color:var(--warn);">55</div>
+        <div><div class="cs-label" style="color:var(--warn);">Conditional — dermatology surveillance required</div><div class="cs-desc">MC1R loss-of-function genotype. Elevated melanoma PRS. Dermatoscopy mandatory before initiation and every 6 months.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood panel</div>
+          <div class="biomarker-row"><div class="bm-name">Testosterone (total)</div><div class="bm-value">312 ng/dL</div><div class="bm-range">300–1000 ng/dL</div><div class="bm-status"><span class="status-pill status-warn">Low-normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">LH / FSH</div><div class="bm-value">3.8 / 5.1</div><div class="bm-range">1.5–9.3 / 1.6–8.0</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Blood pressure</div><div class="bm-value">124/78 mmHg</div><div class="bm-range">&lt;130/85</div><div class="bm-status"><span class="status-pill status-ok">Acceptable</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">Dermatoscopy</div><div class="bm-value">Completed</div><div class="bm-range">No active lesions</div><div class="bm-status"><span class="status-pill status-ok">Clear</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">MC1R</div><div class="geno-variant">R151C</div><div class="geno-genotype">Heterozygous</div><div class="geno-interp">Loss-of-function allele. Reduced receptor activity — altered tanning response, elevated nevi risk.</div><div class="geno-impact"><span class="status-pill impact-high">Flag</span></div></div>
+          <div class="geno-row"><div class="geno-gene">CDKN2A</div><div class="geno-variant">Sequencing</div><div class="geno-genotype">WT</div><div class="geno-interp">No pathogenic variants. High-penetrance melanoma gate cleared.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+          <div class="geno-row"><div class="geno-gene">Melanoma PRS</div><div class="geno-variant">Multi-SNP</div><div class="geno-genotype">71st %ile</div><div class="geno-interp">Elevated polygenic melanoma risk. Mandates enhanced dermatological surveillance protocol.</div><div class="geno-impact"><span class="status-pill impact-high">Elevated</span></div></div>
+          <div class="geno-row"><div class="geno-gene">COMT</div><div class="geno-variant">rs4680</div><div class="geno-genotype">GG</div><div class="geno-interp">Val/Val. Higher COMT activity — lower dopaminergic tone. May modulate libido response to MT-II.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">IRF4 / SLC45A2</div><div class="geno-variant">Fitzpatrick</div><div class="geno-genotype">Type II–III</div><div class="geno-interp">Light-intermediate pigmentation phenotype. MC1R loss-of-function raises dysplastic nevi risk with MT-II.</div><div class="geno-impact"><span class="status-pill impact-mod">Caution</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--warn-bg); border-radius:8px; border-left:3px solid #e8a050;">
+        <div style="font-size:12px; font-weight:500; color:var(--warn); margin-bottom:4px;">Conditional recommendation — enhanced surveillance protocol</div>
+        <div style="font-size:12px; color:var(--ink-light);">MC1R R151C heterozygous + elevated melanoma PRS (71st percentile) require mandatory dermatoscopy at baseline (completed, clear) and every 6 months on treatment. CDKN2A sequencing clear — high-penetrance gate passed. <strong>May initiate with structured surveillance. Discontinue immediately if new or changing nevi identified.</strong></div>
+      </div>
+      <div class="footnote">Lifenome ID: LN-MT2-20250415-00319. For physician use only.</div>
+    </div>
+  </div>
+
+  <!-- GHK-Cu -->
+  <div id="report-ghkcu" style="display:none;">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>GHK-Cu — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient E &nbsp;|&nbsp; DOB: 1972-02-28 &nbsp;|&nbsp; Ordering physician: Dr. L. Russo MD</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-suitable">
+        <div class="cs-num">82</div>
+        <div><div class="cs-label" style="color:var(--success);">Suitable — topical / intradermal route</div><div class="cs-desc">Wilson's gate cleared. Favorable collagen genotype with elevated collagen degradation markers confirming therapeutic indication.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood panel</div>
+          <div class="biomarker-row"><div class="bm-name">Serum copper</div><div class="bm-value">96 µg/dL</div><div class="bm-range">75–145 µg/dL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Ceruloplasmin</div><div class="bm-value">28 mg/dL</div><div class="bm-range">20–60 mg/dL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Zinc (serum)</div><div class="bm-value">82 µg/dL</div><div class="bm-range">70–120 µg/dL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">P1NP</div><div class="bm-value">38 µg/L</div><div class="bm-range">15–74 µg/L</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">hs-CRP</div><div class="bm-value">2.1 mg/L</div><div class="bm-range">&lt;1.0 optimal</div><div class="bm-status"><span class="status-pill status-warn">Mildly elevated</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">ATP7B</div><div class="geno-variant">Sequencing</div><div class="geno-genotype">WT</div><div class="geno-interp">No pathogenic variants. Wilson's disease contraindication gate cleared.</div><div class="geno-impact"><span class="status-pill status-ok">Gate clear</span></div></div>
+          <div class="geno-row"><div class="geno-gene">COL1A1</div><div class="geno-variant">rs1800012</div><div class="geno-genotype">GG</div><div class="geno-interp">Wild-type. Standard collagen structure. Moderate benefit expected from GHK-Cu collagen stimulation.</div><div class="geno-impact"><span class="status-pill impact-low">Neutral</span></div></div>
+          <div class="geno-row"><div class="geno-gene">MMP1</div><div class="geno-variant">rs1799750</div><div class="geno-genotype">2G/2G</div><div class="geno-interp">High MMP1 expression genotype. Elevated collagen degradation rate — supports GHK-Cu indication for skin aging.</div><div class="geno-impact"><span class="status-pill impact-high">High load</span></div></div>
+          <div class="geno-row"><div class="geno-gene">SOD2</div><div class="geno-variant">rs4880</div><div class="geno-genotype">CT</div><div class="geno-interp">Heterozygous. Intermediate mitochondrial antioxidant capacity — moderate oxidative context.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">Skin aging PRS</div><div class="geno-variant">Multi-SNP</div><div class="geno-genotype">68th %ile</div><div class="geno-interp">Above-average polygenic skin aging burden. Supports GHK-Cu candidacy for aesthetic and anti-aging indication.</div><div class="geno-impact"><span class="status-pill impact-high">Elevated</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--teal-pale); border-radius:8px; border-left:3px solid var(--teal);">
+        <div style="font-size:12px; font-weight:500; color:var(--teal); margin-bottom:4px;">Clinical recommendation</div>
+        <div style="font-size:12px; color:var(--ink-light);">ATP7B sequencing clear — Wilson's gate passed. MMP1 2G/2G genotype confirms elevated collagen degradation rate, and skin aging PRS at 68th percentile strongly supports GHK-Cu as aesthetic-repair indication. <strong>Proceed with topical / intradermal protocol.</strong> Recheck serum copper and P1NP at 6 months.</div>
+      </div>
+      <div class="footnote">Lifenome ID: LN-GHKCU-20250415-00156. For physician use only.</div>
+    </div>
+  </div>
+
+  <!-- Semax -->
+  <div id="report-semax" style="display:none;">
+    <div class="report-header">
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px;">Lifenome Peptide Candidacy Report</div>
+        <h2>Semax — Candidacy Assessment</h2>
+        <div class="rh-meta">Patient: Sample Patient F &nbsp;|&nbsp; DOB: 1968-08-03 &nbsp;|&nbsp; Ordering physician: Dr. M. Okafor MD</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="candidacy-score cs-suitable">
+        <div class="cs-num">74</div>
+        <div><div class="cs-label" style="color:var(--success);">Suitable — cognitive decline indication</div><div class="cs-desc">Low serum BDNF with Val66Met homozygous. Strong genomic rationale for BDNF-upregulating therapy. Dopaminergic phenotype supports anxiolytic use case.</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Blood panel</div>
+          <div class="biomarker-row"><div class="bm-name">BDNF (serum)</div><div class="bm-value">18.4 ng/mL</div><div class="bm-range">25–45 ng/mL</div><div class="bm-status"><span class="status-pill status-flag">Low</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">AM Cortisol</div><div class="bm-value">22.1 µg/dL</div><div class="bm-range">6–23 µg/dL</div><div class="bm-status"><span class="status-pill status-warn">Upper-normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Homocysteine</div><div class="bm-value">11.8 µmol/L</div><div class="bm-range">&lt;10 µmol/L</div><div class="bm-status"><span class="status-pill status-warn">Mildly elevated</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">Vitamin B12</div><div class="bm-value">388 pg/mL</div><div class="bm-range">200–900 pg/mL</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row"><div class="bm-name">TSH</div><div class="bm-value">2.4 mIU/L</div><div class="bm-range">0.4–4.0</div><div class="bm-status"><span class="status-pill status-ok">Normal</span></div></div>
+          <div class="biomarker-row" style="border:none;"><div class="bm-name">hs-CRP</div><div class="bm-value">1.8 mg/L</div><div class="bm-range">&lt;1.0 optimal</div><div class="bm-status"><span class="status-pill status-warn">Mild</span></div></div>
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;">Genomic panel</div>
+          <div class="geno-row"><div class="geno-gene">BDNF</div><div class="geno-variant">rs6265 Val66Met</div><div class="geno-genotype">AA (Met/Met)</div><div class="geno-interp">Homozygous Met. Significantly reduced activity-dependent BDNF secretion. Primary Semax indication driver.</div><div class="geno-impact"><span class="status-pill impact-high">Strong indication</span></div></div>
+          <div class="geno-row"><div class="geno-gene">COMT</div><div class="geno-variant">rs4680</div><div class="geno-genotype">AA (Met/Met)</div><div class="geno-interp">Low COMT activity. Higher prefrontal dopamine tone. May respond well to Semax cognitive-stimulating effects.</div><div class="geno-impact"><span class="status-pill impact-low">Favorable</span></div></div>
+          <div class="geno-row"><div class="geno-gene">APOE</div><div class="geno-variant">ε3/ε4</div><div class="geno-genotype">ε3/ε4</div><div class="geno-interp">One ε4 allele. Elevated Alzheimer's risk — neuroprotective therapy strongly motivated. Semax BDNF mechanism relevant.</div><div class="geno-impact"><span class="status-pill impact-high">Elevated risk</span></div></div>
+          <div class="geno-row"><div class="geno-gene">MTHFR</div><div class="geno-variant">C677T</div><div class="geno-genotype">CT</div><div class="geno-interp">Heterozygous. Reduced methylation — consistent with mildly elevated homocysteine. Address with methylfolate.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+          <div class="geno-row" style="border:none;"><div class="geno-gene">Cog PRS</div><div class="geno-variant">Multi-SNP</div><div class="geno-genotype">58th %ile</div><div class="geno-interp">Moderate polygenic neurodegeneration load. Combined with APOE ε4 and BDNF Met/Met — meaningful neuroprotective indication.</div><div class="geno-impact"><span class="status-pill impact-mod">Moderate</span></div></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem; padding:1rem; background:var(--teal-pale); border-radius:8px; border-left:3px solid var(--teal);">
+        <div style="font-size:12px; font-weight:500; color:var(--teal); margin-bottom:4px;">Clinical recommendation</div>
+        <div style="font-size:12px; color:var(--ink-light);">BDNF Met/Met homozygous + low serum BDNF (18.4 ng/mL) + APOE ε3/ε4 creates a compelling neuroprotective case. <strong>Proceed with Semax intranasal protocol.</strong> Note mildly elevated homocysteine — add methylfolate support (MTHFR C677T). Repeat BDNF at 3 months as primary efficacy biomarker. Cognitive assessment (MoCA or similar) at baseline and 6 months.</div>
+      </div>
+      <div class="footnote">Lifenome ID: LN-SEMAX-20250415-00091. For physician use only.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ DASHBOARD -->
+<div id="section-dashboard" class="section">
+  <div class="section-title">Digital monitoring dashboard</div>
+  <div class="section-sub">Patient-facing health companion — shown here for GLP-1 program (Sample Patient A, Day 84 of treatment)</div>
+
+  <div style="background:var(--ink); border-radius:12px; padding:1.5rem; margin-bottom:1.25rem; color:white;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:8px;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:400;">Sample Patient A — GLP-1 Program</div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:2px;">Day 84 of treatment · Last sync: Today 8:42 AM · Wearable: Apple Watch Series 9</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08); border-radius:8px; padding:8px 14px; font-size:12px; color:#a8d4d8;">
+        Overall response: <strong>On track</strong>
+      </div>
+    </div>
+    <div class="wearable-stream">
+      <div class="ws-card"><div class="ws-label">Resting HR</div><div class="ws-value">64</div><div class="ws-sub">bpm · ↓ 4 from baseline</div></div>
+      <div class="ws-card"><div class="ws-label">HRV (7-day)</div><div class="ws-value">42</div><div class="ws-sub">ms · ↑ 8 from baseline</div></div>
+      <div class="ws-card"><div class="ws-label">Sleep score</div><div class="ws-value">78</div><div class="ws-sub">/100 · 7.1 hrs avg</div></div>
+      <div class="ws-card"><div class="ws-label">Active energy</div><div class="ws-value">512</div><div class="ws-sub">kcal/day avg · ↑ 18%</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.25rem;">
+    <div class="card">
+      <div class="card-title">Key biomarker progress</div>
+      <div style="font-size:11px; color:var(--ink-muted); margin-bottom:10px;">Values at baseline vs. day 84</div>
+      <div class="chart-bar-wrap">
+        <div style="font-size:11px; font-weight:500; color:var(--ink-muted); margin-bottom:6px;">HbA1c</div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Baseline</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:74%; background:#e24b4a;"></div></div><div class="chart-bar-val">7.4%</div></div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Day 84</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:58%;"></div></div><div class="chart-bar-val">6.8% ↓</div></div>
+      </div>
+      <div class="chart-bar-wrap" style="margin-top:10px;">
+        <div style="font-size:11px; font-weight:500; color:var(--ink-muted); margin-bottom:6px;">Body weight</div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Baseline</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%; background:#e24b4a;"></div></div><div class="chart-bar-val">103 kg</div></div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Day 84</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:76%;"></div></div><div class="chart-bar-val">95.8 kg ↓</div></div>
+      </div>
+      <div class="chart-bar-wrap" style="margin-top:10px;">
+        <div style="font-size:11px; font-weight:500; color:var(--ink-muted); margin-bottom:6px;">hs-CRP</div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Baseline</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:64%; background:#e8a050;"></div></div><div class="chart-bar-val">3.2 mg/L</div></div>
+        <div class="chart-bar-row"><div class="chart-bar-label">Day 84</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:26%;"></div></div><div class="chart-bar-val">1.4 mg/L ↓</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Goal achievement tracker</div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;"><span>HbA1c target (&lt;6.5%)</span><span style="color:var(--ink-muted);">6.8% → target 6.5%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:72%; background:var(--gold);"></div></div>
+        <div style="font-size:10px; color:var(--ink-muted); margin-top:2px;">72% to goal</div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;"><span>Weight loss target (10%)</span><span style="color:var(--ink-muted);">7% achieved</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:70%;"></div></div>
+        <div style="font-size:10px; color:var(--ink-muted); margin-top:2px;">70% to goal</div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;"><span>hs-CRP normalization (&lt;1.0)</span><span style="color:var(--ink-muted);">1.4 mg/L</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:55%; background:var(--gold);"></div></div>
+        <div style="font-size:10px; color:var(--ink-muted); margin-top:2px;">55% to goal</div>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;"><span>LDL-C target (&lt;100 mg/dL)</span><span style="color:var(--success);">94 mg/dL ✓</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:100%; background:var(--success);"></div></div>
+        <div style="font-size:10px; color:var(--success); margin-top:2px;">Goal achieved</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Treatment timeline</div>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Day 1 — Jan 21, 2025</div><div class="timeline-text">Initiated 0.25 mg/week semaglutide. Baseline labs complete. App activated.</div></div>
+        <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Day 28 — Feb 18, 2025</div><div class="timeline-text">Dose escalated to 0.5 mg/week. Weight −2.8 kg. Mild nausea logged days 3–5.</div></div>
+        <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Day 56 — Mar 18, 2025</div><div class="timeline-text">Dose escalated to 1.0 mg/week. HbA1c trending down. Nausea resolved.</div></div>
+        <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Day 84 — Apr 15, 2025</div><div class="timeline-text">Current. Weight −7.2 kg. HbA1c 6.8%. 3-month labs ordered.</div></div>
+        <div class="timeline-item"><div class="timeline-dot future"></div><div class="timeline-date">Day 90 — Apr 21, 2025 · Upcoming</div><div class="timeline-text">3-month lab draw: HbA1c, fasting glucose, lipid panel, liver panel.</div></div>
+        <div class="timeline-item"><div class="timeline-dot future"></div><div class="timeline-date">Day 180 — Jul 20, 2025 · Planned</div><div class="timeline-text">6-month full panel + physician review + dose optimization decision.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Genotype-adjusted response benchmarking</div>
+      <div style="font-size:12px; color:var(--ink-muted); margin-bottom:1rem;">Patient vs. matched cohort (FTO AA + GLP1R AG genotype, n=412)</div>
+      <div style="background:var(--teal-pale); border-radius:8px; padding:1rem; margin-bottom:10px;">
+        <div style="font-size:11px; font-weight:500; color:var(--teal); margin-bottom:6px;">Weight loss at 12 weeks</div>
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--teal);">7.0%</div>
+          <div style="font-size:12px; color:var(--ink-muted);">This patient &nbsp;|&nbsp; Cohort median: 6.2% &nbsp;|&nbsp; 75th %ile: 8.8%</div>
+        </div>
+        <div style="font-size:11px; color:var(--success); margin-top:4px;">Above cohort median — on track for genotype-predicted response</div>
+      </div>
+      <div style="background:var(--cream); border-radius:8px; padding:1rem;">
+        <div style="font-size:11px; font-weight:500; color:var(--ink-muted); margin-bottom:6px;">HbA1c reduction at 12 weeks</div>
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--teal);">0.6%</div>
+          <div style="font-size:12px; color:var(--ink-muted);">This patient &nbsp;|&nbsp; Cohort median: 0.8%</div>
+        </div>
+        <div style="font-size:11px; color:var(--warn); margin-top:4px;">Slightly below cohort median — continue monitoring, likely catches up by month 6</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TESTING -->
+<div id="section-testing" class="section">
+  <div class="section-title">Testing panels reference</div>
+  <div class="section-sub">Blood and DNA panel specifications by peptide program</div>
+
+  <div id="test-glp1" class="accordion">
+    <div class="acc-header open" onclick="toggleAcc(this)"><span>GLP-1 — Metabolic &amp; safety panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body open">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">HbA1c</span><span class="tag tag-blood">Fasting glucose + insulin</span><span class="tag tag-blood">HOMA-IR</span><span class="tag tag-blood">Lipid panel (LDL, HDL, TG, ApoB)</span><span class="tag tag-blood">hs-CRP</span><span class="tag tag-blood">Liver panel (ALT, AST, GGT)</span><span class="tag tag-blood">eGFR / creatinine</span><span class="tag tag-blood">Thyroid (TSH, fT4)</span><span class="tag tag-blood">Calcitonin</span><span class="tag tag-blood">CMP</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">TCF7L2 rs7903146</span><span class="tag tag-dna">GLP1R rs6923761</span><span class="tag tag-dna">FTO rs9939609</span><span class="tag tag-dna">MC4R rs17782313</span><span class="tag tag-dna">PPARG rs1801282</span><span class="tag tag-dna">APOE ε2/3/4</span><span class="tag tag-dna">Obesity PRS</span><span class="tag tag-wgs">RET sequencing ⚑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)"><span>BPC-157 — Inflammation &amp; tissue repair panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">hs-CRP + ESR</span><span class="tag tag-blood">IL-6, TNF-α</span><span class="tag tag-blood">CBC with differential</span><span class="tag tag-blood">Calprotectin (stool)</span><span class="tag tag-blood">Liver panel + bilirubin</span><span class="tag tag-blood">VEGF (serum)</span><span class="tag tag-blood">CMP</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">COL1A1 rs1800012</span><span class="tag tag-dna">COL5A1</span><span class="tag tag-dna">MMP3 rs679620</span><span class="tag tag-dna">IL-6 rs1800795</span><span class="tag tag-dna">TNF-α rs1800629</span><span class="tag tag-dna">NOD2/CARD15 targeted</span><span class="tag tag-dna">VEGF-A rs2010963</span><span class="tag tag-dna">Wound healing PRS</span><span class="tag tag-wgs">BRCA1/2 sequencing ⚑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)"><span>Ibutamoren MK-677 — GH axis panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">IGF-1 (serum)</span><span class="tag tag-blood">Basal GH</span><span class="tag tag-blood">Fasting glucose + insulin</span><span class="tag tag-blood">HbA1c</span><span class="tag tag-blood">BNP / NT-proBNP</span><span class="tag tag-blood">Body composition (DEXA)</span><span class="tag tag-blood">AM Cortisol</span><span class="tag tag-blood">Bone density (DXA)</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">GHR / IGF1 variants</span><span class="tag tag-dna">GHRL rs696217</span><span class="tag tag-dna">IRS1 rs1801278</span><span class="tag tag-dna">ACTN3 rs1815739</span><span class="tag tag-dna">VDR (Taq1, Fok1)</span><span class="tag tag-dna">CLOCK rs1801260</span><span class="tag tag-dna">Cancer PRS (broad)</span><span class="tag tag-wgs">BRCA1/2 sequencing ⚑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)"><span>Melanotan II — Pigmentation &amp; melanoma safety panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">CBC</span><span class="tag tag-blood">Blood pressure (resting + orthostatic)</span><span class="tag tag-blood">Total + free testosterone</span><span class="tag tag-blood">Estradiol</span><span class="tag tag-blood">LH + FSH + Prolactin</span><span class="tag tag-blood">Lipid panel</span><span class="tag tag-blood">Dermatoscopy audit</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">MC1R (R151C, R160W, D294H)</span><span class="tag tag-dna">Melanoma PRS</span><span class="tag tag-dna">IRF4 / SLC45A2</span><span class="tag tag-dna">COMT rs4680</span><span class="tag tag-dna">ACE I/D targeted PCR</span><span class="tag tag-wgs">CDKN2A sequencing ⚑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)"><span>GHK-Cu — Copper metabolism &amp; collagen panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">Serum copper + ceruloplasmin</span><span class="tag tag-blood">Zinc (Cu:Zn ratio)</span><span class="tag tag-blood">hs-CRP</span><span class="tag tag-blood">Collagen markers (P1NP, CTX)</span><span class="tag tag-blood">Liver panel</span><span class="tag tag-blood">Skin elasticity assessment</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">COL1A1 / COL3A1</span><span class="tag tag-dna">LOX variants</span><span class="tag tag-dna">MMP1 / MMP3</span><span class="tag tag-dna">SOD2 rs4880</span><span class="tag tag-dna">Skin aging PRS</span><span class="tag tag-wgs">ATP7B sequencing ⚑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)"><span>Semax — Neurological &amp; cognitive panel</span><span class="acc-arrow">▶</span></div>
+    <div class="acc-body">
+      <div class="grid-2">
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:var(--teal); margin-bottom:8px;">Blood panel</div>
+          <span class="tag tag-blood">BDNF (serum)</span><span class="tag tag-blood">AM + diurnal cortisol</span><span class="tag tag-blood">DHEA-S</span><span class="tag tag-blood">Homocysteine</span><span class="tag tag-blood">hs-CRP + IL-6</span><span class="tag tag-blood">TSH, fT3, fT4</span><span class="tag tag-blood">Vitamin B12 + folate</span>
+        </div>
+        <div><div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#4a3ab5; margin-bottom:8px;">DNA panel</div>
+          <span class="tag tag-dna">BDNF Val66Met rs6265</span><span class="tag tag-dna">COMT Val158Met rs4680</span><span class="tag tag-dna">APOE ε2/3/4</span><span class="tag tag-dna">5-HTTLPR PCR</span><span class="tag tag-dna">MTHFR C677T / A1298C</span><span class="tag tag-dna">DRD2 rs1800497</span><span class="tag tag-dna">DRD4 VNTR PCR</span><span class="tag tag-dna">Cognitive decline PRS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1rem; padding:10px 14px; background:var(--warn-bg); border-radius:8px; font-size:12px; color:var(--warn);">
+    <strong>⚑ WGS / targeted sequencing flags:</strong> RET (GLP-1 · MEN2/MTC gate), CDKN2A (Melanotan II · melanoma gate), ATP7B (GHK-Cu · Wilson's disease gate), BRCA1/2 (MK-677 &amp; BPC-157 · oncology gate). These are hard clinical safety stops — array genotyping cannot substitute. Covered by Layer 2 targeted NGS safety panel.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PARTNER -->
+<div id="section-partner" class="section">
+  <div class="section-title">Partner with Lifenome</div>
+  <div class="section-sub">White-label and integration options for peptide companies, clinics, and compounding pharmacies</div>
+
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="card">
+      <div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; color:var(--teal); margin-bottom:8px;">White-label reports</div>
+      <div style="font-size:13px; font-weight:500; margin-bottom:6px;">Branded candidacy reports</div>
+      <div style="font-size:12px; color:var(--ink-muted);">Fully branded PDF and portal reports under your company name. Lifenome provides the analytics engine; you own the patient relationship.</div>
+      <div style="margin-top:1rem; font-size:11px; color:var(--ink-muted);">Includes: Custom logo + colors · PDF template · Portal white-label · Custom report naming</div>
+    </div>
+    <div class="card" style="border-color:var(--teal);">
+      <div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; color:var(--teal); margin-bottom:8px; display:flex; justify-content:space-between;"><span>API integration</span><span style="background:var(--teal); color:white; padding:1px 7px; border-radius:8px; font-size:10px;">Most popular</span></div>
+      <div style="font-size:13px; font-weight:500; margin-bottom:6px;">Embedded clinical intelligence</div>
+      <div style="font-size:12px; color:var(--ink-muted);">RESTful API delivers candidacy scores, biomarker flags, and genotype insights directly into your prescribing platform or EHR. FHIR-compliant.</div>
+      <div style="margin-top:1rem; font-size:11px; color:var(--ink-muted);">Includes: HL7/FHIR output · Webhook alerts · Sandbox environment · SLA 99.9% uptime</div>
+    </div>
+    <div class="card">
+      <div style="font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; color:var(--teal); margin-bottom:8px;">Full platform</div>
+      <div style="font-size:13px; font-weight:500; margin-bottom:6px;">End-to-end white-label</div>
+      <div style="font-size:12px; color:var(--ink-muted);">Complete patient journey — testing kits, reports, digital companion app, and outcomes dashboards — under your brand.</div>
+      <div style="margin-top:1rem; font-size:11px; color:var(--ink-muted);">Includes: All API features · Patient app white-label · Population analytics · Quarterly business reviews</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.25rem;">
+    <div class="card-title">What Lifenome brings that no lab can replicate</div>
+    <div class="grid-2">
+      <div>
+        <div class="offering-block"><div class="ob-icon">🎯</div><div><div class="ob-title">Composite clinical scoring</div><div class="ob-desc">Raw variants and biomarkers are algorithmically converted to actionable indices (Candidacy Score, Response Predictor, Safety Gate) — not raw data lists.</div></div></div>
+        <div class="offering-block"><div class="ob-icon">🔄</div><div><div class="ob-title">One-time DNA, perpetual utility</div><div class="ob-desc">Patient DNA collected once informs every future peptide decision in their lifetime — compounding value for repeat prescribers.</div></div></div>
+        <div class="offering-block"><div class="ob-icon">📡</div><div><div class="ob-title">Wearable + biomarker fusion</div><div class="ob-desc">No competitor fuses wearable physiological streams with genomic context and repeat blood biomarkers into a single longitudinal patient record.</div></div></div>
+      </div>
+      <div>
+        <div class="offering-block"><div class="ob-icon">📊</div><div><div class="ob-title">Genotype-adjusted benchmarking</div><div class="ob-desc">Patient response assessed against genotype-matched population cohorts — enabling early non-responder identification and protocol adjustment.</div></div></div>
+        <div class="offering-block"><div class="ob-icon">🛡️</div><div><div class="ob-title">Safety gate architecture</div><div class="ob-desc">Hard clinical safety flags for RET, CDKN2A, ATP7B, BRCA1/2 reduce physician liability and protect patient safety systematically.</div></div></div>
+        <div class="offering-block"><div class="ob-icon">🌍</div><div><div class="ob-title">Global regulatory compliance</div><div class="ob-desc">HIPAA, GDPR, and PIPEDA compliant. CLIA-certified lab partners. ACMG-standard variant classification for sequencing panels.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Partnership fee structure</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+
+      <div style="background:var(--teal-pale); border-radius:10px; padding:1.25rem; border:1px solid var(--teal-mid);">
+        <div style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal); margin-bottom:8px;">Lab &amp; logistics fees</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:500; color:var(--teal); margin-bottom:6px;">MSA cost + 10%</div>
+        <div style="font-size:12px; color:var(--ink-light); line-height:1.6;">Direct lab testing fees at MSA (Master Service Agreement) rates, plus any applicable packaging, shipping, and handling costs. A <strong>10% administrative markup</strong> is added for order management and support. Billed directly to partners based on actual orders placed — no minimums, no prepayment.</div>
+      </div>
+
+      <div style="background:var(--ink); border-radius:10px; padding:1.25rem; color:white;">
+        <div style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.5); margin-bottom:8px;">Candidacy reports</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400; color:#a8d4d8; margin-bottom:4px;">$10 <span style="font-size:1rem; color:rgba(255,255,255,0.5);">/ user / peptide</span></div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.65); line-height:1.6;">Initial peptide candidacy report and analysis — covering biomarker interpretation, genomic panel scoring, composite candidacy index, safety gate assessment, and monitoring protocol assignment. Charged once per user per peptide program enrolled.</div>
+      </div>
+
+      <div style="background:var(--cream); border-radius:10px; padding:1.25rem; border:1px solid var(--border);">
+        <div style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--ink-muted); margin-bottom:8px;">Digital monitoring</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:500; color:var(--ink); margin-bottom:4px;">$5 <span style="font-size:1rem; color:var(--ink-muted);">/ user / month</span></div>
+        <div style="font-size:12px; color:var(--ink-muted); line-height:1.6;">Continuous digital health journey — patient-facing companion app and/or API access, wearable integration, biomarker trend tracking, genotype-adjusted benchmarking, and physician effectiveness reporting. Charged monthly per active monitored user.</div>
+      </div>
+
+    </div>
+
+    <div style="background:#f0eeff; border-radius:8px; padding:1rem 1.25rem; border:1px solid #ccc8f4; margin-bottom:1rem;">
+      <div style="font-size:12px; font-weight:500; color:#4a3ab5; margin-bottom:4px;">Development credit policy</div>
+      <div style="font-size:12px; color:var(--ink-light); line-height:1.6;">Any app or API development and customization costs charged to a partner are <strong>credited in full towards future fee payments</strong> — including lab fees, candidacy report fees, and monthly monitoring fees. Development investment translates directly into reduced ongoing costs.</div>
+    </div>
+
+    <div style="text-align:center; padding:1rem; background:var(--teal-pale); border-radius:8px;">
+      <div style="font-size:13px; font-weight:500; color:var(--teal); margin-bottom:4px;">Ready to integrate?</div>
+      <div style="font-size:12px; color:var(--ink-muted);">Contact our partnerships team to discuss MSA terms, API sandbox access, and white-label configuration.</div>
+      <div style="margin-top:8px; font-size:13px; font-weight:500; color:var(--teal);">partnerships@lifenome.com</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.target.closest('.nav-tab').classList.add('active');
+}
+
+function setJourneyStep(idx, el) {
+  document.querySelectorAll('.journey-step').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('[id^="journey-panel-"]').forEach(p => p.style.display = 'none');
+  document.getElementById('journey-panel-' + idx).style.display = 'block';
+}
+
+function showReport(id, el) {
+  document.querySelectorAll('.peptide-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('[id^="report-"]').forEach(r => r.style.display = 'none');
+  document.getElementById('report-' + id).style.display = 'block';
+}
+
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+</script>
+</body>
+</html>
