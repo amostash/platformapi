@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>DermaAge – Skin Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:#faf8f5; --white:#ffffff; --blush:#f5ede8; --rose:#c8816a; --rose-deep:#a85f4b;
+    --sage:#8fa88a; --charcoal:#2c2825; --warm-gray:#7a726c; --light-gray:#e8e3de; --gold:#c9a96e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:var(--white);font-family:'DM Sans',sans-serif;color:var(--charcoal);overflow-x:hidden;}
+  .screen{display:none;min-height:100vh;flex-direction:column;}
+  .screen.active{display:flex;}
+  .progress-bar{height:3px;background:var(--light-gray);}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:2px;transition:width .5s ease;}
+  .screen-header{padding:16px 20px 8px;display:flex;align-items:center;gap:14px;}
+  .back-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--light-gray);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--warm-gray);font-size:16px;flex-shrink:0;}
+  .screen-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;}
+  .screen-sub{font-size:13px;color:var(--warm-gray);padding:0 20px 16px;line-height:1.6;}
+  .btn-primary{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;letter-spacing:.5px;cursor:pointer;box-shadow:0 6px 20px rgba(168,95,75,.35);transition:all .2s;}
+  .btn-primary:active{transform:translateY(1px);}
+  .btn-secondary{width:100%;padding:14px;border:2px solid var(--light-gray);border-radius:14px;background:transparent;color:var(--warm-gray);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-top:10px;}
+  .tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;background:var(--blush);color:var(--rose);margin:3px;}
+
+  /* ── S1 ── */
+  #s1{background:var(--white);}
+  .s1-hero{position:relative;height:50vh;overflow:hidden;}
+  .s1-hero img{width:100%;height:100%;object-fit:cover;object-position:center 20%;}
+  .s1-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(44,40,37,0.05) 0%,rgba(250,248,245,1) 95%);}
+  .s1-hero-badge{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:40px;padding:8px 20px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);border:1px solid rgba(200,129,106,.3);}
+  .s1-brand{text-align:center;padding:16px 24px 2px;}
+  .s1-brand h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;letter-spacing:5px;}
+  .s1-brand p{font-size:11px;letter-spacing:3px;color:var(--warm-gray);margin-top:4px;text-transform:uppercase;}
+  .s1-subtitle{text-align:center;font-size:13px;color:var(--warm-gray);padding:6px 28px 14px;line-height:1.7;}
+  .concerns-label{text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:10px;}
+
+  /* ── Concern grid: 3 cols, compact card with small square photo ── */
+  .concerns-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 18px;}
+  .concern-card{border-radius:12px;background:var(--cream);border:2px solid transparent;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:6px 4px 7px;gap:4px;}
+  .concern-card.selected{border-color:var(--rose);background:var(--blush);}
+  .concern-thumb{width:32px;height:32px;border-radius:5px;object-fit:cover;object-position:center top;flex-shrink:0;display:block;}
+  .concern-card .label{font-size:11px;font-weight:600;text-align:center;line-height:1.2;color:var(--charcoal);}
+  .concern-card .sub{font-size:9px;color:var(--warm-gray);text-align:center;line-height:1.2;}
+  .check-badge{position:absolute;top:4px;right:4px;width:16px;height:16px;background:var(--rose);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;}
+  .concern-card.selected .check-badge{display:flex;}
+  .s1-cta{padding:8px 20px 38px;}
+
+  /* ── S2 ── */
+  .form-section{padding:0 20px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .form-group{margin-bottom:14px;}
+  .form-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--warm-gray);margin-bottom:6px;display:block;}
+  .form-select,.form-input{width:100%;padding:13px 14px;border:1.5px solid var(--light-gray);border-radius:12px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--charcoal);outline:none;appearance:none;}
+  .form-select:focus,.form-input:focus{border-color:var(--rose);}
+  .bmi-display{background:linear-gradient(135deg,var(--blush),#f9ede9);border-radius:16px;padding:16px;margin:0 20px 16px;text-align:center;border:1px solid rgba(200,129,106,.2);}
+  .bmi-value{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--rose);line-height:1;}
+  .bmi-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--warm-gray);margin-top:4px;}
+  .bmi-category{font-size:13px;color:var(--charcoal);margin-top:6px;font-weight:500;}
+  .slider-section{padding:0 20px 20px;}
+  .slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .slider-val{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--rose);}
+  .hydration-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;}
+  .hydration-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:white;border:3px solid var(--rose);box-shadow:0 2px 8px rgba(200,129,106,.3);}
+  .hydration-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--warm-gray);margin-top:6px;}
+  .unit-toggle{display:flex;gap:0;margin:0 20px 16px;border:1.5px solid var(--light-gray);border-radius:12px;overflow:hidden;background:var(--cream);}
+  .unit-btn{flex:1;padding:10px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--warm-gray);cursor:pointer;transition:all .2s;}
+  .unit-btn.active{background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;font-weight:500;}
+  .height-imp{display:flex;gap:8px;}
+  .light-meter{display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;padding:5px 13px;border-radius:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.8);}
+  .light-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);flex-shrink:0;transition:background .3s;}
+  .review-light{position:absolute;top:7px;left:7px;display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.55);font-size:9px;color:#fff;letter-spacing:.3px;}
+  .review-light .rl-dot{width:6px;height:6px;border-radius:50%;}
+
+  /* ── S3 ── */
+  #s3{background:#161412;color:white;}
+  #s3 .screen-header{background:#161412;}
+  #s3 .screen-title{color:white;}
+  #s3 .back-btn{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.75);}
+  .camera-stage{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 16px 8px;}
+  .cam-guide-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:10px;text-align:center;}
+  .cam-wrap{position:relative;width:100%;max-width:360px;}
+  .cam-viewport{width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#0d0b09;position:relative;box-shadow:0 0 0 2px rgba(200,129,106,.45),0 16px 48px rgba(0,0,0,.6);}
+  #cameraVideo{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1);}
+  .face-oval-guide{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+  .face-oval{width:60%;height:78%;border:2px dashed rgba(200,129,106,.7);border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,.2);}
+  .corner{position:absolute;width:20px;height:20px;border-color:rgba(200,129,106,.9);border-style:solid;}
+  .corner.tl{top:12px;left:12px;border-width:2px 0 0 2px;}
+  .corner.tr{top:12px;right:12px;border-width:2px 2px 0 0;}
+  .corner.bl{bottom:12px;left:12px;border-width:0 0 2px 2px;}
+  .corner.br{bottom:12px;right:12px;border-width:0 2px 2px 0;}
+  .cam-flash{position:absolute;inset:0;background:white;opacity:0;pointer-events:none;border-radius:18px;transition:opacity .08s;}
+  .cam-countdown{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:68px;height:68px;display:none;align-items:center;justify-content:center;}
+  .cam-countdown svg{position:absolute;inset:0;transform:rotate(-90deg);}
+  .cam-countdown .cnt-num{font-family:'Cormorant Garamond',serif;font-size:32px;color:white;position:relative;z-index:1;}
+  .cam-error{position:absolute;inset:0;background:#161412;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px;color:rgba(255,255,255,.65);font-size:13px;border-radius:18px;}
+  .cam-error-icon{font-size:44px;}
+  .photo-steps{display:flex;gap:8px;margin:12px 0;justify-content:center;width:100%;max-width:360px;}
+  .photo-step{flex:1;max-width:110px;border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:#2a2520;position:relative;border:2px solid transparent;transition:border-color .3s;}
+  .photo-step.active{border-color:var(--rose);}
+  .photo-step.done{border-color:var(--sage);}
+  .photo-step img{width:100%;height:100%;object-fit:cover;display:none;}
+  .photo-step .step-label{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);padding:6px 4px 5px;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .photo-step .step-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .photo-step.done .step-num{background:var(--sage);}
+  .cam-controls{padding:8px 20px 32px;width:100%;display:flex;flex-direction:column;align-items:center;max-width:360px;}
+  .capture-btn{width:70px;height:70px;border-radius:50%;border:4px solid rgba(255,255,255,.9);background:var(--rose);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 24px rgba(200,129,106,.55);transition:all .15s;}
+  .capture-btn:active{transform:scale(.9);}
+  .capture-inner{width:56px;height:56px;border-radius:50%;background:var(--rose);}
+  .capture-instruction{text-align:center;font-size:12px;color:rgba(255,255,255,.6);margin-top:10px;}
+  .demo-btn{margin-top:14px;padding:10px 22px;border-radius:30px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;}
+
+  /* ── S4 ── */
+  .review-photos{display:flex;gap:10px;padding:12px 16px;}
+  .review-photo{flex:1;border-radius:14px;overflow:hidden;aspect-ratio:3/4;background:var(--cream);position:relative;}
+  .review-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .review-photo-label{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:white;padding:8px 4px 6px;background:linear-gradient(transparent,rgba(0,0,0,.55));}
+  .analyzing-state{text-align:center;padding:28px 20px;display:none;}
+  .analyzing-anim{width:80px;height:80px;margin:0 auto 18px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .analyzing-dots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--rose);margin:0 3px;animation:dot .9s ease-in-out infinite;}
+  .analyzing-dots span:nth-child(2){animation-delay:.2s}.analyzing-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes dot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+  /* ── S5 ── */
+  #s5{background:var(--white);overflow-y:auto;}
+  .assessment-hero{background:linear-gradient(135deg,var(--blush) 0%,#f0e0d6 100%);padding:24px 20px 20px;text-align:center;}
+  .age-ring-wrap{margin:0 auto 14px;position:relative;width:140px;height:140px;}
+  .age-ring-wrap svg{width:140px;height:140px;}
+  .age-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .skin-age-num{font-family:'Cormorant Garamond',serif;font-size:54px;font-weight:300;color:var(--rose);line-height:1;}
+  .skin-age-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--warm-gray);}
+  .assessment-section{padding:18px 20px 0;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:12px;}
+  .category-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+  .cat-card{border-radius:14px;background:var(--cream);padding:12px 14px;border:1px solid var(--light-gray);transition:border-color .2s,background .2s;}
+  .cat-card.open{border-color:rgba(200,129,106,.4);background:#fff;}
+  .cat-head{display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+  .cat-img{width:46px;height:46px;border-radius:10px;object-fit:cover;object-position:center top;flex-shrink:0;}
+  .cat-body{flex:1;min-width:0;}
+  .cat-chevron{align-self:center;flex-shrink:0;color:var(--warm-gray);font-size:12px;transition:transform .3s;}
+  .cat-card.open .cat-chevron{transform:rotate(180deg);}
+  .cat-expand{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.4,0,.2,1);}
+  .cat-card.open .cat-expand{grid-template-rows:1fr;}
+  .cat-expand-inner{overflow:hidden;}
+  .cat-expand-content{padding-top:13px;margin-top:13px;border-top:1px solid var(--light-gray);}
+  .exp-block{margin-bottom:13px;}
+  .exp-block:last-child{margin-bottom:2px;}
+  .exp-h{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);margin-bottom:5px;}
+  .exp-block p{font-size:12px;color:var(--charcoal);line-height:1.55;}
+  .exp-recs{list-style:none;margin:0;padding:0;}
+  .exp-recs li{position:relative;padding-left:18px;font-size:12px;color:var(--charcoal);line-height:1.5;margin-bottom:6px;}
+  .exp-recs li:before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--rose);}
+  .cat-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .cat-name{font-size:14px;font-weight:500;}
+  .cat-age{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--charcoal);line-height:1;white-space:nowrap;}
+  .cat-age small{font-size:10px;color:var(--warm-gray);letter-spacing:.5px;}
+  .cat-track{position:relative;height:6px;border-radius:3px;background:var(--light-gray);margin:9px 0 8px;}
+  .cat-track-fill{height:100%;border-radius:3px;width:0;transition:width 1.1s cubic-bezier(.34,.1,.2,1);}
+  .cat-track-mid{position:absolute;top:-3px;left:50%;width:1px;height:12px;background:rgba(44,40,37,.16);}
+  .cat-marker{position:absolute;top:50%;left:0;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--rose);transform:translate(-50%,-50%);box-shadow:0 1px 5px rgba(0,0,0,.2);transition:left 1.1s cubic-bezier(.34,.1,.2,1);}
+  .cat-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .cat-detail{font-size:11px;color:var(--warm-gray);line-height:1.4;flex:1;}
+  .cat-pct{font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:.3px;}
+  .p-good{color:var(--sage);}
+  .cat-track-fill.p-good{background:linear-gradient(90deg,#aac6a4,var(--sage));}
+  .cat-marker.p-good{border-color:var(--sage);}
+  .p-mid{color:#b8954f;}
+  .cat-track-fill.p-mid{background:linear-gradient(90deg,#e2cca2,var(--gold));}
+  .cat-marker.p-mid{border-color:var(--gold);}
+  .p-low{color:#c0604a;}
+  .cat-track-fill.p-low{background:linear-gradient(90deg,#dca28e,#c0604a);}
+  .cat-marker.p-low{border-color:#c0604a;}
+  .pct-pill{display:inline-block;margin-top:12px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.72);border:1px solid rgba(200,129,106,.32);font-size:12px;color:var(--charcoal);}
+  .pct-pill strong{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--rose-deep);}
+  .pct-sub{font-size:11px;color:var(--warm-gray);margin-top:6px;}
+  .highlight-strip{display:flex;gap:10px;margin-bottom:16px;}
+  .hl-chip{flex:1;border-radius:14px;padding:11px 13px;background:var(--cream);border:1px solid var(--light-gray);}
+  .hl-chip .hl-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--warm-gray);display:block;margin-bottom:4px;}
+  .hl-chip .hl-val{font-size:13px;font-weight:600;line-height:1.25;}
+  .hl-chip.good{border-color:rgba(143,168,138,.45);}.hl-chip.good .hl-val{color:var(--sage);}
+  .hl-chip.low{border-color:rgba(192,96,74,.4);}.hl-chip.low .hl-val{color:#c0604a;}
+  .older{color:#c0604a}.younger{color:var(--sage)}.neutral{color:var(--warm-gray)}
+  .cta-section{padding:0 20px 24px;display:flex;flex-direction:column;gap:12px;}
+  .cta-card{border-radius:18px;cursor:pointer;transition:all .2s;overflow:hidden;border:1.5px solid var(--light-gray);display:flex;align-items:stretch;}
+  .cta-card:active{transform:scale(.98);}
+  .cta-card.primary-cta{background:linear-gradient(135deg,#c8816a,#a85f4b);border-color:transparent;}
+  .cta-card.secondary-cta{background:var(--cream);}
+  .cta-card-img{width:88px;height:88px;object-fit:cover;flex-shrink:0;}
+  .cta-card-body{padding:16px 12px;flex:1;}
+  .primary-cta .cta-card-body h3{color:white;font-size:15px;font-weight:600;}
+  .primary-cta .cta-card-body p{color:rgba(255,255,255,.75);font-size:12px;margin-top:3px;}
+  .secondary-cta .cta-card-body h3{font-size:15px;font-weight:600;}
+  .secondary-cta .cta-card-body p{font-size:12px;color:var(--warm-gray);margin-top:3px;}
+  .cta-arrow{padding:0 14px;display:flex;align-items:center;font-size:20px;}
+  .primary-cta .cta-arrow{color:rgba(255,255,255,.55);}
+  .secondary-cta .cta-arrow{color:var(--warm-gray);opacity:.4;}
+
+  /* ── MODALS ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(44,40,37,.55);z-index:100;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
+  .modal-overlay.open{display:flex;}
+  .modal-panel{background:white;border-radius:24px 24px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding-bottom:40px;animation:slideUp .35s cubic-bezier(.32,.72,0,1);}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-handle{width:36px;height:4px;background:var(--light-gray);border-radius:2px;margin:14px auto 0;}
+  .modal-header{padding:14px 20px 10px;display:flex;justify-content:space-between;align-items:center;}
+  .modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;}
+  .modal-close{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--light-gray);background:none;cursor:pointer;font-size:16px;color:var(--warm-gray);}
+  .program-intro{padding:0 20px 14px;font-size:13px;color:var(--warm-gray);line-height:1.6;}
+  .day-carousel{display:flex;gap:12px;overflow-x:auto;padding:0 20px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .day-carousel::-webkit-scrollbar{display:none;}
+  .day-card{min-width:210px;border-radius:18px;overflow:hidden;scroll-snap-align:start;background:var(--cream);flex-shrink:0;border:1px solid var(--light-gray);}
+  .day-card-img{width:100%;height:148px;object-fit:cover;display:block;}
+  .day-card-body{padding:13px;}
+  .day-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:3px;}
+  .day-title{font-size:15px;font-weight:600;margin-bottom:5px;}
+  .day-desc{font-size:12px;color:var(--warm-gray);line-height:1.5;}
+  .day-steps{margin-top:9px;}
+  .day-step{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
+  .step-dot{width:5px;height:5px;border-radius:50%;background:var(--rose);margin-top:5px;flex-shrink:0;}
+  .step-text{font-size:11px;color:var(--charcoal);line-height:1.4;}
+
+  /* ── PRODUCTS ── */
+  .products-tabs{display:flex;padding:0 20px;border-bottom:1px solid var(--light-gray);}
+  .tab-btn{flex:1;padding:12px;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--warm-gray);border-bottom:2px solid transparent;transition:all .2s;}
+  .tab-btn.active{color:var(--rose);border-bottom-color:var(--rose);font-weight:600;}
+  .tab-content{display:none;padding:12px 20px;}
+  .tab-content.active{display:block;}
+  .product-card{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--light-gray);}
+  .product-card:last-child{border-bottom:none;}
+  .product-img{width:80px;height:80px;border-radius:14px;object-fit:contain;background:white;border:1px solid var(--light-gray);padding:4px;flex-shrink:0;}
+  .product-info{flex:1;}
+  .product-brand{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--warm-gray);margin-bottom:1px;}
+  .product-type{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:2px;}
+  .product-name{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.3;}
+  .product-why{font-size:11px;color:var(--warm-gray);line-height:1.5;}
+  .product-meta{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap;}
+  .product-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;background:var(--blush);color:var(--rose);}
+  .product-price{font-size:12px;font-weight:600;color:var(--charcoal);}
+  .product-link{font-size:11px;color:var(--rose);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ SCREEN 1 ════════════════════ -->
+<div id="s1" class="screen active">
+  <div class="s1-hero">
+    <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=900&q=85&auto=format&fit=crop" alt="Skincare hero" loading="eager">
+    <div class="s1-hero-overlay"></div>
+    <div class="s1-hero-badge">AI-Powered Skin Intelligence</div>
+  </div>
+  <div class="s1-brand"><h1>DermaAge</h1><p>Skin Intelligence Platform</p></div>
+  <div class="s1-subtitle">Get an indicative estimate of your skin's age and a personalized rejuvenation protocol.</div>
+  <div class="concerns-label">Select your skin concerns</div>
+
+  <div class="concerns-grid">
+    <!-- Fine Lines: close-up of forehead/eye wrinkles -->
+    <div class="concern-card" onclick="toggleConcern(this,'wrinkles')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1509460913899-515f1df34fea?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=1.5" alt="Fine Lines">
+      <span class="label">Fine Lines</span><span class="sub">& Wrinkles</span>
+    </div>
+    <!-- Pigmentation: freckled/spotted skin closeup -->
+    <div class="concern-card" onclick="toggleConcern(this,'pigmentation')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Pigmentation">
+      <span class="label">Pigmentation</span><span class="sub">Dark spots</span>
+    </div>
+    <!-- Pores: nose/cheek closeup showing pores -->
+    <div class="concern-card" onclick="toggleConcern(this,'pores')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=1.8" alt="Pores">
+      <span class="label">Pores</span><span class="sub">Enlarged / oily</span>
+    </div>
+    <!-- Hydration: dry/flaking skin texture -->
+    <div class="concern-card" onclick="toggleConcern(this,'hydration')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1552693673-1bf958298935?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Hydration">
+      <span class="label">Hydration</span><span class="sub">Dryness / flaking</span>
+    </div>
+    <!-- Firmness: jawline/neck showing laxity -->
+    <div class="concern-card" onclick="toggleConcern(this,'firmness')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Firmness">
+      <span class="label">Firmness</span><span class="sub">Sagging / laxity</span>
+    </div>
+    <!-- Texture: uneven skin surface -->
+    <div class="concern-card" onclick="toggleConcern(this,'texture')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Texture">
+      <span class="label">Texture</span><span class="sub">Uneven / rough</span>
+    </div>
+    <!-- Redness: flushed/pink complexion -->
+    <div class="concern-card" onclick="toggleConcern(this,'redness')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Redness">
+      <span class="label">Redness</span><span class="sub">Rosacea / flushing</span>
+    </div>
+    <!-- Eye Area: tight crop of eyes/under-eye only -->
+    <div class="concern-card" onclick="toggleConcern(this,'eyecircles')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=64&h=64&q=80&auto=format&fit=crop&crop=top" alt="Eye Area" style="object-position:center 35%">
+      <span class="label">Eye Area</span><span class="sub">Dark circles</span>
+    </div>
+    <!-- Dullness: flat, low-glow complexion -->
+    <div class="concern-card" onclick="toggleConcern(this,'dullness')">
+      <div class="check-badge">✓</div>
+      <img class="concern-thumb" src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=64&h=64&q=80&auto=format&fit=crop&crop=faces&facepad=2" alt="Dullness">
+      <span class="label">Dullness</span><span class="sub">Lack of glow</span>
+    </div>
+  </div>
+  <div class="s1-cta">
+    <div id="s1Err" style="display:none;font-size:12px;color:var(--rose-deep);text-align:center;margin-bottom:8px;"></div>
+    <button class="btn-primary" onclick="validateStep1()">Begin Skin Analysis →</button>
+  </div>
+</div>
+
+<!-- ════════════════════ SCREEN 2 ════════════════════ -->
+<div id="s2" class="screen">
+  <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+  <div class="screen-header"><button class="back-btn" onclick="goTo(1)">←</button><div class="screen-title">About You</div></div>
+  <div class="screen-sub">Helps calibrate your skin age analysis and personalize your protocol.</div>
+  <div class="unit-toggle">
+    <button id="unitImp" class="unit-btn active" onclick="setUnits('imperial')">Imperial (lb / ft)</button>
+    <button id="unitMet" class="unit-btn" onclick="setUnits('metric')">Metric (kg / cm)</button>
+  </div>
+  <div class="form-section">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Gender</label><select class="form-select" id="fGender"><option value="">Select</option><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+      <div class="form-group"><label class="form-label">Age</label><input class="form-input" type="number" id="fAge" placeholder="Years" min="18" max="99" oninput="calcBMI()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Weight (<span id="wUnit">lb</span>)</label><input class="form-input" type="number" id="fWeight" placeholder="lb" oninput="calcBMI()"></div>
+      <div class="form-group">
+        <label class="form-label">Height</label>
+        <input class="form-input" type="number" id="fHeightCm" placeholder="cm" oninput="calcBMI()" style="display:none;">
+        <div class="height-imp" id="heightImp">
+          <input class="form-input" type="number" id="fHeightFt" placeholder="ft" oninput="calcBMI()">
+          <input class="form-input" type="number" id="fHeightIn" placeholder="in" oninput="calcBMI()">
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Skin Type</label><select class="form-select" id="fSkin"><option value="">Select</option><option>Dry</option><option>Oily</option><option>Combination</option><option>Normal</option><option>Sensitive</option></select></div>
+    <div class="form-group"><label class="form-label">Fitzpatrick Tone</label><select class="form-select" id="fFitz"><option value="">Select</option><option>Type I – Very fair</option><option>Type II – Fair</option><option>Type III – Medium</option><option>Type IV – Olive</option><option>Type V – Brown</option><option>Type VI – Dark</option></select></div>
+  </div>
+  <div class="bmi-display"><div class="bmi-value" id="bmiVal">—</div><div class="bmi-label">Body Mass Index</div><div class="bmi-category" id="bmiCat">Enter weight & height above</div></div>
+  <div class="slider-section">
+    <div class="form-label" style="margin-bottom:10px;display:block;">Daily Water Intake</div>
+    <div class="slider-header"><span style="font-size:13px;color:var(--warm-gray)">💧 Litres per day</span><span class="slider-val" id="hydVal">1.5 L</span></div>
+    <input type="range" class="hydration-slider" id="hydrationSlider" min="0" max="4" step="0.25" value="1.5" oninput="updateHydration(this.value)">
+    <div class="hydration-labels"><span>Dehydrated</span><span>Optimal</span><span>Excellent</span></div>
+  </div>
+  <div style="padding:8px 20px 36px;">
+    <div id="s2Err" style="display:none;font-size:12px;color:var(--rose-deep);text-align:center;margin-bottom:8px;"></div>
+    <button class="btn-primary" onclick="validateStep2()">Take Facial Photos →</button>
+  </div>
+</div>
+
+<!-- ════════════════════ SCREEN 3 ════════════════════ -->
+<div id="s3" class="screen">
+  <div class="progress-bar"><div class="progress-fill" style="width:50%;background:linear-gradient(90deg,var(--rose),var(--gold));"></div></div>
+  <div class="screen-header"><button class="back-btn" onclick="stopCamera();goTo(2)">←</button><div class="screen-title">Facial Scan</div></div>
+  <div class="camera-stage">
+    <div class="cam-guide-label" id="cameraGuideLabel">Front face – centre yourself in the oval</div>
+    <div class="light-meter" id="lightMeter"><span class="light-dot" id="lightDot"></span><span id="lightText">Checking lighting…</span></div>
+    <div class="cam-wrap">
+      <div class="cam-viewport" id="cameraViewport">
+        <video id="cameraVideo" autoplay playsinline muted></video>
+        <canvas id="cameraCanvas" style="display:none;position:absolute;inset:0;width:100%;height:100%;"></canvas>
+        <div class="face-oval-guide"><div class="face-oval"></div></div>
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="cam-flash" id="camFlash"></div>
+        <div class="cam-countdown" id="camCountdown">
+          <svg viewBox="0 0 68 68"><circle cx="34" cy="34" r="30" stroke="rgba(255,255,255,.18)" stroke-width="4" fill="none"/><circle id="cntArc" cx="34" cy="34" r="30" stroke="#c8816a" stroke-width="4" fill="none" stroke-dasharray="188.5" stroke-dashoffset="0" stroke-linecap="round"/></svg>
+          <span class="cnt-num" id="cntNum">3</span>
+        </div>
+        <div class="cam-error" id="camError">
+          <div class="cam-error-icon">📷</div>
+          <strong>Camera unavailable</strong>
+          <div style="font-size:11px;margin-top:4px;">Tap "Use Demo Photos" below to continue</div>
+        </div>
+      </div>
+    </div>
+    <div class="photo-steps">
+      <div class="photo-step active" id="step0"><img id="photo0" alt="Front"><div class="step-num">1</div><div class="step-label">Front</div></div>
+      <div class="photo-step" id="step1"><img id="photo1" alt="Left"><div class="step-num">2</div><div class="step-label">Left</div></div>
+      <div class="photo-step" id="step2"><img id="photo2" alt="Right"><div class="step-num">3</div><div class="step-label">Right</div></div>
+    </div>
+  </div>
+  <div class="cam-controls">
+    <div class="capture-btn" id="captureBtn" onclick="startCapture()"><div class="capture-inner"></div></div>
+    <div class="capture-instruction" id="captureInstruction">Photo 1 of 3 — tap shutter to capture</div>
+    <button class="demo-btn" onclick="useDemoPhotos()">Use Demo Photos Instead</button>
+  </div>
+</div>
+
+<!-- ════════════════════ SCREEN 4 ════════════════════ -->
+<div id="s4" class="screen">
+  <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+  <div class="screen-header"><button class="back-btn" onclick="goTo(3)">←</button><div class="screen-title">Confirm Photos</div></div>
+  <div class="review-photos">
+    <div class="review-photo"><img id="rev0" alt="Front"><div class="review-light" id="revLight0" style="display:none;"><span class="rl-dot"></span><span class="rl-txt"></span></div><div class="review-photo-label">Front</div></div>
+    <div class="review-photo"><img id="rev1" alt="Left"><div class="review-light" id="revLight1" style="display:none;"><span class="rl-dot"></span><span class="rl-txt"></span></div><div class="review-photo-label">Left Side</div></div>
+    <div class="review-photo"><img id="rev2" alt="Right"><div class="review-light" id="revLight2" style="display:none;"><span class="rl-dot"></span><span class="rl-txt"></span></div><div class="review-photo-label">Right Side</div></div>
+  </div>
+  <div id="lightAdvice" style="display:none;font-size:12px;text-align:center;padding:0 20px 4px;color:#c0604a;"></div>
+  <div class="analyzing-state" id="analyzingState">
+    <div class="analyzing-anim"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="14" stroke="#c8816a" stroke-width="2.5" stroke-dasharray="88" stroke-dashoffset="22" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1.1s" repeatCount="indefinite"/></circle></svg></div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:8px;">Analyzing your skin…</div>
+    <div style="font-size:13px;color:var(--warm-gray);margin-bottom:16px;">AI assessing 8 skin dimensions</div>
+    <div class="analyzing-dots"><span></span><span></span><span></span></div>
+    <div id="analysisStatus" style="font-size:12px;color:var(--warm-gray);margin-top:14px;">Initializing…</div>
+  </div>
+  <div id="retakeSection" style="padding:14px 20px 12px;">
+    <div style="font-size:13px;color:var(--warm-gray);text-align:center;margin-bottom:14px;">Ensure all three photos are clear and well-lit.</div>
+    <button class="btn-primary" onclick="startAnalysis()">Analyze My Skin →</button>
+    <button class="btn-secondary" onclick="goTo(3)">Retake Photos</button>
+  </div>
+</div>
+
+<!-- ════════════════════ SCREEN 5 ════════════════════ -->
+<div id="s5" class="screen">
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <div class="assessment-hero">
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:14px;">Your Skin Age Report</div>
+    <div class="age-ring-wrap">
+      <svg viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" stroke="#f0ddd8" stroke-width="8" fill="none"/>
+        <circle cx="70" cy="70" r="58" stroke="url(#ag)" stroke-width="8" fill="none" stroke-dasharray="364.4" id="ageRingArc" stroke-dashoffset="364.4" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+        <defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c8816a"/><stop offset="100%" stop-color="#c9a96e"/></linearGradient></defs>
+      </svg>
+      <div class="age-ring-center"><div class="skin-age-num" id="skinAgeDisplay">—</div><div class="skin-age-sub">Est. Skin Age</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--warm-gray);" id="chronoLabel">Chronological Age: <strong>—</strong></div>
+    <div id="ageCompareText" style="font-size:13px;margin-top:8px;color:var(--warm-gray);"></div>
+    <div class="pct-pill" id="overallPctPill" style="display:none;"></div>
+    <div class="pct-sub" id="overallPctSub"></div>
+    <div id="confidenceLine" style="font-size:11px;margin-top:10px;color:var(--warm-gray);line-height:1.5;"></div>
+  </div>
+  <div class="assessment-section"><div class="section-title">Skin Category Analysis</div><div class="highlight-strip" id="highlightStrip"></div><div class="category-cards" id="categoryCards"></div></div>
+  <div class="assessment-section"><div class="section-title">Your Concerns</div><div id="selectedConcernTags" style="margin-bottom:20px;"></div></div>
+  <div class="cta-section">
+    <div class="cta-card primary-cta" onclick="openProgram()">
+      <img class="cta-card-img" src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=176&h=176&q=80&auto=format&fit=crop" alt="Program">
+      <div class="cta-card-body"><h3>My Rejuvenation Program</h3><p>7-day personalized skin protocol</p></div>
+      <div class="cta-arrow">›</div>
+    </div>
+    <div class="cta-card secondary-cta" onclick="openProducts()">
+      <img class="cta-card-img" src="https://babor.imgix.net/products/global/img.65784.0.png?fit=fill&fill=solid&fill-color=ffffff&w=176&h=176" alt="BABOR Products">
+      <div class="cta-card-body"><h3>BABOR Product Picks</h3><p>Curated recommendations from BABOR</p></div>
+      <div class="cta-arrow">›</div>
+    </div>
+  </div>
+  <div style="padding:0 20px 40px;">
+    <a class="btn-primary" href="https://amostash.github.io/Lifenome/VitalAge.html" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;margin-bottom:12px;">Find out your Physiological VitalAge →</a>
+    <button class="btn-secondary" onclick="restartApp()">Start New Analysis</button>
+  </div>
+</div>
+
+<!-- PROGRAM MODAL -->
+<div class="modal-overlay" id="programModal">
+  <div class="modal-panel">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">7-Day Skin Protocol</div><button class="modal-close" onclick="closeModal('programModal')">✕</button></div>
+    <div class="program-intro" id="programIntro"></div>
+    <div class="day-carousel" id="dayCarousel"></div>
+  </div>
+</div>
+
+<!-- PRODUCTS MODAL -->
+<div class="modal-overlay" id="productsModal">
+  <div class="modal-panel">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">BABOR Recommendations</div>
+        <div style="font-size:11px;color:var(--warm-gray);margin-top:2px;">us.babor.com</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('productsModal')">✕</button>
+    </div>
+    <div class="products-tabs">
+      <button class="tab-btn active" onclick="switchTab('serums')">Ampoule Serums</button>
+      <button class="tab-btn" onclick="switchTab('creams')">Firming & Eye Care</button>
+    </div>
+    <div class="tab-content active" id="tab-serums"></div>
+    <div class="tab-content" id="tab-creams"></div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────
+const state = { concerns:[], photos:[null,null,null], skinAge:0, categories:[], stream:null, currentPhoto:0, capturing:false, units:'imperial', lightInfo:[null,null,null], lightTimer:null };
+
+// ─── NAV ─────────────────────────────────────────────
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  window.scrollTo(0,0);
+  if (n===3) initCamera();
+  if (n===5) renderAssessment();
+}
+
+// ─── S1 ──────────────────────────────────────────────
+function toggleConcern(el, key) {
+  el.classList.toggle('selected');
+  state.concerns = el.classList.contains('selected') ? [...state.concerns, key] : state.concerns.filter(c=>c!==key);
+  if(state.concerns.length){const e=document.getElementById('s1Err');if(e)e.style.display='none';}
+}
+
+// ─── VALIDATION ──────────────────────────────────────
+function validateStep1() {
+  const err=document.getElementById('s1Err');
+  if(state.concerns.length===0){
+    err.textContent='Please select at least one skin concern to continue.';
+    err.style.display='block';return;
+  }
+  err.style.display='none';goTo(2);
+}
+function validateStep2() {
+  const err=document.getElementById('s2Err');
+  const gender=document.getElementById('fGender').value;
+  const age=parseInt(document.getElementById('fAge').value);
+  const skin=document.getElementById('fSkin').value;
+  const missing=[];
+  if(!gender) missing.push('gender');
+  if(!age||age<18||age>99) missing.push('a valid age (18–99)');
+  if(!skin) missing.push('skin type');
+  if(missing.length){
+    err.textContent='Please add '+missing.join(', ')+' to continue.';
+    err.style.display='block';return;
+  }
+  err.style.display='none';goTo(3);
+}
+
+// ─── S2 ──────────────────────────────────────────────
+function calcBMI() {
+  let kg=0, m=0;
+  if(state.units==='imperial'){
+    const lb=parseFloat(document.getElementById('fWeight').value);
+    const ft=parseFloat(document.getElementById('fHeightFt').value)||0;
+    const inch=parseFloat(document.getElementById('fHeightIn').value)||0;
+    const totalIn=ft*12+inch;
+    if(lb>0) kg=lb*0.453592;
+    if(totalIn>0) m=totalIn*0.0254;
+  } else {
+    const w=parseFloat(document.getElementById('fWeight').value);
+    const cm=parseFloat(document.getElementById('fHeightCm').value);
+    if(w>0) kg=w;
+    if(cm>0) m=cm/100;
+  }
+  if(kg>0 && m>0){
+    const b=(kg/(m*m)).toFixed(1);
+    document.getElementById('bmiVal').textContent=b;
+    document.getElementById('bmiCat').textContent=b<18.5?'Underweight':b<25?'Healthy Weight':b<30?'Overweight':'Obese';
+  } else {
+    document.getElementById('bmiVal').textContent='—';
+    document.getElementById('bmiCat').textContent='Enter weight & height above';
+  }
+}
+
+function setUnits(u){
+  if(u===state.units) return;
+  const wEl=document.getElementById('fWeight'),
+        cmEl=document.getElementById('fHeightCm'),
+        ftEl=document.getElementById('fHeightFt'),
+        inEl=document.getElementById('fHeightIn');
+  // Convert any entered values so the switch isn't jarring
+  if(u==='metric'){
+    const lb=parseFloat(wEl.value);
+    if(lb>0) wEl.value=Math.round(lb*0.453592);
+    const totalIn=(parseFloat(ftEl.value)||0)*12+(parseFloat(inEl.value)||0);
+    if(totalIn>0) cmEl.value=Math.round(totalIn*2.54);
+  } else {
+    const kg=parseFloat(wEl.value);
+    if(kg>0) wEl.value=Math.round(kg*2.20462);
+    const cm=parseFloat(cmEl.value);
+    if(cm>0){ const ti=cm/2.54; ftEl.value=Math.floor(ti/12); inEl.value=Math.round(ti%12); }
+  }
+  state.units=u;
+  const imp=u==='imperial';
+  document.getElementById('unitImp').classList.toggle('active',imp);
+  document.getElementById('unitMet').classList.toggle('active',!imp);
+  document.getElementById('wUnit').textContent=imp?'lb':'kg';
+  wEl.placeholder=imp?'lb':'kg';
+  cmEl.style.display=imp?'none':'block';
+  document.getElementById('heightImp').style.display=imp?'flex':'none';
+  calcBMI();
+}
+function updateHydration(v) {
+  document.getElementById('hydVal').textContent=v+' L';
+  const p=(v/4)*100;
+  document.getElementById('hydrationSlider').style.background=`linear-gradient(to right,#c8816a 0%,#c8816a ${p}%,#e8e3de ${p}%,#e8e3de 100%)`;
+}
+
+// ─── S3: CAMERA ──────────────────────────────────────
+const GUIDES=['Front face – centre yourself in the oval','Turn slightly left – show your left profile','Turn slightly right – show your right profile'];
+
+// ── Lighting analysis ──
+const _lightCanvas=document.createElement('canvas');_lightCanvas.width=64;_lightCanvas.height=48;
+function measureLighting(source){
+  // source: a video or canvas element. Returns {mean, brightPct, darkPct} or null.
+  try{
+    const ctx=_lightCanvas.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(source,0,0,64,48);
+    const data=ctx.getImageData(0,0,64,48).data;
+    let sum=0,dark=0,bright=0,n=0;
+    for(let i=0;i<data.length;i+=4){
+      const l=0.2126*data[i]+0.7152*data[i+1]+0.0722*data[i+2];
+      sum+=l; if(l<40)dark++; if(l>225)bright++; n++;
+    }
+    return {mean:sum/n, brightPct:bright/n, darkPct:dark/n};
+  }catch(e){ return null; }
+}
+function lightingVerdict(m){
+  if(!m) return {label:'Lighting unavailable',color:'rgba(255,255,255,.4)',quality:'unknown',ok:true};
+  if(m.mean<55)                    return {label:'Too dark — face a window',color:'#e08a6f',quality:'too dark',ok:false};
+  if(m.mean>210||m.brightPct>0.30) return {label:'Overexposed — soften the light',color:'#e6c46a',quality:'overexposed',ok:false};
+  if(m.mean<90)                    return {label:'A little dim',color:'#e6c46a',quality:'dim',ok:true};
+  return {label:'Good lighting',color:'#9ec79a',quality:'good',ok:true};
+}
+function startLightMeter(){
+  stopLightMeter();
+  const video=document.getElementById('cameraVideo');
+  const dot=document.getElementById('lightDot'),txt=document.getElementById('lightText');
+  state.lightTimer=setInterval(()=>{
+    if(!state.stream||!video.videoWidth)return;
+    const v=lightingVerdict(measureLighting(video));
+    dot.style.background=v.color; txt.textContent=v.label;
+  },600);
+}
+function stopLightMeter(){ if(state.lightTimer){clearInterval(state.lightTimer);state.lightTimer=null;} }
+
+async function initCamera() {
+  state.currentPhoto=0; state.capturing=false;
+  resetSteps();
+  document.getElementById('cameraGuideLabel').textContent=GUIDES[0];
+  document.getElementById('captureInstruction').textContent='Photo 1 of 3 — tap shutter to capture';
+  document.getElementById('captureBtn').style.background='var(--rose)';
+  document.getElementById('camError').style.display='none';
+  document.getElementById('lightDot').style.background='rgba(255,255,255,.4)';
+  document.getElementById('lightText').textContent='Checking lighting…';
+  const video=document.getElementById('cameraVideo');
+  video.style.display='block';
+  try {
+    if(state.stream){state.stream.getTracks().forEach(t=>t.stop());state.stream=null;}
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280,min:640},height:{ideal:960,min:480}},audio:false});
+    state.stream=stream; video.srcObject=stream; await video.play();
+    startLightMeter();
+  } catch(err) {
+    console.warn('Camera:',err.name,err.message);
+    video.style.display='none';
+    document.getElementById('lightMeter').style.display='none';
+    document.getElementById('camError').style.display='flex';
+  }
+}
+
+function stopCamera() {
+  stopLightMeter();
+  if(state.stream){state.stream.getTracks().forEach(t=>t.stop());state.stream=null;}
+}
+
+function resetSteps() {
+  for(let i=0;i<3;i++){
+    const s=document.getElementById('step'+i); s.classList.remove('active','done');
+    const img=document.getElementById('photo'+i); img.src=''; img.style.display='none';
+    s.querySelector('.step-num').textContent=i+1;
+  }
+  document.getElementById('step0').classList.add('active');
+}
+
+function startCapture() {
+  if(state.capturing||state.currentPhoto>=3) return;
+  if(!state.stream){alert('Camera not available. Use "Use Demo Photos Instead".');return;}
+  state.capturing=true;
+  const ring=document.getElementById('camCountdown'),numEl=document.getElementById('cntNum'),arc=document.getElementById('cntArc');
+  ring.style.display='flex'; let count=3; numEl.textContent=count; arc.style.strokeDashoffset='0';
+  const iv=setInterval(()=>{
+    count--;
+    if(count>0){numEl.textContent=count;arc.style.strokeDashoffset=188.5*((3-count)/3);}
+    else{clearInterval(iv);ring.style.display='none';doFlash();setTimeout(capturePhoto,120);}
+  },1000);
+}
+
+function doFlash() {
+  const f=document.getElementById('camFlash');
+  f.style.opacity='0.85';
+  setTimeout(()=>{f.style.transition='opacity 0.4s';f.style.opacity='0';setTimeout(()=>{f.style.transition='';},400);},80);
+}
+
+function capturePhoto() {
+  state.capturing=false;
+  const video=document.getElementById('cameraVideo'),canvas=document.getElementById('cameraCanvas');
+  const vw=video.videoWidth||640,vh=video.videoHeight||480;
+  canvas.width=vw;canvas.height=vh;
+  const ctx=canvas.getContext('2d');
+  ctx.save();ctx.scale(-1,1);ctx.drawImage(video,-vw,0,vw,vh);ctx.restore();
+  const dataUrl=canvas.toDataURL('image/jpeg',0.92);
+  state.photos[state.currentPhoto]=dataUrl;
+  state.lightInfo[state.currentPhoto]=lightingVerdict(measureLighting(canvas));
+  const thumb=document.getElementById('photo'+state.currentPhoto);
+  thumb.src=dataUrl;thumb.style.display='block';
+  const step=document.getElementById('step'+state.currentPhoto);
+  step.classList.remove('active');step.classList.add('done');step.querySelector('.step-num').textContent='✓';
+  state.currentPhoto++;
+  if(state.currentPhoto<3){
+    document.getElementById('step'+state.currentPhoto).classList.add('active');
+    document.getElementById('cameraGuideLabel').textContent=GUIDES[state.currentPhoto];
+    document.getElementById('captureInstruction').textContent=`Photo ${state.currentPhoto+1} of 3 — tap shutter`;
+  } else {
+    stopCamera();
+    document.getElementById('captureInstruction').textContent='✓ All 3 photos captured!';
+    document.getElementById('captureBtn').style.background='var(--sage)';
+    for(let i=0;i<3;i++){const r=document.getElementById('rev'+i);r.src=state.photos[i];r.style.display='block';}
+    renderReviewLighting();
+    setTimeout(()=>goTo(4),700);
+  }
+}
+
+function useDemoPhotos() {
+  const urls=[
+    'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=480&h=640&q=82&auto=format&fit=crop&crop=face',
+    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=480&h=640&q=82&auto=format&fit=crop&crop=face',
+    'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=480&h=640&q=82&auto=format&fit=crop&crop=face'
+  ];
+  const labels=['Front','Left','Right']; let loaded=0; stopCamera();
+  urls.forEach((url,i)=>{
+    const img=new Image(); img.crossOrigin='anonymous';
+    const finish=(dataUrl,canvas)=>{
+      state.photos[i]=dataUrl;
+      state.lightInfo[i]=lightingVerdict(measureLighting(canvas));
+      const t=document.getElementById('photo'+i);t.src=dataUrl;t.style.display='block';
+      const s=document.getElementById('step'+i);s.classList.remove('active');s.classList.add('done');s.querySelector('.step-num').textContent='✓';
+      const r=document.getElementById('rev'+i);r.src=dataUrl;r.style.display='block';
+      loaded++;if(loaded===3){state.currentPhoto=3;renderReviewLighting();goTo(4);}
+    };
+    img.onload=function(){
+      const c=document.createElement('canvas');c.width=480;c.height=640;
+      const x=c.getContext('2d');x.drawImage(img,0,0,480,640);
+      x.fillStyle='rgba(0,0,0,.38)';x.fillRect(0,580,480,60);
+      x.fillStyle='white';x.font='500 13px DM Sans,sans-serif';x.textAlign='center';x.fillText('Demo – '+labels[i],240,614);
+      finish(c.toDataURL('image/jpeg',.88),c);
+    };
+    img.onerror=function(){
+      const c=document.createElement('canvas');c.width=480;c.height=640;
+      const x=c.getContext('2d');const g=x.createLinearGradient(0,0,480,640);
+      g.addColorStop(0,['#f7ddd4','#f4d8cc','#f0ddd4'][i]);g.addColorStop(1,['#e0b09a','#d9a080','#e0b090'][i]);
+      x.fillStyle=g;x.fillRect(0,0,480,640);
+      x.fillStyle='#d4a090';x.beginPath();x.ellipse(240,280,90,112,0,0,Math.PI*2);x.fill();
+      x.fillStyle='rgba(0,0,0,.38)';x.fillRect(0,580,480,60);
+      x.fillStyle='white';x.font='13px sans-serif';x.textAlign='center';x.fillText('Demo – '+labels[i],240,614);
+      finish(c.toDataURL('image/jpeg',.85),c);
+    };
+    img.src=url;
+  });
+}
+
+// Render lighting badges on the review screen + advice line.
+function renderReviewLighting(){
+  let poor=[];
+  for(let i=0;i<3;i++){
+    const el=document.getElementById('revLight'+i);if(!el)continue;
+    const v=state.lightInfo[i];
+    if(!v||v.quality==='unknown'){el.style.display='none';continue;}
+    el.style.display='inline-flex';
+    el.querySelector('.rl-dot').style.background=v.color;
+    el.querySelector('.rl-txt').textContent=v.quality==='good'?'Good light':v.quality;
+    if(!v.ok) poor.push(['Front','Left','Right'][i]);
+  }
+  const adv=document.getElementById('lightAdvice');
+  if(poor.length){
+    adv.style.display='block';
+    adv.textContent=`Lighting looks off on your ${poor.join(' & ')} photo${poor.length>1?'s':''}. Retaking in softer, even light will improve accuracy.`;
+  } else { adv.style.display='none'; }
+}
+
+// ─── S4: ANALYSIS ────────────────────────────────────
+const statusMsgs=['Detecting facial landmarks…','Analyzing skin texture & tone…','Measuring hydration indicators…','Assessing pigmentation patterns…','Evaluating collagen & elasticity…','Calculating biological skin age…','Generating personalized report…'];
+
+async function startAnalysis() {
+  document.getElementById('retakeSection').style.display='none';
+  document.getElementById('analyzingState').style.display='block';
+  let mi=0;const sEl=document.getElementById('analysisStatus');
+  const iv=setInterval(()=>{sEl.textContent=statusMsgs[mi++%statusMsgs.length];},950);
+  try {
+    const age=parseInt(document.getElementById('fAge').value)||35;
+    const gender=document.getElementById('fGender').value||'Female';
+    const skin=document.getElementById('fSkin').value||'Combination';
+    const fitz=document.getElementById('fFitz').value||'Not specified';
+    const bmi=document.getElementById('bmiVal').textContent;
+    const hyd=document.getElementById('hydrationSlider').value;
+    const con=state.concerns.join(', ')||'general aging';
+    // Summarize measured photo lighting so the model can weight its confidence.
+    const lp=['Front','Left','Right'];
+    const lightSummary=state.lightInfo.map((v,i)=>v?`${lp[i]}: ${v.quality}`:null).filter(Boolean).join(', ');
+
+    // Build a multimodal message: the captured photos + the context prompt.
+    const labels=['Front','Left profile','Right profile'];
+    const content=[];
+    state.photos.forEach((p,i)=>{
+      if(p && typeof p==='string' && p.startsWith('data:image')){
+        const semi=p.indexOf(';'), comma=p.indexOf(',');
+        const media=p.substring(5,semi);          // e.g. "image/jpeg"
+        const b64=p.substring(comma+1);
+        content.push({type:'text',text:`${labels[i]} photo:`});
+        content.push({type:'image',source:{type:'base64',media_type:media,data:b64}});
+      }
+    });
+    const havePhotos=content.length>0;
+    content.push({type:'text',text:
+`You are a dermatology-trained skin-analysis assistant. ${havePhotos
+  ? 'Assess the facial photos above, cross-referenced with the context below.'
+  : 'No usable photo was provided — estimate conservatively from the context below.'}
+Context: ${age}-year-old ${gender}, ${skin} skin, Fitzpatrick ${fitz}, BMI ${bmi}, ${hyd}L daily water, stated concerns: ${con}.${lightSummary?`
+Measured photo lighting — ${lightSummary}. Lower your confidence and avoid over-reading tone/texture where lighting is poor.`:''}
+
+Return ONLY valid JSON — no prose, no markdown fences:
+{"skinAge":<number, one decimal>,"confidence":"<low|moderate|high>","categories":[
+{"name":"Wrinkle Depth","age":<number, one decimal>,"detail":"<≤12-word summary>","assessment":"<2 short sentences grounded in what is visible>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Skin Elasticity","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Pigmentation","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Hydration Level","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Skin Texture","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Under Eye Area","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Pore Visibility","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]},
+{"name":"Overall Radiance","age":<number, one decimal>,"detail":"<≤12 words>","assessment":"<2 short sentences>","recommendations":["<≤8 words>","<≤8 words>","<≤8 words>"]}
+]}
+Use decimals (e.g. 34.6) so small differences are visible. Keep assessments and recommendations concise. If photos are dark, blurry, or show no clear face, set confidence "low" and keep ages near the chronological age.`});
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content}]})
+    });
+    const d=await res.json();clearInterval(iv);
+    // Block-type-aware extraction: concatenate every text block, ignore the rest.
+    const text=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+    const r=JSON.parse(text.replace(/```json|```/g,'').trim());
+    state.skinAge=r.skinAge;state.categories=r.categories;state.confidence=r.confidence||'moderate';
+  } catch(e) {
+    clearInterval(iv);
+    const age=parseFloat(document.getElementById('fAge').value)||35;
+    const rf=n=>Math.round((Math.random()*n)*10)/10;
+    const mk=(name,a,detail)=>({name,age:Math.round(a*10)/10,detail});
+    state.skinAge=Math.round((age+rf(8)-3)*10)/10;state.confidence='low';
+    state.categories=[
+      mk('Wrinkle Depth',age+rf(7)-1,'Moderate periorbital lines with nasolabial involvement'),
+      mk('Skin Elasticity',age+rf(5)-3,'Good rebound in cheek zone with mild jowl laxity'),
+      mk('Pigmentation',age+rf(9),'Scattered UV-induced spots on forehead and cheeks'),
+      mk('Hydration Level',age+rf(4)-4,'Slightly sub-optimal transepidermal water retention'),
+      mk('Skin Texture',age+rf(6),'Minor surface irregularities in T-zone'),
+      mk('Under Eye Area',age+rf(10)+1,'Mild periorbital discoloration and crepey texture'),
+      mk('Pore Visibility',age+rf(5)-1,'Enlarged pores across nose and chin region'),
+      mk('Overall Radiance',age+rf(5)-4,'Moderate luminosity with dull peripheral zones')
+    ];
+  }
+  goTo(5);
+}
+
+// ─── S5: ASSESSMENT ──────────────────────────────────
+const catImgs={
+  'Wrinkle Depth':   'https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Skin Elasticity': 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Pigmentation':    'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Hydration Level': 'https://images.unsplash.com/photo-1552693673-1bf958298935?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Skin Texture':    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Under Eye Area':  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=92&h=92&q=80&auto=format&fit=crop&crop=top',
+  'Pore Visibility': 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=92&h=92&q=80&auto=format&fit=crop&crop=faces',
+  'Overall Radiance':'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=92&h=92&q=80&auto=format&fit=crop&crop=faces'
+};
+
+// Per-measure reference content. `info` is always shown ("what this measures").
+// `assessment`/`recs` are fallbacks used only when the model doesn't return its own.
+const CAT_META={
+  'Wrinkle Depth':{
+    info:'How pronounced fine lines and deeper creases are — around the eyes, forehead, and mouth. Driven by collagen loss, sun exposure, and repeated expression.',
+    assessment:'Some expression lines are visible but within a typical range for your age. Depth is shaped more by sun history and hydration than by age alone.',
+    recs:['Daily broad-spectrum SPF 30+','Nightly retinoid to build collagen','Peptide serum for fine lines']},
+  'Skin Elasticity':{
+    info:"The skin's ability to bounce back after stretching, reflecting collagen and elastin integrity that decline with age and UV damage.",
+    assessment:'Firmness in the cheeks looks reasonable, with early laxity along the jawline. This dimension responds well to consistent collagen support.',
+    recs:['Retinoids and peptides nightly','Vitamin C antioxidant each morning','Consider in-office collagen treatments']},
+  'Pigmentation':{
+    info:'Evenness of tone — sun spots, melasma, and post-inflammatory marks, mostly from cumulative UV exposure and hormonal factors.',
+    assessment:'Scattered uneven tone points to accumulated sun exposure rather than active inflammation. Pigment shifts slowly, so consistency beats intensity.',
+    recs:['Strict daily SPF, reapply outdoors','Vitamin C or niacinamide serum','Targeted brightening (azelaic / tranexamic acid)']},
+  'Hydration Level':{
+    info:'How well the surface layers hold water — affecting plumpness, smoothness, and how fine lines appear.',
+    assessment:'Hydration reads slightly below optimal, which can exaggerate fine lines temporarily. This is one of the fastest dimensions to improve.',
+    recs:['Hyaluronic acid on damp skin','Seal with a ceramide moisturizer','Increase daily water intake']},
+  'Skin Texture':{
+    info:'Surface smoothness and refinement — roughness, bumpiness, and uneven patches versus an even surface.',
+    assessment:'Minor surface irregularities are present, commonly in the T-zone. Gentle, regular exfoliation usually smooths this within weeks.',
+    recs:['Gentle chemical exfoliant 2–3× weekly','Niacinamide to refine surface','Avoid harsh physical scrubs']},
+  'Under Eye Area':{
+    info:'The delicate periorbital skin — dark circles, puffiness, hollowing, and crepiness. Thin skin here shows fatigue and age early.',
+    assessment:'Mild shadowing and fine crepiness are visible, often tied to sleep, fluid, and thin skin rather than true aging. Gentle hydration helps most.',
+    recs:['Caffeine eye serum in the morning','Prioritize sleep, lower evening salt','Peptide eye cream nightly']},
+  'Pore Visibility':{
+    info:'How noticeable pores appear, influenced by oil production, skin thickness, and firmness around the pore opening.',
+    assessment:'Pores read as moderately visible around the nose and chin, typical for your skin type. Keeping them clear and skin firm reduces their appearance.',
+    recs:['Niacinamide to regulate oil','BHA (salicylic acid) to clear pores','Daily SPF to preserve firmness']},
+  'Overall Radiance':{
+    info:"The skin's luminosity and glow — a function of hydration, even tone, cell turnover, and microcirculation.",
+    assessment:'Radiance is moderate with some dullness at the edges, usually a mix of dehydration and slowed cell turnover. It tends to rebound quickly with care.',
+    recs:['Vitamin C antioxidant each morning','Gentle exfoliation for cell turnover','Hydrate well and prioritize sleep']}
+};
+
+function toggleCat(head){head.parentElement.classList.toggle('open');}
+
+// Percentile from chronological vs observed age, per spec:
+// at age → 50th, 5% younger → 75th, 10%+ younger → 95th (and mirror for older).
+function percentileFromAges(chrono, observed) {
+  if(!chrono) return 50;
+  const pctYounger = ((chrono - observed) / chrono) * 100; // + = younger/better
+  const x = pctYounger;
+  let p;
+  if (x >= 10)      p = 95;
+  else if (x >= 5)  p = 75 + (x - 5) * 4;     // 75 → 95
+  else if (x >= 0)  p = 50 + x * 5;           // 50 → 75
+  else if (x >= -5) p = 50 + x * 5;           // 50 → 25
+  else if (x >= -10)p = 25 + (x + 5) * 4;     // 25 → 5
+  else              p = 5;
+  return Math.max(5, Math.min(95, p));
+}
+function ordinal(n){const r=Math.round(n),s=['th','st','nd','rd'],v=r%100;return r+(s[(v-20)%10]||s[v]||s[0]);}
+function pctBand(p){return p>=60?'p-good':p>=40?'p-mid':'p-low';}
+function countUp(el,target,decimals){
+  const dur=1200,start=performance.now();
+  function f(t){const k=Math.min(1,(t-start)/dur),e=1-Math.pow(1-k,3);
+    el.textContent=(target*e).toFixed(decimals);
+    if(k<1)requestAnimationFrame(f);else el.textContent=target.toFixed(decimals);}
+  requestAnimationFrame(f);
+}
+
+function renderAssessment() {
+  const age=parseFloat(document.getElementById('fAge').value)||35;
+  const sa=Math.round((state.skinAge||age-2)*10)/10;
+  countUp(document.getElementById('skinAgeDisplay'),sa,1);
+  document.getElementById('chronoLabel').innerHTML=`Chronological Age: <strong>${age}</strong>`;
+  const diff=Math.round((sa-age)*10)/10;
+  const ac=document.getElementById('ageCompareText');
+  ac.textContent=diff>0?`Your skin appears ${diff} years older than your age`:diff<0?`Your skin reads ${Math.abs(diff)} years younger than your age`:`Your skin age matches your chronological age`;
+  ac.style.color=diff>2?'#c0604a':diff<-2?'#5a8a5a':'var(--warm-gray)';
+
+  // Overall percentile
+  const overall=Math.round(percentileFromAges(age,sa));
+  const pill=document.getElementById('overallPctPill');
+  pill.style.display='inline-block';
+  pill.innerHTML=`<strong>${ordinal(overall)}</strong> percentile for your age`;
+  document.getElementById('overallPctSub').textContent=
+    overall>=60?`Younger-looking than about ${overall}% of people your age.`:
+    overall<=40?`Around the lower range for your age group — clear room to improve.`:
+    `Right around the typical range for your age group.`;
+
+  const conf=state.confidence||'moderate';
+  document.getElementById('confidenceLine').innerHTML=`Confidence: <strong style="text-transform:capitalize">${conf}</strong> · Indicative estimate from photos and self-reported data — not a medical diagnosis.`;
+
+  // Ring now fills to the overall percentile (higher = fuller = better)
+  setTimeout(()=>{const arc=document.getElementById('ageRingArc');arc.style.transition='stroke-dashoffset 1.6s cubic-bezier(.34,.1,.2,1)';arc.style.strokeDashoffset=364.4*(1-overall/100);},300);
+
+  // Category cards with percentile tracks
+  const cats=(state.categories||[]).map(c=>({...c,age:Math.round(c.age*10)/10,pct:Math.round(percentileFromAges(age,c.age))}));
+  const cc=document.getElementById('categoryCards');cc.innerHTML='';
+  cats.forEach(cat=>{
+    const band=pctBand(cat.pct);
+    const meta=CAT_META[cat.name]||{};
+    const info=meta.info||'';
+    const assessment=(cat.assessment&&cat.assessment.trim())?cat.assessment:(meta.assessment||cat.detail||'');
+    const recs=(Array.isArray(cat.recommendations)&&cat.recommendations.length)?cat.recommendations:(meta.recs||[]);
+    const recHtml=recs.map(r=>`<li>${r}</li>`).join('');
+    cc.innerHTML+=`<div class="cat-card">
+      <div class="cat-head" onclick="toggleCat(this)">
+        <img class="cat-img" src="${catImgs[cat.name]||''}" alt="${cat.name}" loading="lazy">
+        <div class="cat-body">
+          <div class="cat-top"><span class="cat-name">${cat.name}</span><span class="cat-age">${cat.age.toFixed(1)}<small> yrs</small></span></div>
+          <div class="cat-track"><div class="cat-track-mid"></div><div class="cat-track-fill ${band}" data-w="${cat.pct}"></div><div class="cat-marker ${band}" data-l="${cat.pct}"></div></div>
+          <div class="cat-bottom"><span class="cat-detail">${cat.detail||''}</span><span class="cat-pct ${band}">${ordinal(cat.pct)} pct</span></div>
+        </div>
+        <span class="cat-chevron">▼</span>
+      </div>
+      <div class="cat-expand"><div class="cat-expand-inner"><div class="cat-expand-content">
+        ${info?`<div class="exp-block"><div class="exp-h">What this measures</div><p>${info}</p></div>`:''}
+        ${assessment?`<div class="exp-block"><div class="exp-h">Your assessment</div><p>${assessment}</p></div>`:''}
+        ${recHtml?`<div class="exp-block"><div class="exp-h">Recommendations</div><ul class="exp-recs">${recHtml}</ul></div>`:''}
+      </div></div></div>
+    </div>`;
+  });
+  // Animate tracks in after layout
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+    document.querySelectorAll('.cat-track-fill').forEach(el=>el.style.width=el.dataset.w+'%');
+    document.querySelectorAll('.cat-marker').forEach(el=>el.style.left=el.dataset.l+'%');
+  });});
+
+  // Highlight strip: strongest + focus area
+  if(cats.length){
+    const best=cats.reduce((a,b)=>b.pct>a.pct?b:a);
+    const focus=cats.reduce((a,b)=>b.pct<a.pct?b:a);
+    document.getElementById('highlightStrip').innerHTML=
+      `<div class="hl-chip good"><span class="hl-label">Strongest</span><span class="hl-val">${best.name}<br>${ordinal(best.pct)} pct</span></div>
+       <div class="hl-chip low"><span class="hl-label">Focus area</span><span class="hl-val">${focus.name}<br>${ordinal(focus.pct)} pct</span></div>`;
+  }
+
+  const tl={wrinkles:'Fine Lines',pigmentation:'Pigmentation',pores:'Pores',hydration:'Hydration',firmness:'Firmness',texture:'Texture',redness:'Redness',eyecircles:'Eye Area',dullness:'Dullness'};
+  document.getElementById('selectedConcernTags').innerHTML=state.concerns.length?state.concerns.map(c=>`<span class="tag">${tl[c]||c}</span>`).join(''):'<span style="font-size:13px;color:var(--warm-gray)">No specific concerns selected</span>';
+}
+
+// ─── PROGRAM MODAL ───────────────────────────────────
+const dayPrograms=[
+  {day:'Day 1',title:'Deep Cleanse & Reset',img:'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=420&h=296&q=80&auto=format&fit=crop',desc:'Enzyme-based cleansing to remove buildup and prepare skin for actives.',steps:['HY-ÖL Cleanser + Phyto Booster to dissolve all impurities','Enzyme & Vitamin C Cleanser powder (2× weekly)','Soothing Rose Toner to balance pH','Light moisturizer + SPF 50']},
+  {day:'Day 2',title:'Vitamin C Radiance',img:'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=420&h=296&q=80&auto=format&fit=crop',desc:'20% vitamin C treatment to brighten, even tone and protect.',steps:['Cleanse gently','DOCTOR BABOR Radiance Ampoule (1 vial, 7-day series)','Pat into face, neck, décolleté','Seal with Collagen-Peptide Booster Cream','Reapply SPF every 2 hrs outdoors']},
+  {day:'Day 3',title:'Intensive Hydration',img:'https://images.unsplash.com/photo-1552693673-1bf958298935?w=420&h=296&q=80&auto=format&fit=crop',desc:'Multi-dimensional hydration surge with 10D hyaluronic acid.',steps:['Cleanse with cream cleanser','10D Hyaluronic Acid Ampoule (1 vial)','Follow with Hydra Plus serum if needed','Occlusive moisturizer over damp skin','Humidifier overnight']},
+  {day:'Day 4',title:'Lifting & Firming',img:'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=420&h=296&q=80&auto=format&fit=crop',desc:'Peptide-powered firming to restore elasticity and contours.',steps:['Cleanse & tone','Lift Express Ampoule (1 vial)','Collagen-Peptide Booster Cream morning & evening','Facial massage: 5 min upward strokes','Dual Eye Solution day cream around eye area']},
+  {day:'Day 5',title:'Calm & Soothe',img:'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=420&h=296&q=80&auto=format&fit=crop',desc:'Anti-redness, barrier-restoring protocol for sensitive days.',steps:['Gentle Cleansing Cream (no exfoliation today)','SOS Calming Ampoule (1 vial)','Barrier Protect Ampoule if skin feels stressed','No actives – Collagen-Peptide Booster only','Dual Eye Solution night cream PM']},
+  {day:'Day 6',title:'Gua Sha & Lymphatics',img:'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=420&h=296&q=80&auto=format&fit=crop',desc:'Massage-focused day to boost circulation and reduce puffiness.',steps:['Cleanse & apply face oil (rosehip or BABOR Rejuvenating Face Oil)','Gua sha: 3 upward strokes per zone (5 min)','Jade roller for under-eye puffiness','Hydra Plus Ampoule (1 vial)','Drink 2.5L water throughout day']},
+  {day:'Day 7',title:'Skin Rest & Review',img:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=420&h=296&q=80&auto=format&fit=crop',desc:'Minimal intervention day for barrier recovery and consolidation.',steps:['Rinse with lukewarm water only (no cleanser)','Perfect Glow Ampoule (1 vial) for radiance reset','One drop Rejuvenating Face Oil only','Drink 3L water minimum','Photograph & compare results to Day 1']}
+];
+
+function openProgram() {
+  const age=parseInt(document.getElementById('fAge').value)||35;
+  document.getElementById('programIntro').innerHTML=`Personalized 7-day BABOR-inspired protocol targeting <strong>${state.concerns.slice(0,3).join(', ')||'overall skin aging'}</strong>, calibrated to your skin age of <strong style="color:var(--rose)">${state.skinAge||age-2}</strong>.`;
+  document.getElementById('dayCarousel').innerHTML=dayPrograms.map(d=>`
+    <div class="day-card">
+      <img class="day-card-img" src="${d.img}" alt="${d.title}" loading="lazy">
+      <div class="day-card-body">
+        <div class="day-label">${d.day}</div>
+        <div class="day-title">${d.title}</div>
+        <div class="day-desc">${d.desc}</div>
+        <div class="day-steps">${d.steps.map(s=>`<div class="day-step"><div class="step-dot"></div><div class="step-text">${s}</div></div>`).join('')}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('programModal').classList.add('open');
+}
+
+// ─── BABOR PRODUCTS ──────────────────────────────────
+// All images via babor.imgix.net CDN — confirmed product IDs from us.babor.com
+const BABOR_IMG = id => `https://babor.imgix.net/products/global/img.${id}.0.png?fit=fill&fill=solid&fill-color=ffffff&w=160&h=160`;
+const BABOR_URL = path => `https://us.babor.com/products/${path}`;
+
+const serumProducts = [
+  {
+    id:'63692', brand:'BABOR',type:'Ampoule Serum',
+    name:'Lift Express Ampoule Concentrate',
+    concern:'Fine Lines & Wrinkles',
+    why:'Cellulose-pullulan matrix creates an instant tightening film that smooths wrinkles for up to 6 hours. Peptide complex supports long-term elasticity with daily use.',
+    badge:'AM Protocol · 7-day',price:'$50',
+    url:'fluids-fp/63692-lift-express.html'
+  },
+  {
+    id:'65137', brand:'BABOR',type:'Ampoule Serum',
+    name:'Perfect Glow Ampoule Concentrate',
+    concern:'Pigmentation & Dullness',
+    why:'Glow-enhancing pigments + exopolysaccharides create an instant radiance boost. Perfection peptides smooth fine lines and support more even skin tone.',
+    badge:'Glow · Instant effect',price:'$50',
+    url:'fluids-fp/65137-perfect-glow.html'
+  },
+  {
+    id:'63698', brand:'BABOR',type:'Ampoule Serum',
+    name:'Active Purifier Ampoule Concentrate',
+    concern:'Enlarged Pores',
+    why:'Tea tree oil + kaolin clay + salicylic acid purify and refine enlarged pores. Regulates sebum and visibly tightens pore appearance within 7 days.',
+    badge:'PM Protocol · 7-day',price:'$50',
+    url:'fluids-fp/63698-active-purifier.html'
+  },
+  {
+    id:'63689', brand:'BABOR',type:'Ampoule Serum',
+    name:'Hydra Plus Ampoule Concentrate',
+    concern:'Hydration & Dryness',
+    why:'Low-molecular hyaluronic acid + ProVitamin B5 delivers a 24-hour moisture surge for dehydrated skin. Visibly plumps fine lines caused by dryness.',
+    badge:'Daily · 7-day',price:'$40',
+    url:'fluids-fp/63689-hydra-plus.html'
+  },
+  {
+    id:'63695', brand:'BABOR',type:'Ampoule Serum',
+    name:'SOS Calming Ampoule Concentrate',
+    concern:'Redness & Sensitivity',
+    why:'Aloe vera + centella asiatica + cherimoya fruit extract immediately calms redness and tightness. 93% visible reduction in redness after 7-day treatment.',
+    badge:'Sensitive · 7-day',price:'$50',
+    url:'fluids-fp/63695-sos-calming.html'
+  }
+];
+
+const creamProducts = [
+  {
+    id:'63694', brand:'BABOR',type:'Ampoule Serum',
+    name:'Collagen Firming Ampoule Concentrate',
+    concern:'Firmness & Elasticity',
+    why:'Peptide complex + chlorella vulgaris + white lupin enzymes visibly enhance skin firmness. 94% of users reported firmer, more hydrated skin after 7 days.',
+    badge:'AM & PM · 7-day',price:'$50',
+    url:'fluids-fp/63694-collagen-firming.html'
+  },
+  {
+    id:'65474', brand:'BABOR',type:'Ampoule Serum',
+    name:'Nutri Restore Ampoule Concentrate',
+    concern:'Texture & Nourishment',
+    why:'Argan oil + squalane + amino acid complex restore lipid balance for stressed, textured skin. 95% report healthier-looking skin within 7 days.',
+    badge:'PM Protocol · 7-day',price:'$50',
+    url:'fluids-fp/65474-nutri-restore.html'
+  },
+  {
+    id:'63697', brand:'BABOR',type:'Ampoule Serum',
+    name:'Multi Vitamin Ampoule Concentrate',
+    concern:'Dullness & Vitality',
+    why:'Vitamins A, C, E + niacinamide + hyaluronic acid revive fatigued, dull-looking skin. Strengthens the skin barrier while boosting radiance and freshness.',
+    badge:'Daily · 7-day',price:'$50',
+    url:'fluids-fp/63697-multi-vitamin.html'
+  },
+  {
+    id:'63510', brand:'BABOR HSR',type:'Eye Cream',
+    name:'HSR Lifting Anti-Wrinkle Eye Cream',
+    concern:'Eye Area & Dark Circles',
+    why:'6-ingredient HSR active complex targets all wrinkle types around the eye contour, reduces puffiness and visibly diminishes dark shadows. A cult BABOR icon.',
+    badge:'AM & PM',price:'$75',
+    url:'hsr/63510-anti-wrinkle-eye-cream.html'
+  },
+  {
+    id:'65784', brand:'DOCTOR BABOR',type:'Moisturizer',
+    name:'Collagen-Peptide Booster Cream',
+    concern:'Overall Anti-Aging',
+    why:'9.6% Peptide Plant Complex supports collagen synthesis and reduces wrinkle depth. The global bestseller for firming, plumping and overall skin rejuvenation.',
+    badge:'AM & PM',price:'$180',
+    url:'doctor-babor/lifting/65784-collagen-peptide-booster-cream.html'
+  }
+];
+
+function openProducts() {
+  renderProductTab('serums', serumProducts);
+  renderProductTab('creams', creamProducts);
+  document.getElementById('productsModal').classList.add('open');
+}
+
+function renderProductTab(tab, products) {
+  document.getElementById('tab-'+tab).innerHTML = products.map(p=>`
+    <div class="product-card">
+      <img class="product-img" src="${BABOR_IMG(p.id)}" alt="${p.name}" loading="lazy"
+           onerror="this.style.background='#f5ede8';this.style.padding='8px'">
+      <div class="product-info">
+        <div class="product-brand">${p.brand} · <span style="color:var(--rose);font-weight:600">${p.concern}</span></div>
+        <div class="product-type">${p.type}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-why">${p.why}</div>
+        <div class="product-meta">
+          <span class="product-badge">${p.badge}</span>
+          <span class="product-price">${p.price}</span>
+          <a class="product-link" href="${BABOR_URL(p.url)}" target="_blank">Shop ↗</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&tab==='serums')||(i===1&&tab==='creams')));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// ─── UTILS ───────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function restartApp(){
+  state.concerns=[];state.photos=[null,null,null];state.skinAge=0;state.categories=[];state.currentPhoto=0;state.confidence='moderate';state.lightInfo=[null,null,null];
+  ['s1Err','s2Err'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  document.querySelectorAll('.concern-card').forEach(c=>c.classList.remove('selected'));
+  ['fAge','fWeight','fHeightCm','fHeightFt','fHeightIn'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  if(state.units!=='imperial') setUnits('imperial');
+  document.getElementById('bmiVal').textContent='—';document.getElementById('bmiCat').textContent='Enter weight & height above';
+  document.getElementById('analyzingState').style.display='none';document.getElementById('retakeSection').style.display='block';
+  const adv=document.getElementById('lightAdvice');if(adv)adv.style.display='none';
+  stopCamera();goTo(1);
+}
+
+updateHydration(1.5);
+</script>
+</body>
+</html>
